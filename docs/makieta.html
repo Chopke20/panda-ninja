@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Makieta — Obowiązki Pandy Ninja</title>
+  <style>
+    :root {
+      --paper: #F3F1EC;
+      --ink: #2A2926;
+      --muted: #6B6860;
+      --dojo: #2C3A4A;
+      --gold: #E0B84D;
+      --green: #3F8F62;
+      --accent-a: #3D6B8A;
+      --accent-b: #C44536;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: #d8d4cc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+    }
+    .frame {
+      width: min(834px, 100%);
+      height: min(1112px, 100dvh);
+      margin: 0 auto;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 0 12px #2a2926;
+    }
+    header { flex: 0 0 18%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .clock { font-size: 96px; font-variant-numeric: tabular-nums; font-weight: 650; line-height: 1; }
+    .sub { color: var(--muted); font-size: 18px; margin-top: 6px; }
+    .bell { position: absolute; right: 20px; top: 20px; font-size: 28px; }
+    .bar { width: 88%; height: 12px; background: rgba(42,41,38,.12); border-radius: 99px; overflow: hidden; margin-top: 10px; position: relative; }
+    .bar > i { display: block; width: 38%; height: 100%; background: var(--green); }
+    .pandas { flex: 0 0 32%; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(42,41,38,.1); }
+    .col { display: flex; flex-direction: column; padding: 8px 12px; }
+    .stage { flex: 1; border-radius: 24px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; }
+    .a { background: #4A7C6F; border: 3px solid var(--accent-a); }
+    .b { background: #A8B4C0; border: 3px solid var(--accent-b); }
+    .meta { display: flex; justify-content: space-between; padding: 6px 4px 0; font-size: 16px; }
+    .tasks { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; border-top: 1px solid rgba(42,41,38,.1); }
+    .list { overflow: auto; padding: 8px; }
+    .tile {
+      min-height: 72px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 12px; border-radius: 16px; background: #fffcf7; margin-bottom: 8px;
+    }
+    .check { width: 28px; height: 28px; border: 2px solid var(--ink); border-radius: 6px; display: grid; place-items: center; }
+    .done { opacity: .45; }
+    .done .check { background: var(--green); border-color: var(--green); color: #fff; }
+    footer { flex: 0 0 6%; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+    .gear { width: 52px; height: 52px; border: 0; border-radius: 16px; background: var(--dojo); color: #fff; font-size: 22px; }
+    .note { max-width: 834px; margin: 16px auto; padding: 0 16px; color: #444; }
+    code { background: #eee; padding: 0 4px; }
+  </style>
+</head>
+<body>
+  <div class="frame" aria-label="Makieta ekranu głównego">
+    <header>
+      <span class="bell">🔔</span>
+      <div class="clock">07:12</div>
+      <div class="bar"><i></i></div>
+      <div class="sub">Zostało 28 minut</div>
+    </header>
+    <section class="pandas">
+      <div class="col">
+        <div class="stage a">panda-a · trenuje</div>
+        <div class="meta"><strong>Syn 1</strong><span>★ 0 · 3/7</span></div>
+      </div>
+      <div class="col">
+        <div class="stage b">panda-b · śpi</div>
+        <div class="meta"><strong>Syn 2</strong><span>★ 0 · 0/7</span></div>
+      </div>
+    </section>
+    <section class="tasks">
+      <div class="list">
+        <div class="tile done"><span class="check">✓</span> Wstać</div>
+        <div class="tile done"><span class="check">✓</span> Ubranie</div>
+        <div class="tile done"><span class="check">✓</span> Śniadanie</div>
+        <div class="tile"><span class="check"></span> Zęby</div>
+        <div class="tile"><span class="check"></span> Uczesać się</div>
+        <div class="tile"><span class="check"></span> Plecak</div>
+        <div class="tile"><span class="check"></span> Buty</div>
+      </div>
+      <div class="list">
+        <div class="tile"><span class="check"></span> Wstać</div>
+        <div class="tile"><span class="check"></span> Ubranie</div>
+        <div class="tile"><span class="check"></span> Śniadanie</div>
+        <div class="tile"><span class="check"></span> Zęby</div>
+        <div class="tile"><span class="check"></span> Uczesać się</div>
+        <div class="tile"><span class="check"></span> Plecak</div>
+        <div class="tile"><span class="check"></span> Buty</div>
+      </div>
+    </section>
+    <footer>
+      <span>Obie pandy gotowe = +50 pkt bonusu</span>
+      <button class="gear" type="button">⚙</button>
+    </footer>
+  </div>
+  <p class="note">
+    Referencja układu (nie kopiować 1:1 do React). Strefy: czas 18% · pandy 32% · zadania 42% · stopka 6%.
+    Orientacja pozioma: pandy lewa kolumna, listy po prawej. Szczegóły w <code>docs/01-PROJEKT.md</code>.
+  </p>
+</body>
+</html>

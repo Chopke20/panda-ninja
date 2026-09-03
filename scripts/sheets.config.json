@@ -1,0 +1,90 @@
+{
+  "bgColor": "#F2F2F2",
+  "tolerance": 18,
+  "sheets": [
+    {
+      "src": "art-sheets/panda-a.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-a",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-b.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-b",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/icons.png",
+      "cols": 6,
+      "rows": 5,
+      "out": "public/art/icons",
+      "size": 128,
+      "align": "center",
+      "prefix": "task-",
+      "names": [
+        "bed",
+        "clothes",
+        "shirt",
+        "cereal",
+        "milk",
+        "toothbrush",
+        "hairbrush",
+        "soap",
+        "toilet",
+        "backpack",
+        "lunchbox",
+        "notebook",
+        "book",
+        "shoes",
+        "jacket",
+        "cap",
+        "bottle",
+        "dogbowl",
+        "plant",
+        "toys",
+        "dishes",
+        "panda",
+        "curtains",
+        "panda-smile",
+        "panda-wink",
+        "panda-happy",
+        "dishes-clean",
+        "curtains-closed",
+        "keys",
+        "clock"
+      ]
+    },
+    {
+      "src": "art-sheets/items.png",
+      "cols": 5,
+      "rows": 3,
+      "out": "public/art/items",
+      "size": 256,
+      "align": "center",
+      "names": [
+        "weapon-bo",
+        "weapon-katana",
+        "weapon-nunchaku",
+        "weapon-kama",
+        "weapon-shuriken",
+        "headband-white",
+        "headband-red",
+        "headband-blue",
+        "headband-green",
+        "headband-black",
+        "outfit-charcoal",
+        "outfit-indigo",
+        "outfit-crimson",
+        "outfit-forest",
+        "weapon-sai"
+      ]
+    }
+  ]
+}

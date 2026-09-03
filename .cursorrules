@@ -1,0 +1,42 @@
+Projekt: "Obowiązki Pandy Ninja" — PWA na iPada dla dwóch chłopców (6 i 8 lat),
+prowadząca poranną rutynę przed wyjściem do szkoły.
+
+STOS
+- React 18 + TypeScript + Vite
+- Tailwind CSS (bez bibliotek komponentów)
+- Zustand z middleware persist (localStorage)
+- Framer Motion do animacji
+- Web Audio API do dźwięków (syntezowanych w kodzie, bez plików audio)
+- Web Speech API do lektora
+- vite-plugin-pwa
+- ZERO backendu, ZERO zapytań sieciowych w runtime, ZERO kont użytkownika
+
+ZASADY KODU
+- TypeScript strict. Żadnego `any`.
+- Cały interfejs po polsku, z polskimi znakami. Komentarze w kodzie po polsku.
+- Komponenty funkcyjne, jeden komponent na plik, nazwy plików PascalCase.
+- Cała logika czasu, punktacji i dźwięku mieszka w `src/lib/` i jest czystymi
+  funkcjami — komponenty tylko renderują.
+- Stan globalny wyłącznie w Zustandzie; żadnego prop-drillingu przez 3 poziomy.
+- Żadnych magicznych liczb w JSX — stałe do `src/lib/constants.ts`.
+
+ZASADY UI (aplikacja dla dzieci na dotykowym ekranie)
+- Minimalny obszar dotyku 72 px wysokości. Cały kafel jest klikalny, nie sam checkbox.
+- Font bazowy 18 px, zegar minimum 96 px, `font-variant-numeric: tabular-nums`.
+- Kontrast tekstu min. 4.5:1.
+- `user-select:none`, `-webkit-touch-callout:none`, `touch-action:manipulation` globalnie.
+- Respektuj `env(safe-area-inset-*)`.
+- Działa w orientacji pionowej (główna) i poziomej.
+- Żadnych okien `alert`, `confirm`, `prompt` — własne modale.
+
+ZASADY iOS/iPad (krytyczne)
+- Odliczanie czasu ZAWSZE z `Date.now()`, nigdy z akumulowanego `setInterval`.
+- Audio i mowę odblokuj pierwszym gestem użytkownika na ekranie startowym.
+- Wake Lock wznawiaj po zdarzeniu `visibilitychange`.
+- Aplikacja musi działać w 100% offline po pierwszym załadowaniu.
+
+CZEGO NIE ROBIĆ
+- Nie dodawaj bibliotek spoza listy bez pytania.
+- Nie twórz backendu, API, bazy ani logowania.
+- Nie wprowadzaj kar, smutnych min, rankingów ani porównań między dziećmi.
+- Nie generuj grafiki — użyj kolorowych zaślepek, pliki PNG dojdą później.

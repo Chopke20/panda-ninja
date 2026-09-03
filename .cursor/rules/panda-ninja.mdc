@@ -1,0 +1,26 @@
+---
+description: Zasady projektu Obowiązki Pandy Ninja — PWA na iPada
+alwaysApply: true
+---
+
+# Obowiązki Pandy Ninja
+
+PWA na iPada dla dwóch chłopców (6 i 8 lat). Poranna rutyna jako trening w dojo. Zero kar, smutnych min i wyścigu między braćmi.
+
+## Stos
+
+React 18 + TypeScript strict + Vite + Tailwind (bez bibliotek UI) + Zustand persist (`pandaninja.v1`) + Framer Motion. Dźwięk: Web Audio API (synteza). Lektor: Web Speech API. PWA: vite-plugin-pwa. Zero backendu i zapytań sieciowych w runtime.
+
+## Kod
+
+- Interfejs po polsku. Komentarze po polsku. Jeden komponent na plik, PascalCase.
+- Logika czasu, punktacji i dźwięku tylko w `src/lib/` jako czyste funkcje.
+- Stan globalny tylko w Zustandie. Stałe w `src/lib/constants.ts`, nie w JSX.
+- Żadnego `any`, `alert()`, `confirm()`, `prompt()`.
+
+## UI i iPad
+
+- Min. 72 px wysokości kafla. Zegar min. 96 px, `tabular-nums`.
+- Czas zawsze z `Date.now()`. Audio odblokuj gestem na ekranie startowym.
+- Wake Lock wznawiaj po `visibilitychange`. Safe area, `touch-action: manipulation`.
+- Nie dodawaj bibliotek spoza listy bez pytania. Nie generuj grafiki — zaślepki albo `public/art/` po `npm run art`.
