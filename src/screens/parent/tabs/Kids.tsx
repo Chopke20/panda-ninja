@@ -228,39 +228,42 @@ function KidCard({
 
       <EquipRow
         title="Głowa"
-        items={owned.filter((item) => item.slot === 'head')}
+        items={owned.filter((item) => item.slot === 'head' && !item.comingSoon)}
         activeId={kid.panda.headId}
         onEquip={onEquip}
         onClear={() => onUnequip('head')}
       />
       <EquipRow
         title="Plecy"
-        items={owned.filter((item) => item.slot === 'back')}
+        items={owned.filter((item) => item.slot === 'back' && !item.comingSoon)}
         activeId={kid.panda.backId}
         onEquip={onEquip}
         onClear={() => onUnequip('back')}
       />
       <EquipRow
         title="Pas"
-        items={owned.filter((item) => item.slot === 'belt')}
+        items={owned.filter((item) => item.slot === 'belt' && !item.comingSoon)}
         activeId={kid.panda.beltId}
         onEquip={onEquip}
         onClear={() => onUnequip('belt')}
       />
       <EquipRow
         title="Aura"
-        items={owned.filter((item) => item.slot === 'aura')}
+        items={owned.filter((item) => item.slot === 'aura' && !item.comingSoon)}
         activeId={kid.panda.auraId}
         onEquip={onEquip}
         onClear={() => onUnequip('aura')}
       />
       <EquipRow
         title="Wzór kimona"
-        items={owned.filter((item) => item.slot === 'outfitPattern')}
+        items={owned.filter((item) => item.slot === 'outfitPattern' && !item.comingSoon)}
         activeId={kid.panda.outfitPatternId}
         onEquip={onEquip}
         onClear={() => onUnequip('outfitPattern')}
       />
+      <p className="mt-3 text-sm text-muted">
+        Gadżety i wzory wrócą do szafy razem z grafiką warstwową (v2).
+      </p>
 
       <p className="mt-4 mb-2 font-semibold">Kolor akcentu</p>
       <div className="flex flex-wrap gap-2">

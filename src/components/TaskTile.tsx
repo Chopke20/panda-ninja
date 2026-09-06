@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, TIME, TOUCH } from '../lib/constants';
+import { taskIconSrc } from '../lib/cosmetics';
 import { MissionTimer } from './MissionTimer';
 
 type Props = {
@@ -93,7 +94,7 @@ export function TaskTile({
           {done ? '✓' : ''}
         </span>
         <img
-          src={`/art/icons/task-${icon}.png`}
+          src={taskIconSrc(icon)}
           alt=""
           className={`object-contain ${large ? 'h-20 w-20' : 'h-10 w-10'}`}
           onError={(event) => {

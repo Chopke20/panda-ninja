@@ -17,13 +17,25 @@ Godziny wyjścia i snu na każdy dzień tygodnia ustawia się w panelu rodzica �
 
 ```bash
 npm install
-npm run art
+npm run art:v2
 npm run dev
 ```
 
-Aplikacja wstaje na [http://localhost:5173](http://localhost:5173). Na iPadzie w tej samej sieci Wi‑Fi otwórz adres z terminala (np. `http://192.168.x.x:5173`).
+Aplikacja wstaje na [http://localhost:5173](http://localhost:5173).
 
-Build produkcyjny (ten wrzucasz na iPada na stałe):
+### iPad / Safari (GitHub Pages)
+
+Po deployu otwórz w **Safari** na iPadzie:
+
+**https://chopke20.github.io/panda-ninja/**
+
+1. Udostępnij → **Dodaj do ekranu początkowego**.
+2. Odczekaj pierwsze pełne załadowanie (offline cache / PWA).
+3. Opcjonalnie: **Dostęp nadzorowany** (Guided Access).
+
+Lokalnie w tej samej sieci Wi‑Fi: `npm run dev` i adres z terminala (np. `http://192.168.x.x:5173`).
+
+Build produkcyjny:
 
 ```bash
 npm run build
@@ -72,6 +84,8 @@ Czego arkusz **nie** może zawierać, bo aplikacja dokłada to sama i wyjdzie po
 Tło każdego pola musi być jednolite `#F2F2F2` — po tym kolorze skrypt rozpoznaje, co usunąć.
 
 Ikony PWA leżą w `public/icons/` (192, 512, maskable, apple-touch).
+
+Plan sklepiku warstwowego (pandy v2, bronie, gadżety): `docs/05-WDROZENIE-ART.md`.
 
 ## Backup danych
 

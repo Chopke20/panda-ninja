@@ -232,6 +232,7 @@ export function canRequestPurchase(
 ): { ok: true; price: number } | { ok: false; reason: string } {
   const item = getCosmetic(itemId);
   if (!item) return { ok: false, reason: 'Nie ma takiego skarbu.' };
+  if (item.comingSoon) return { ok: false, reason: 'Ten skarb będzie wkrótce — czekamy na grafikę.' };
   if (item.price <= 0) return { ok: false, reason: 'Ten skarb masz już na start.' };
   if (inventory.includes(itemId)) return { ok: false, reason: 'Już posiadasz ten skarb.' };
   const pendingSame = requests.some(

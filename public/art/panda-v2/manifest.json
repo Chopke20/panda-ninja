@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "canvas": 512,
+  "bodies": ["round", "agile"],
+  "poses": ["sleeping", "training", "hurry", "celebrating"],
+  "mvp": {
+    "body": "round",
+    "gripFamilies": ["staff", "empty"],
+    "weapons": ["bo", "bokken", "dragon-staff", "naginata", "master"],
+    "gadgets": ["pack", "glasses", "cape"],
+    "logos": ["paw", "bamboo", "mountain", "wave", "moon", "bolt", "dragon", "star"],
+    "requireKimonoMasks": true,
+    "requireHeadbandMasks": true
+  },
+  "phase2": {
+    "body": "agile",
+    "note": "Agile = smuklejszy brat z round (art-agile-from-round). Docelowo własne master sheets z ComfyUI."
+  },
+  "notes": "MVP: round. Faza 2: agile + bronie dual/fan. Runtime: USE_PANDA_V2."
+}

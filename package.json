@@ -8,6 +8,12 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "art": "node scripts/slice-sheets.mjs",
+    "art:postprocess": "node scripts/art-postprocess-v2.mjs",
+    "art:v2": "npm run art && npm run art:postprocess && npm run art:thumbs && npm run art:agile && npm run art:webp && npm run art:validate",
+    "art:agile": "node scripts/art-agile-from-round.mjs",
+    "art:thumbs": "node scripts/art-shop-thumbs.mjs",
+    "art:webp": "node scripts/art-webp.mjs",
+    "art:validate": "node scripts/art-validate.mjs",
     "test": "vitest"
   },
   "dependencies": {

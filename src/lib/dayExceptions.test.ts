@@ -4,6 +4,7 @@ import { emptyDayLog } from './day';
 import {
   emptyDayException,
   isFreeDay,
+  trimDayExceptions,
   upsertDayException,
 } from './dayExceptions';
 import { settleStreaks } from './scoring';
@@ -67,5 +68,23 @@ describe('dayExceptions', () => {
     const kid = makeKid1();
     const due = dueFromLogOrKid({ plannedTasks: [] }, kid, 'wed');
     expect(due).toEqual([]);
+  });
+
+  it('trimDayExceptions zachowuje referencję, gdy nic nie wycina', () => {
+    const list = [
+      { date: '2026-09-01', freeDay: false, departureOverride: null, note: 'a' },
+      { date: '2026-09-05', freeDay: true, departureOverride: null, note: '' },
+    ];
+    expect(trimDayExceptions(list, '2026-09-05')).toBe(list);
+  });
+
+  it('trimDayExceptions wycina stare dni nową tablicą', () => {
+    const list = [
+      { date: '2025-01-01', freeDay: false, departureOverride: null, note: 'stare' },
+      { date: '2026-09-05', freeDay: true, departureOverride: null, note: '' },
+    ];
+    const next = trimDayExceptions(list, '2026-09-05', 7);
+    expect(next).not.toBe(list);
+    expect(next).toEqual([list[1]]);
   });
 });

@@ -22,7 +22,8 @@ export function emptyDayLog(
 
 export function trimLogsToDays(logs: DayLog[], today: string, keepDays: number = TIME.historyDays): DayLog[] {
   const oldest = addDaysIso(today, -(keepDays - 1));
-  return logs.filter((log) => log.date >= oldest);
+  const next = logs.filter((log) => log.date >= oldest);
+  return next.length === logs.length ? logs : next;
 }
 
 export type DaySlice = {

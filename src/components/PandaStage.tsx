@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import type { PandaAppearance, PandaPose } from '../types';
-import { CELEBRATE_STARS, COLORS, MOTION, PANDA_STAGE } from '../lib/constants';
+import { CELEBRATE_STARS, COLORS, MOTION, PANDA_STAGE, USE_PANDA_V2 } from '../lib/constants';
 import { pandaArtSrc } from '../lib/pandaArt';
 import {
   bodySheet,
   furFilter,
-  gadgetGlyph,
   logoGlyph,
   POSE_ANCHORS,
-  weaponPreview,
 } from '../lib/pandaCompose';
+import { PandaComposer } from './PandaComposer';
 
 const LABELS: Record<PandaPose, string> = {
   sleeping: 'śpi',
@@ -124,13 +123,9 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
   const size = compact ? PANDA_STAGE.startSizePx : undefined;
   const zzz = ['z', 'Z', 'z'] as const;
   const anchors = POSE_ANCHORS[pose];
-  const weapon = weaponPreview(appearance.handId);
-  const headGlyph = gadgetGlyph(appearance.headId);
-  const backGlyph = gadgetGlyph(appearance.backId);
-  const beltGlyph = gadgetGlyph(appearance.beltId);
-  const auraGlyph = gadgetGlyph(appearance.auraId);
   const logo = logoGlyph(appearance.logoId);
   const glyphSize = compact ? 18 : 28;
+  const useV2 = USE_PANDA_V2;
 
   return (
     <div className="flex h-full min-h-0 flex-col items-center justify-center">
@@ -146,107 +141,60 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
       >
         <motion.div
           className="relative h-full w-full overflow-visible rounded-3xl"
-          style={{ background: missing ? COLORS.placeholder[pose] : 'transparent' }}
+          style={{
+            background: useV2 || !missing ? 'transparent' : COLORS.placeholder[pose],
+          }}
           animate={reduce ? { y: 0, scale: 1, rotate: 0 } : poseAnimate(pose)}
           transition={reduce ? { duration: 0 } : poseTransition(pose)}
         >
-          <AnimatePresence initial={false}>
-            {!missing && (
-              <motion.img
-                key={src}
-                src={src}
-                alt=""
-                className="absolute inset-0 h-full w-full object-contain object-bottom"
-                style={{ filter: furFilter(appearance.fur) }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduce ? 0 : MOTION.crossfadeSec }}
-                onError={() => setFailed((prev) => ({ ...prev, [src]: true }))}
+          {useV2 ? (
+            <PandaComposer pose={pose} appearance={appearance} />
+          ) : (
+            <>
+              <AnimatePresence initial={false}>
+                {!missing && (
+                  <motion.img
+                    key={src}
+                    src={src}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-contain object-bottom"
+                    style={{ filter: furFilter(appearance.fur) }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reduce ? 0 : MOTION.crossfadeSec }}
+                    onError={() => setFailed((prev) => ({ ...prev, [src]: true }))}
+                  />
+                )}
+              </AnimatePresence>
+
+              {/* Nakładki kolorów — przejściowe do czasu masek panda-v2 */}
+              <ColorChip
+                hex={appearance.outfitColor}
+                x={anchors.collar.x}
+                y={anchors.collar.y}
+                w={42}
+                h={28}
+                opacity={0.35}
               />
-            )}
-          </AnimatePresence>
-
-          {/* Nakładki kolorów — przejściowe do czasu masek panda-v2 */}
-          <ColorChip
-            hex={appearance.outfitColor}
-            x={anchors.collar.x}
-            y={anchors.collar.y}
-            w={42}
-            h={28}
-            opacity={0.35}
-          />
-          <ColorChip
-            hex={appearance.headbandColor}
-            x={anchors.headband.x}
-            y={anchors.headband.y}
-            w={36}
-            h={10}
-            opacity={0.65}
-          />
-
-          {auraGlyph && (
-            <OverlayGlyph
-              glyph={auraGlyph}
-              x={anchors.aura.x}
-              y={anchors.aura.y}
-              scale={anchors.aura.scale}
-              rotate={anchors.aura.rotate}
-              sizePx={glyphSize * 1.2}
-            />
+              <ColorChip
+                hex={appearance.headbandColor}
+                x={anchors.headband.x}
+                y={anchors.headband.y}
+                w={36}
+                h={10}
+                opacity={0.65}
+              />
+              <OverlayGlyph
+                glyph={logo}
+                x={anchors.logo.x}
+                y={anchors.logo.y}
+                scale={anchors.logo.scale}
+                rotate={anchors.logo.rotate}
+                sizePx={glyphSize * 0.7}
+              />
+            </>
           )}
-          {backGlyph && (
-            <OverlayGlyph
-              glyph={backGlyph}
-              x={anchors.back.x}
-              y={anchors.back.y}
-              scale={anchors.back.scale}
-              rotate={anchors.back.rotate}
-              sizePx={glyphSize}
-            />
-          )}
-          {weapon && (
-            <img
-              src={weapon}
-              alt=""
-              className="pointer-events-none absolute object-contain"
-              style={{
-                left: `${anchors.hand.x}%`,
-                top: `${anchors.hand.y}%`,
-                width: `${22 * anchors.hand.scale}%`,
-                height: `${22 * anchors.hand.scale}%`,
-                transform: `translate(-50%, -50%) rotate(${anchors.hand.rotate}deg)`,
-              }}
-            />
-          )}
-          {beltGlyph && (
-            <OverlayGlyph
-              glyph={beltGlyph}
-              x={anchors.belt.x}
-              y={anchors.belt.y}
-              scale={anchors.belt.scale}
-              rotate={anchors.belt.rotate}
-              sizePx={glyphSize * 0.85}
-            />
-          )}
-          {headGlyph && (
-            <OverlayGlyph
-              glyph={headGlyph}
-              x={anchors.head.x}
-              y={anchors.head.y}
-              scale={anchors.head.scale}
-              rotate={anchors.head.rotate}
-              sizePx={glyphSize}
-            />
-          )}
-          <OverlayGlyph
-            glyph={logo}
-            x={anchors.logo.x}
-            y={anchors.logo.y}
-            scale={anchors.logo.scale}
-            rotate={anchors.logo.rotate}
-            sizePx={glyphSize * 0.7}
-          />
 
           {pose === 'sleeping' && !reduce && (
             <div className="pointer-events-none absolute right-[12%] top-[8%] flex flex-col items-start text-muted">

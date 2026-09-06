@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { makeKid1 } from '../store/defaults';
+import { COSMETIC_CATALOG } from './cosmetics';
 import {
   approvePurchase,
   createPurchaseRequest,
@@ -61,18 +62,30 @@ describe('ledger', () => {
       requests: [],
       inventory: makeKid1().inventory,
       kidId: 'kid-1',
-      itemId: 'gadget-talisman',
+      itemId: 'logo-mountain',
       nowMs: now,
     });
     expect(req.ok).toBe(true);
     if (!req.ok) return;
     expect(walletBalance(txs, 'kid-1')).toBe(500);
-    expect(availableBalance(txs, [req.request], 'kid-1', now)).toBe(500 - 140);
+    expect(availableBalance(txs, [req.request], 'kid-1', now)).toBe(500 - 120);
   });
 
   it('nie pozwala kupić bez salda', () => {
-    const check = canRequestPurchase([], [], makeKid1().inventory, 'kid-1', 'weapon-master');
+    const check = canRequestPurchase([], [], makeKid1().inventory, 'kid-1', 'weapon-bokken');
     expect(check.ok).toBe(false);
+  });
+
+  it('nie sprzedaje zapowiedzi comingSoon', () => {
+    const soon = COSMETIC_CATALOG.find((item) => item.comingSoon);
+    if (!soon) {
+      expect(COSMETIC_CATALOG.every((item) => item.comingSoon !== true)).toBe(true);
+      return;
+    }
+    const txs = [makeOpeningBalance('kid-1', 5000, new Date().toISOString())];
+    const check = canRequestPurchase(txs, [], makeKid1().inventory, 'kid-1', soon.id);
+    expect(check.ok).toBe(false);
+    if (!check.ok) expect(check.reason).toMatch(/wkrótce/i);
   });
 
   it('zatwierdza zakup i odejmuje gwiazdki', () => {
@@ -84,7 +97,7 @@ describe('ledger', () => {
       requests: [],
       inventory: kid.inventory,
       kidId: kid.id,
-      itemId: 'gadget-talisman',
+      itemId: 'logo-mountain',
       nowMs: now,
     });
     expect(created.ok).toBe(true);
@@ -97,8 +110,8 @@ describe('ledger', () => {
     });
     expect(approved.ok).toBe(true);
     if (!approved.ok) return;
-    expect(walletBalance(approved.transactions, kid.id)).toBe(360);
-    expect(approved.kids[0].inventory).toContain('gadget-talisman');
+    expect(walletBalance(approved.transactions, kid.id)).toBe(380);
+    expect(approved.kids[0].inventory).toContain('logo-mountain');
   });
 
   it('zwraca zakup w oknie 24 h', () => {
@@ -110,7 +123,7 @@ describe('ledger', () => {
       requests: [],
       inventory: kid.inventory,
       kidId: kid.id,
-      itemId: 'gadget-talisman',
+      itemId: 'logo-mountain',
       nowMs: now,
     });
     if (!created.ok) throw new Error('request');
@@ -130,7 +143,7 @@ describe('ledger', () => {
     expect(refunded.ok).toBe(true);
     if (!refunded.ok) return;
     expect(walletBalance(refunded.transactions, kid.id)).toBe(500);
-    expect(refunded.kids[0].inventory).not.toContain('gadget-talisman');
+    expect(refunded.kids[0].inventory).not.toContain('logo-mountain');
   });
 
   it('księguje wczorajsze punkty raz', () => {

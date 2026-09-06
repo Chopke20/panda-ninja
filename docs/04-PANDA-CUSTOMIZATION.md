@@ -1,10 +1,9 @@
 # Panda Ninja 2.0 — personalizacja, sklepik i pipeline grafiki
 
-> **STATUS: PLAN NA PRZYSZŁOŚĆ, NIE WDROŻONE.**
-> Aplikacja działa dziś na płaskich arkuszach `panda-a` / `panda-b` + nakładkach.
-> Cały pakiet warstwowy `panda-v2` opisany niżej to projekt na później — nie trzeba
-> go czytać, żeby podmienić grafikę. Do podmiany grafiki wystarczy README, sekcja
-> „Podmiana grafik”.
+> **STATUS: STARY SZKIC.** Kanoniczny plan wdrożenia i generacji jest w
+> `docs/05-WDROZENIE-ART.md`. Aplikacja działa dziś na płaskich arkuszach
+> `panda-a` / `panda-b` + nakładkach. Do prostej podmiany grafiki v1 wystarczy
+> README → „Podmiana grafik”.
 
 ## Decyzja
 

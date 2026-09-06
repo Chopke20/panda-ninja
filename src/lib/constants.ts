@@ -32,6 +32,10 @@ export const STORAGE_KEY = 'pandaninja.v1';
 
 export const SCHEMA_VERSION = 6;
 
+/** Włączyć dopiero gdy `npm run art:validate` da mvpReady=true. */
+/** Paper-doll v2 — włączone gdy art:validate → mvpReady. */
+export const USE_PANDA_V2 = true;
+
 export const ROUTINE_IDS = ['morning', 'evening'] as const;
 
 export const TIME = {
@@ -107,6 +111,11 @@ export const MOTION = {
 export const PANDA_STAGE = {
   width: '70%',
   startSizePx: 140,
+} as const;
+
+/** Kotwica logo na płytce opaski (procent płótna). */
+export const PANDA_V2_LOGO = {
+  sizePct: 14,
 } as const;
 
 export const CELEBRATE_STARS: readonly { x: number; y: number; delay: number; size: number }[] = [

@@ -1,5 +1,5 @@
 import type { PandaAppearance, PandaPose } from '../types';
-import { getCosmetic, GADGET_GLYPHS, LOGO_GLYPHS } from './cosmetics';
+import { getCosmetic, LOGO_GLYPHS } from './cosmetics';
 
 /** Kotwice procentowe na płótnie 512 — przejściowe, do czasu pand-v2. */
 export type Anchor = { x: number; y: number; scale: number; rotate: number };
@@ -75,16 +75,15 @@ export function logoGlyph(logoId: string): string {
   return LOGO_GLYPHS[key] ?? '🐾';
 }
 
-export function gadgetGlyph(itemId: string | null): string | null {
-  if (!itemId) return null;
-  const item = getCosmetic(itemId);
-  if (!item) return null;
-  return GADGET_GLYPHS[item.assetKey] ?? '✨';
+export function weaponPreview(_handId: string): string | null {
+  // Faza 0: flat sprite ma broń wypaloną — nie doklejamy drugiej.
+  // v2 wróci tu z warstwą z panda-v2.
+  return null;
 }
 
-export function weaponPreview(handId: string): string | null {
-  const item = getCosmetic(handId);
-  return item?.preview ?? null;
+/** Gadżety na flat sprite wyłączone (emoji kłamały). Logo zostaje. */
+export function gadgetGlyph(_itemId: string | null): string | null {
+  return null;
 }
 
 export function outfitLabelColor(hex: string): string {

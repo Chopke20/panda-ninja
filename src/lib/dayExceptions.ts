@@ -38,5 +38,7 @@ export function trimDayExceptions(
   keepDays: number = TIME.historyDays,
 ): DayException[] {
   const oldest = addDaysIso(today, -(keepDays - 1));
-  return exceptions.filter((item) => item.date >= oldest);
+  const next = exceptions.filter((item) => item.date >= oldest);
+  // Ta sama referencja, gdy nic nie wypadło — inaczej ensureToday wpadłby w pętlę set().
+  return next.length === exceptions.length ? exceptions : next;
 }

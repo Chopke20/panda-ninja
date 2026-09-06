@@ -1,10 +1,11 @@
 import type { PandaPose } from '../types';
+import { assetUrl } from './assetUrl';
 import { PANDA_SHEETS } from './constants';
 
 export const PANDA_POSES: readonly PandaPose[] = ['sleeping', 'training', 'hurry', 'celebrating'];
 
 export function pandaArtSrc(sheet: (typeof PANDA_SHEETS)[number], pose: PandaPose): string {
-  return `/art/${sheet}/${pose}.png`;
+  return assetUrl(`art/${sheet}/${pose}.png`);
 }
 
 /** Ciepły cache przeglądarki — zmiana stanu nie ma migać. */

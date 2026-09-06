@@ -1,4 +1,5 @@
 import type { CosmeticSlot } from '../types';
+import { assetUrl } from './assetUrl';
 
 export type CosmeticCategory =
   | 'logo'
@@ -7,6 +8,9 @@ export type CosmeticCategory =
   | 'pattern'
   | 'color'
   | 'base';
+
+/** Rodzina chwytu — wspólne dłonie w paper-doll v2. */
+export type GripFamily = 'staff' | 'dual' | 'fan' | 'empty';
 
 export type CosmeticItem = {
   id: string;
@@ -17,9 +21,16 @@ export type CosmeticItem = {
   defaultOwned: boolean;
   /** Klucz assetu / glyph / hex. */
   assetKey: string;
-  /** Podgląd w sklepie — opcjonalna ścieżka PNG. */
+  /** Podgląd w sklepie — ścieżka PNG; unikalna per przedmiot. */
   preview?: string;
   description: string;
+  /** Tylko bronie — do silnika v2. */
+  gripFamily?: GripFamily;
+  /**
+   * Brak prawdziwego, unikalnego assetu na pandzie.
+   * Widać w sklepie jako „Wkrótce”, nie da się kupić.
+   */
+  comingSoon?: boolean;
 };
 
 /** Kolory kimona / opaski dostępne od startu. */
@@ -53,7 +64,7 @@ export const ACCENTS: { hex: string; label: string }[] = [
 ];
 
 export const COSMETIC_CATALOG: CosmeticItem[] = [
-  // Logo
+  // Logo — glyph na opasce działa już teraz
   {
     id: 'logo-paw',
     label: 'Łapa pandy',
@@ -62,6 +73,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 0,
     defaultOwned: true,
     assetKey: 'paw',
+    preview: '/art/panda-v2/round/shop/logos/paw.png',
     description: 'Startowe logo opaski.',
   },
   {
@@ -72,6 +84,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 0,
     defaultOwned: true,
     assetKey: 'bamboo',
+    preview: '/art/panda-v2/round/shop/logos/bamboo.png',
     description: 'Prosty znak bambusa.',
   },
   {
@@ -82,6 +95,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 120,
     defaultOwned: false,
     assetKey: 'mountain',
+    preview: '/art/panda-v2/round/shop/logos/mountain.png',
     description: 'Trzy szczyty nad dojo.',
   },
   {
@@ -92,6 +106,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 160,
     defaultOwned: false,
     assetKey: 'wave',
+    preview: '/art/panda-v2/round/shop/logos/wave.png',
     description: 'Spokojna fala treningu.',
   },
   {
@@ -102,6 +117,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 220,
     defaultOwned: false,
     assetKey: 'moon',
+    preview: '/art/panda-v2/round/shop/logos/moon.png',
     description: 'Sierp księżyca ninja.',
   },
   {
@@ -112,6 +128,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 280,
     defaultOwned: false,
     assetKey: 'bolt',
+    preview: '/art/panda-v2/round/shop/logos/bolt.png',
     description: 'Szybki błysk na opasce.',
   },
   {
@@ -122,6 +139,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 500,
     defaultOwned: false,
     assetKey: 'dragon',
+    preview: '/art/panda-v2/round/shop/logos/dragon.png',
     description: 'Przyjazny znak smoka.',
   },
   {
@@ -132,10 +150,11 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 650,
     defaultOwned: false,
     assetKey: 'star',
+    preview: '/art/panda-v2/round/shop/logos/star.png',
     description: 'Gwiazda mistrza poranka.',
   },
 
-  // Sprzęt treningowy
+  // Bronie z unikalnym PNG w public/art/items — w szafie od teraz, wygląd na pandzie w v2
   {
     id: 'weapon-bo',
     label: 'Bambusowy kij bo',
@@ -144,19 +163,9 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 0,
     defaultOwned: true,
     assetKey: 'bo',
-    preview: '/art/items/weapon-bo.png',
+    preview: '/art/panda-v2/round/shop/weapons/bo.png',
+    gripFamily: 'staff',
     description: 'Klasyczny kij równowagi.',
-  },
-  {
-    id: 'weapon-sticks',
-    label: 'Dwa bambusowe pałeczki',
-    category: 'weapon',
-    slot: 'hand',
-    price: 220,
-    defaultOwned: false,
-    assetKey: 'sticks',
-    preview: '/art/items/weapon-nunchaku.png',
-    description: 'Lekkie pałeczki do pokazu.',
   },
   {
     id: 'weapon-bokken',
@@ -166,19 +175,9 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 320,
     defaultOwned: false,
     assetKey: 'bokken',
-    preview: '/art/items/weapon-katana.png',
+    preview: '/art/panda-v2/round/shop/weapons/bokken.png',
+    gripFamily: 'staff',
     description: 'Miękki, treningowy miecz.',
-  },
-  {
-    id: 'weapon-fan',
-    label: 'Wachlarz ninja',
-    category: 'weapon',
-    slot: 'hand',
-    price: 380,
-    defaultOwned: false,
-    assetKey: 'fan',
-    preview: '/art/items/weapon-kama.png',
-    description: 'Wachlarz robi wiatr jak w lesie.',
   },
   {
     id: 'weapon-nunchaku',
@@ -188,7 +187,8 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 450,
     defaultOwned: false,
     assetKey: 'nunchaku',
-    preview: '/art/items/weapon-nunchaku.png',
+    preview: '/art/panda-v2/round/shop/weapons/nunchaku.png',
+    gripFamily: 'dual',
     description: 'Bezpieczne kręciołki chmur.',
   },
   {
@@ -199,8 +199,35 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 520,
     defaultOwned: false,
     assetKey: 'sai',
-    preview: '/art/items/weapon-sai.png',
+    preview: '/art/panda-v2/round/shop/weapons/sai.png',
+    gripFamily: 'dual',
     description: 'Pałeczki strażnika tęczy.',
+  },
+  {
+    id: 'weapon-fan',
+    label: 'Wachlarz ninja',
+    category: 'weapon',
+    slot: 'hand',
+    price: 380,
+    defaultOwned: false,
+    assetKey: 'fan',
+    preview: '/art/panda-v2/round/shop/weapons/fan.png',
+    gripFamily: 'fan',
+    description: 'Wachlarz robi wiatr jak w lesie.',
+  },
+
+  // Duplikaty tego samego PNG — w katalogu jako zapowiedź, bez sprzedaży
+  {
+    id: 'weapon-sticks',
+    label: 'Dwa bambusowe pałeczki',
+    category: 'weapon',
+    slot: 'hand',
+    price: 220,
+    defaultOwned: false,
+    assetKey: 'sticks',
+    preview: '/art/panda-v2/round/shop/weapons/sticks.png',
+    gripFamily: 'dual',
+    description: 'Lekkie pałeczki do pokazu.',
   },
   {
     id: 'weapon-dragon-staff',
@@ -210,7 +237,8 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 700,
     defaultOwned: false,
     assetKey: 'dragon-staff',
-    preview: '/art/items/weapon-bo.png',
+    preview: '/art/panda-v2/round/shop/weapons/dragon-staff.png',
+    gripFamily: 'staff',
     description: 'Długi kostur z motywem smoka.',
   },
   {
@@ -221,7 +249,8 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 850,
     defaultOwned: false,
     assetKey: 'naginata',
-    preview: '/art/items/weapon-katana.png',
+    preview: '/art/panda-v2/round/shop/weapons/naginata.png',
+    gripFamily: 'staff',
     description: 'Treningowa naginata księżyca.',
   },
   {
@@ -232,11 +261,12 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 1200,
     defaultOwned: false,
     assetKey: 'master',
-    preview: '/art/items/weapon-bo.png',
+    preview: '/art/panda-v2/round/shop/weapons/master.png',
+    gripFamily: 'staff',
     description: 'Najrzadszy kij dojo.',
   },
 
-  // Gadżety
+  // Gadżety na warstwach v2 (aury / wzory kimona — później)
   {
     id: 'gadget-talisman',
     label: 'Talizman szczęścia',
@@ -245,6 +275,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 140,
     defaultOwned: false,
     assetKey: 'talisman',
+    preview: '/art/panda-v2/round/shop/gadgets/talisman.png',
     description: 'Mały znak dobrego startu.',
   },
   {
@@ -255,7 +286,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 180,
     defaultOwned: false,
     assetKey: 'bottle',
-    preview: '/art/icons/task-bottle.png',
+    preview: '/art/panda-v2/round/shop/gadgets/bottle.png',
     description: 'Bidon na szkolną wyprawę.',
   },
   {
@@ -266,6 +297,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 220,
     defaultOwned: false,
     assetKey: 'pouch',
+    preview: '/art/panda-v2/round/shop/gadgets/pouch.png',
     description: 'Sakiewka na drobiazgi.',
   },
   {
@@ -276,6 +308,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 260,
     defaultOwned: false,
     assetKey: 'scarf',
+    preview: '/art/panda-v2/round/shop/gadgets/scarf.png',
     description: 'Chusta na bok głowy.',
   },
   {
@@ -286,6 +319,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 320,
     defaultOwned: false,
     assetKey: 'glasses',
+    preview: '/art/panda-v2/round/shop/gadgets/glasses.png',
     description: 'Okrągłe okulary dojo.',
   },
   {
@@ -296,6 +330,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 420,
     defaultOwned: false,
     assetKey: 'mask',
+    preview: '/art/panda-v2/round/shop/gadgets/mask.png',
     description: 'Przyjazna maska treningowa.',
   },
   {
@@ -306,7 +341,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 300,
     defaultOwned: false,
     assetKey: 'pack',
-    preview: '/art/icons/task-backpack.png',
+    preview: '/art/panda-v2/round/shop/gadgets/pack.png',
     description: 'Plecaczek na plecach.',
   },
   {
@@ -317,6 +352,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 550,
     defaultOwned: false,
     assetKey: 'cape',
+    preview: '/art/panda-v2/round/shop/gadgets/cape.png',
     description: 'Krótka pelerynka.',
   },
   {
@@ -327,7 +363,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 750,
     defaultOwned: false,
     assetKey: 'dragon-pack',
-    preview: '/art/icons/task-backpack.png',
+    preview: '/art/panda-v2/round/shop/gadgets/dragon-pack.png',
     description: 'Plecak z motywem smoka.',
   },
   {
@@ -338,6 +374,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 380,
     defaultOwned: false,
     assetKey: 'leaves',
+    preview: '/art/panda-v2/round/shop/gadgets/leaves.png',
     description: 'Unoszące się listki.',
   },
   {
@@ -348,6 +385,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 500,
     defaultOwned: false,
     assetKey: 'cloud',
+    preview: '/art/panda-v2/round/shop/gadgets/cloud.png',
     description: 'Mała chmurka nad pandą.',
   },
   {
@@ -358,10 +396,11 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 800,
     defaultOwned: false,
     assetKey: 'sparks',
+    preview: '/art/panda-v2/round/shop/gadgets/sparks.png',
     description: 'Iskierki wokół postaci.',
   },
 
-  // Wzory kimona
+  // Wzory kimona — kafelek + maska CSS
   {
     id: 'pattern-bamboo',
     label: 'Wzór bambusowy',
@@ -370,6 +409,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 250,
     defaultOwned: false,
     assetKey: 'bamboo',
+    preview: '/art/panda-v2/round/shop/patterns/bamboo.png',
     description: 'Delikatne łodygi na kimono.',
   },
   {
@@ -380,6 +420,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 350,
     defaultOwned: false,
     assetKey: 'waves',
+    preview: '/art/panda-v2/round/shop/patterns/waves.png',
     description: 'Fale na tkaninie.',
   },
   {
@@ -390,6 +431,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 450,
     defaultOwned: false,
     assetKey: 'mountains',
+    preview: '/art/panda-v2/round/shop/patterns/mountains.png',
     description: 'Szczyty dojo.',
   },
   {
@@ -400,6 +442,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 600,
     defaultOwned: false,
     assetKey: 'stars',
+    preview: '/art/panda-v2/round/shop/patterns/stars.png',
     description: 'Gwiazdki na kimono.',
   },
   {
@@ -410,6 +453,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 850,
     defaultOwned: false,
     assetKey: 'scales',
+    preview: '/art/panda-v2/round/shop/patterns/scales.png',
     description: 'Łuskowaty wzór.',
   },
   {
@@ -420,6 +464,7 @@ export const COSMETIC_CATALOG: CosmeticItem[] = [
     price: 1100,
     defaultOwned: false,
     assetKey: 'gold',
+    preview: '/art/panda-v2/round/shop/patterns/gold.png',
     description: 'Złoty pasek na kimono.',
   },
 ];
@@ -436,7 +481,17 @@ export function cosmeticsByCategory(category: CosmeticCategory): CosmeticItem[] 
   return COSMETIC_CATALOG.filter((item) => item.category === category);
 }
 
-/** Glyph / emoji przejściowy dla logo (do czasu PNG z Gemini). */
+/** Da się kupić w sklepiku (nie „Wkrótce”, cena > 0). */
+export function isPurchasable(item: CosmeticItem): boolean {
+  return item.price > 0 && item.comingSoon !== true;
+}
+
+/** Przymiarka zmienia wygląd już na flat sprite (logo). */
+export function canTryOnFlat(item: CosmeticItem): boolean {
+  return item.slot === 'headbandLogo' && item.comingSoon !== true;
+}
+
+/** Glyph / emoji przejściowy dla logo (do czasu PNG). */
 export const LOGO_GLYPHS: Record<string, string> = {
   paw: '🐾',
   bamboo: '🎋',
@@ -448,6 +503,7 @@ export const LOGO_GLYPHS: Record<string, string> = {
   star: '★',
 };
 
+/** @deprecated Faza 0: nie renderujemy emoji gadżetów na pandzie. */
 export const GADGET_GLYPHS: Record<string, string> = {
   talisman: '🧧',
   bottle: '🍶',
@@ -463,7 +519,6 @@ export const GADGET_GLYPHS: Record<string, string> = {
   sparks: '✨',
 };
 
-// Zachowane dla ikon zadań
 export const TASK_ICONS = [
   'bed',
   'clothes',
@@ -500,7 +555,7 @@ export const TASK_ICONS = [
 export type TaskIconId = (typeof TASK_ICONS)[number];
 
 export function taskIconSrc(icon: string): string {
-  return `/art/icons/task-${icon}.png`;
+  return assetUrl(`art/icons/task-${icon}.png`);
 }
 
 export const VOICE_LINE_FIELDS: { key: string; label: string }[] = [

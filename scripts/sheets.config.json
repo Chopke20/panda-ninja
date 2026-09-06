@@ -3,6 +3,294 @@
   "tolerance": 18,
   "sheets": [
     {
+      "src": "art-sheets/panda-v2-round-body.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/body",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-hands-staff.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/hands/staff",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-hands-empty.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/hands/empty",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-hands-dual.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/hands/dual",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-hands-fan.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/hands/fan",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-bo.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/bo",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-bokken.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/bokken",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-dragon-staff.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/dragon-staff",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-naginata.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/naginata",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-master.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/master",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-nunchaku.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/nunchaku",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-sai.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/sai",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-sticks.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/sticks",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-weapon-fan.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/weapons/fan",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-kimono-mask.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/kimono/mask",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-kimono-shade.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/kimono/shade",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-headband-mask.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/headband/mask",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-headband-shade.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/headband/shade",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-pack.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/pack",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-glasses.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/glasses",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-cape.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/cape",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-talisman.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/talisman",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-bottle.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/bottle",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-pouch.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/pouch",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-scarf.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/scarf",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-mask.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/mask",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-gadget-dragon-pack.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/gadgets/dragon-pack",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-aura-leaves.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/auras/leaves",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-aura-cloud.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/auras/cloud",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-aura-sparks.png",
+      "cols": 2,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/auras/sparks",
+      "size": 512,
+      "align": "bottom",
+      "names": ["sleeping", "training", "hurry", "celebrating"]
+    },
+    {
+      "src": "art-sheets/panda-v2-patterns.png",
+      "cols": 3,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/patterns",
+      "size": 256,
+      "align": "center",
+      "names": ["bamboo", "waves", "mountains", "stars", "scales", "gold"]
+    },
+    {
+      "src": "art-sheets/panda-v2-logos.png",
+      "cols": 4,
+      "rows": 2,
+      "out": "public/art/panda-v2/round/logos",
+      "size": 256,
+      "align": "center",
+      "names": ["paw", "bamboo", "mountain", "wave", "moon", "bolt", "dragon", "star"]
+    },
+    {
       "src": "art-sheets/panda-a.png",
       "cols": 2,
       "rows": 2,

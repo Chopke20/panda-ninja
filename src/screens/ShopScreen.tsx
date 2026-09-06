@@ -1,10 +1,13 @@
 import { useMemo, useState } from 'react';
 import { PandaStage } from '../components/PandaStage';
+import { assetUrl } from '../lib/assetUrl';
 import { TOUCH } from '../lib/constants';
 import {
   COSMETIC_CATALOG,
+  canTryOnFlat,
   type CosmeticCategory,
   getCosmetic,
+  isPurchasable,
 } from '../lib/cosmetics';
 import { availableBalance } from '../lib/shop';
 import { todayIso } from '../lib/time';
@@ -52,7 +55,20 @@ export function ShopScreen() {
   function applyTry(itemId: string) {
     const item = getCosmetic(itemId);
     if (!item) return;
-    if (item.slot === 'outfitColor' || item.slot === 'headbandColor') return;
+    if (item.comingSoon) {
+      setMessage('Ten skarb będzie wkrótce — na razie tylko zapowiedź.');
+      return;
+    }
+    if (!canTryOnFlat(item)) {
+      if (item.category === 'weapon') {
+        setMessage(
+          'Broń trafia do szafy już teraz. Na pandzie zobaczysz ją po nowych grafikach.',
+        );
+        return;
+      }
+      setMessage('Ten skarb będzie widać na pandzie po nowych grafikach.');
+      return;
+    }
     const next = equipItem(preview, itemId);
     if (next) setTryOn(next);
   }
@@ -198,33 +214,59 @@ export function ShopScreen() {
       </nav>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-[env(safe-area-inset-bottom)]">
+        <p className="mb-3 text-sm text-muted">
+          Logo zmienia pandę od razu. Broń możesz kupić do szafy — wygląd na postaci po nowych
+          grafikach. Gadżety i wzory: wkrótce.
+        </p>
         <div className="grid grid-cols-2 gap-3 pb-4">
           {catalog.map((item) => {
             const owned = kid.inventory.includes(item.id);
             const waiting = pending.some((req) => req.itemId === item.id);
+            const soon = item.comingSoon === true;
+            const buyable = isPurchasable(item);
             return (
-              <article key={item.id} className="flex flex-col rounded-3xl bg-white p-3">
+              <article
+                key={item.id}
+                className={`relative flex flex-col rounded-3xl bg-white p-3 ${soon ? 'opacity-80' : ''}`}
+              >
+                {soon && (
+                  <span className="absolute right-2 top-2 rounded-full bg-paper px-2 py-0.5 text-xs font-semibold text-muted">
+                    Wkrótce
+                  </span>
+                )}
                 {item.preview ? (
-                  <img src={item.preview} alt="" className="mx-auto h-16 w-16 object-contain" />
+                  <img
+                    src={assetUrl(item.preview)}
+                    alt=""
+                    className="mx-auto h-16 w-16 object-contain"
+                  />
                 ) : (
                   <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-paper text-2xl">
-                    ★
+                    {soon ? '…' : '★'}
                   </div>
                 )}
                 <p className="mt-2 text-center text-base font-semibold leading-tight">{item.label}</p>
                 <p className="text-center text-sm text-muted">
-                  {owned ? 'W szafie' : waiting ? 'Czeka na PIN' : `★ ${item.price}`}
+                  {soon
+                    ? 'Zapowiedź'
+                    : owned
+                      ? 'W szafie'
+                      : waiting
+                        ? 'Czeka na PIN'
+                        : `★ ${item.price}`}
                 </p>
                 <p className="mt-1 flex-1 text-center text-xs text-muted">{item.description}</p>
                 <div className="mt-2 flex flex-col gap-1">
-                  <button
-                    type="button"
-                    className="min-h-[56px] rounded-2xl bg-paper text-base"
-                    onClick={() => applyTry(item.id)}
-                  >
-                    Przymierz
-                  </button>
-                  {!owned && !waiting && (
+                  {!soon && (
+                    <button
+                      type="button"
+                      className="min-h-[56px] rounded-2xl bg-paper text-base"
+                      onClick={() => applyTry(item.id)}
+                    >
+                      {canTryOnFlat(item) ? 'Przymierz' : 'Info'}
+                    </button>
+                  )}
+                  {buyable && !owned && !waiting && (
                     <button
                       type="button"
                       className="min-h-[56px] rounded-2xl bg-dojo text-base text-white"
@@ -233,14 +275,18 @@ export function ShopScreen() {
                       Poproś o zakup
                     </button>
                   )}
-                  {owned && (
+                  {owned && !soon && (
                     <button
                       type="button"
                       className="min-h-[56px] rounded-2xl bg-dojo text-base text-white"
                       onClick={() => {
                         equipCosmetic(kid.id, item.id);
                         setTryOn(null);
-                        setMessage('Założono z szafy.');
+                        setMessage(
+                          item.category === 'weapon'
+                            ? 'W szafie. Na pandzie po nowych grafikach.'
+                            : 'Założono z szafy.',
+                        );
                       }}
                     >
                       Załóż
