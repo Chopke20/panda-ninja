@@ -113,9 +113,17 @@ export const PANDA_STAGE = {
   startSizePx: 140,
 } as const;
 
-/** Kotwica logo na płytce opaski (procent płótna). */
+/** Kotwica logo / dłoni / broni na płótnie (procent). */
 export const PANDA_V2_LOGO = {
   sizePct: 14,
+} as const;
+
+export const PANDA_V2_HAND = {
+  sizePct: 28,
+} as const;
+
+export const PANDA_V2_WEAPON = {
+  sizePct: 42,
 } as const;
 
 export const CELEBRATE_STARS: readonly { x: number; y: number; delay: number; size: number }[] = [

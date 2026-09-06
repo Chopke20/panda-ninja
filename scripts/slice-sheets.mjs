@@ -23,6 +23,7 @@ const configPath = path.join(root, 'scripts', 'sheets.config.json');
  * @property {'bottom' | 'center'} align
  * @property {string} [prefix]
  * @property {string[]} names
+ * @property {boolean} [lockFrame] — bez crop do bbox (paper-doll: wspólna siatka)
  */
 
 /**
@@ -200,6 +201,7 @@ async function sliceSheet(sheet) {
   const prefix = sheet.prefix ?? '';
   const warnings = [];
   let saved = 0;
+  const lockFrame = sheet.lockFrame === true;
 
   /** @type {Array<{ name: string, png: Buffer, boxH: number, cellH: number }>} */
   const cells = [];
@@ -220,24 +222,47 @@ async function sliceSheet(sheet) {
       continue;
     }
     const ratio = cell.box.h / ch;
-    if (ratio < 0.2) {
+    if (!lockFrame && ratio < 0.2) {
       warnings.push(
         `${names[i]}: podejrzanie mała po przycięciu (${Math.round(ratio * 100)}% wysokości komórki)`,
       );
     }
-    const cropped = Buffer.alloc(cell.box.w * cell.box.h * 4);
-    for (let y = 0; y < cell.box.h; y++) {
-      for (let x = 0; x < cell.box.w; x++) {
-        const si = idx(cell.box.minX + x, cell.box.minY + y, cell.width);
-        const di = idx(x, y, cell.box.w);
-        cropped[di] = cell.pixels[si];
-        cropped[di + 1] = cell.pixels[si + 1];
-        cropped[di + 2] = cell.pixels[si + 2];
-        cropped[di + 3] = cell.pixels[si + 3];
+
+    let png;
+    let boxH;
+    if (lockFrame) {
+      // Pełna komórka — dłonie/broń zostają w tej samej siatce co body.
+      png = await pixelsToPng(cell.pixels, cell.width, cell.height);
+      boxH = ch;
+    } else {
+      const cropped = Buffer.alloc(cell.box.w * cell.box.h * 4);
+      for (let y = 0; y < cell.box.h; y++) {
+        for (let x = 0; x < cell.box.w; x++) {
+          const si = idx(cell.box.minX + x, cell.box.minY + y, cell.width);
+          const di = idx(x, y, cell.box.w);
+          cropped[di] = cell.pixels[si];
+          cropped[di + 1] = cell.pixels[si + 1];
+          cropped[di + 2] = cell.pixels[si + 2];
+          cropped[di + 3] = cell.pixels[si + 3];
+        }
       }
+      png = await pixelsToPng(cropped, cell.box.w, cell.box.h);
+      boxH = cell.box.h;
     }
-    const png = await pixelsToPng(cropped, cell.box.w, cell.box.h);
-    cells.push({ name: names[i], png, boxH: cell.box.h, cellH: ch });
+    cells.push({ name: names[i], png, boxH, cellH: ch });
+  }
+
+  if (lockFrame) {
+    for (const cell of cells) {
+      const fitted = await sharp(cell.png)
+        .resize(sheet.size, sheet.size, { fit: 'fill', kernel: 'lanczos3' })
+        .png()
+        .toBuffer();
+      const dest = path.join(root, sheet.out, `${prefix}${cell.name}.png`);
+      fs.writeFileSync(dest, fitted);
+      saved += 1;
+    }
+    return { saved, warnings, out: sheet.out };
   }
 
   const maxH = Math.max(...cells.map((c) => c.boxH), 1);

@@ -34,10 +34,12 @@ describe('pandaV2 compose', () => {
     expect(body?.kind === 'img' && body.src.includes('/agile/')).toBe(true);
   });
 
-  it('logo ma kotwicę na płytce', () => {
+  it('dłonie i broń mają kotwicę (draft bez wspólnej siatki)', () => {
     const layers = buildComposeLayers(makeDefaultAppearance('kid-1'), 'training');
-    const logo = layers.find((layer) => layer.kind === 'img' && layer.key === 'logo');
-    expect(logo?.kind === 'img' && logo.anchor != null).toBe(true);
+    const hands = layers.find((layer) => layer.kind === 'img' && layer.key === 'hands');
+    const weapon = layers.find((layer) => layer.kind === 'img' && layer.key === 'weapon');
+    expect(hands?.kind === 'img' && hands.anchor != null).toBe(true);
+    expect(weapon?.kind === 'img' && weapon.anchor != null).toBe(true);
   });
 
   it('dodaje aurę i wzór kimona do stosu', () => {

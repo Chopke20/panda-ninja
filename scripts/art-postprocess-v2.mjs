@@ -56,11 +56,6 @@ async function sliceMaskSheet(srcRel, outDir) {
   const cols = 2;
   const rows = 2;
   const size = 512;
-  const pad = Math.round(size * 0.06);
-  const inner = size - pad * 2;
-
-  /** @type {{ name: string, buf: Buffer, bw: number, bh: number }[]} */
-  const cells = [];
 
   for (let i = 0; i < poses.length; i++) {
     const col = i % cols;
@@ -72,11 +67,8 @@ async function sliceMaskSheet(srcRel, outDir) {
     const cw = right - left;
     const ch = bottom - top;
 
-    let minX = cw;
-    let minY = ch;
-    let maxX = 0;
-    let maxY = 0;
     const cell = new Uint8ClampedArray(cw * ch * 4);
+    let kept = 0;
 
     for (let y = 0; y < ch; y++) {
       for (let x = 0; x < cw; x++) {
@@ -84,69 +76,32 @@ async function sliceMaskSheet(srcRel, outDir) {
         const di = idx(x, y, cw);
         const px = { r: data[si], g: data[si + 1], b: data[si + 2] };
         const lum = (px.r + px.g + px.b) / 3;
-        // tylko jasna biel kimona — szare zaślepki głowy/rąk odrzucamy
-        const keep = dist(px, BG) > MASK_TOL && lum >= 235 && dist(px, { r: 255, g: 255, b: 255 }) <= 30;
+        const keep =
+          dist(px, BG) > MASK_TOL && lum >= 235 && dist(px, { r: 255, g: 255, b: 255 }) <= 30;
         if (keep) {
           cell[di] = 255;
           cell[di + 1] = 255;
           cell[di + 2] = 255;
           cell[di + 3] = 255;
-          if (x < minX) minX = x;
-          if (y < minY) minY = y;
-          if (x > maxX) maxX = x;
-          if (y > maxY) maxY = y;
+          kept++;
         } else {
           cell[di + 3] = 0;
         }
       }
     }
 
-    if (maxX < minX) {
+    if (kept === 0) {
       console.warn(`  pusta komórka: ${poses[i]}`);
       continue;
     }
-    const bw = maxX - minX + 1;
-    const bh = maxY - minY + 1;
-    const cropped = Buffer.alloc(bw * bh * 4);
-    for (let y = 0; y < bh; y++) {
-      for (let x = 0; x < bw; x++) {
-        const si = idx(minX + x, minY + y, cw);
-        const di = idx(x, y, bw);
-        cropped[di] = cell[si];
-        cropped[di + 1] = cell[si + 1];
-        cropped[di + 2] = cell[si + 2];
-        cropped[di + 3] = cell[si + 3];
-      }
-    }
-    const png = await sharp(cropped, { raw: { width: bw, height: bh, channels: 4 } })
-      .png()
-      .toBuffer();
-    cells.push({ name: poses[i], buf: png, bw, bh });
-  }
 
-  let sharedScale = Infinity;
-  for (const c of cells) {
-    sharedScale = Math.min(sharedScale, inner / c.bw, inner / c.bh);
-  }
-
-  for (const c of cells) {
-    const tw = Math.max(1, Math.round(c.bw * sharedScale));
-    const th = Math.max(1, Math.round(c.bh * sharedScale));
-    const resized = await sharp(c.buf)
-      .resize(tw, th, { fit: 'fill', kernel: 'lanczos3' })
+    const resized = await sharp(Buffer.from(cell), { raw: { width: cw, height: ch, channels: 4 } })
+      .resize(size, size, { fit: 'fill', kernel: 'lanczos3' })
       .ensureAlpha()
-      .png()
-      .toBuffer();
-    const left = Math.round((size - tw) / 2);
-    const top = size - pad - th;
-    const out = await sharp({
-      create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-    })
-      .composite([{ input: resized, left, top }])
-      .png()
-      .toBuffer();
-    // Ponownie wymuś czystą biel (lanczos miesza z alfą)
-    const { data: od, info: oi } = await sharp(out).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const od = new Uint8ClampedArray(resized.data);
     for (let p = 0; p < od.length; p += 4) {
       if (od[p + 3] < 24) {
         od[p + 3] = 0;
@@ -157,10 +112,10 @@ async function sliceMaskSheet(srcRel, outDir) {
       od[p + 2] = 255;
       od[p + 3] = 255;
     }
-    await saveRgba(path.join(outDir, `${c.name}.png`), od, oi.width, oi.height);
-    // usuń szum tła: zostaw tylko duże składowe
-    await dropSpeckles(path.join(outDir, `${c.name}.png`), 80);
-    console.log(`  mask ${path.basename(outDir)}/${c.name}.png`);
+    const outFile = path.join(outDir, `${poses[i]}.png`);
+    await saveRgba(outFile, od, size, size);
+    await dropSpeckles(outFile, 80);
+    console.log(`  mask ${path.basename(outDir)}/${poses[i]}.png`);
   }
 }
 

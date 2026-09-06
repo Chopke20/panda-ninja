@@ -140,7 +140,7 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
         transition={{ duration: MOTION.pulseSec }}
       >
         <motion.div
-          className="relative h-full w-full overflow-visible rounded-3xl"
+          className="relative h-full w-full overflow-hidden rounded-3xl"
           style={{
             background: useV2 || !missing ? 'transparent' : COLORS.placeholder[pose],
           }}

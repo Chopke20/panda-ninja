@@ -1,6 +1,6 @@
 import type { CosmeticItem } from './cosmetics';
 import { getCosmetic } from './cosmetics';
-import { PANDA_V2_LOGO } from './constants';
+import { PANDA_V2_HAND, PANDA_V2_LOGO, PANDA_V2_WEAPON } from './constants';
 import { assetUrl } from './assetUrl';
 import { POSE_ANCHORS } from './pandaCompose';
 import type { PandaAppearance, PandaBodyId, PandaPose } from '../types';
@@ -137,8 +137,8 @@ export type ComposeLayer =
       key: string;
       src: string;
       z: number;
-      /** Opcjonalna kotwica % (logo na płytce). */
-      anchor?: { x: number; y: number; sizePct: number };
+      /** Kotwica % — logo / dłonie / broń (draft bez wspólnej siatki). */
+      anchor?: { x: number; y: number; sizePct: number; rotate?: number };
     }
   | {
       kind: 'maskColor';
@@ -220,20 +220,36 @@ export function buildComposeLayers(
   });
 
   if (weaponKey) {
+    const hand = POSE_ANCHORS[pose].hand;
     layers.push({
       kind: 'img',
       key: 'weapon',
       src: weaponLayerSrc(body, weaponKey, pose),
       z: 40,
+      anchor: {
+        x: hand.x,
+        y: hand.y,
+        sizePct: PANDA_V2_WEAPON.sizePct * hand.scale,
+        rotate: hand.rotate,
+      },
     });
   }
 
-  layers.push({
-    kind: 'img',
-    key: 'hands',
-    src: handsLayerSrc(body, grip, pose),
-    z: 50,
-  });
+  {
+    const hand = POSE_ANCHORS[pose].hand;
+    layers.push({
+      kind: 'img',
+      key: 'hands',
+      src: handsLayerSrc(body, grip, pose),
+      z: 50,
+      anchor: {
+        x: hand.x,
+        y: hand.y,
+        sizePct: PANDA_V2_HAND.sizePct * hand.scale,
+        rotate: hand.rotate * 0.35,
+      },
+    });
+  }
 
   if (appearance.headId) {
     const key = gadgetAssetKey(appearance.headId);

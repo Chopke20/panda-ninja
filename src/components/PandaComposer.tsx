@@ -20,7 +20,7 @@ function LayerImage({
 }: {
   src: string;
   z: number;
-  anchor?: { x: number; y: number; sizePct: number };
+  anchor?: { x: number; y: number; sizePct: number; rotate?: number };
   onMissing: () => void;
 }) {
   const [current, setCurrent] = useState(src);
@@ -34,6 +34,7 @@ function LayerImage({
   if (failed) return null;
 
   if (anchor) {
+    const rot = anchor.rotate ?? 0;
     return (
       <img
         src={current}
@@ -45,7 +46,7 @@ function LayerImage({
           top: `${anchor.y}%`,
           width: `${anchor.sizePct}%`,
           height: `${anchor.sizePct}%`,
-          transform: 'translate(-50%, -50%)',
+          transform: `translate(-50%, -50%) rotate(${rot}deg)`,
         }}
         onError={() => {
           const png = withPngFallback(current);
