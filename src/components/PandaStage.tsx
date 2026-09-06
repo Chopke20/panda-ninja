@@ -1,14 +1,9 @@
-import { useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import type { PandaAppearance, PandaPose } from '../types';
 import { CELEBRATE_STARS, COLORS, MOTION, PANDA_STAGE, USE_PANDA_V2 } from '../lib/constants';
-import { pandaArtSrc } from '../lib/pandaArt';
-import {
-  bodySheet,
-  furFilter,
-  logoGlyph,
-  POSE_ANCHORS,
-} from '../lib/pandaCompose';
+import { pandaSpriteSrcs } from '../lib/pandaArt';
+import { furFilter } from '../lib/pandaCompose';
 import { PandaComposer } from './PandaComposer';
 
 const LABELS: Record<PandaPose, string> = {
@@ -49,86 +44,25 @@ function poseTransition(pose: PandaPose) {
   return { duration, repeat: Infinity, ease: 'easeInOut' as const };
 }
 
-function OverlayGlyph({
-  glyph,
-  x,
-  y,
-  scale,
-  rotate,
-  sizePx,
-}: {
-  glyph: string;
-  x: number;
-  y: number;
-  scale: number;
-  rotate: number;
-  sizePx: number;
-}) {
-  return (
-    <span
-      className="pointer-events-none absolute"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        fontSize: sizePx * scale,
-        transform: `translate(-50%, -50%) rotate(${rotate}deg)`,
-        filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.25))',
-      }}
-      aria-hidden
-    >
-      {glyph}
-    </span>
-  );
-}
-
-function ColorChip({
-  hex,
-  x,
-  y,
-  w,
-  h,
-  opacity = 0.55,
-}: {
-  hex: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  opacity?: number;
-}) {
-  return (
-    <span
-      className="pointer-events-none absolute rounded-full"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        width: `${w}%`,
-        height: `${h}%`,
-        transform: 'translate(-50%, -50%)',
-        background: hex,
-        opacity,
-        mixBlendMode: 'multiply',
-      }}
-      aria-hidden
-    />
-  );
-}
-
+/**
+ * Na ekranie zawsze jeden kompletny rysunek pandy.
+ * Paper-doll v2 zostaje w kodzie, ale nie składa miniatur z popsutych warstw.
+ */
 export function PandaStage({ pose, appearance, name, pulse, compact = false }: Props) {
   const reduce = useReducedMotion();
-  const [failed, setFailed] = useState<Record<string, boolean>>({});
-  const sheet = bodySheet(appearance.body);
-  const src = pandaArtSrc(sheet, pose);
-  const missing = failed[src] === true;
+  const srcs = pandaSpriteSrcs(appearance.body, pose);
+  const [srcIndex, setSrcIndex] = useState(0);
+  const src = srcs[Math.min(srcIndex, srcs.length - 1)] ?? '';
   const size = compact ? PANDA_STAGE.startSizePx : undefined;
-  const zzz = ['z', 'Z', 'z'] as const;
-  const anchors = POSE_ANCHORS[pose];
-  const logo = logoGlyph(appearance.logoId);
-  const glyphSize = compact ? 18 : 28;
   const useV2 = USE_PANDA_V2 && !compact;
+  const still = compact || reduce || pulse === 0;
+
+  useEffect(() => {
+    setSrcIndex(0);
+  }, [appearance.body, pose]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col items-center justify-center">
+    <div className="flex h-full min-h-0 w-full flex-col items-center justify-center">
       <motion.div
         className="relative flex aspect-square items-center justify-center"
         style={{
@@ -136,69 +70,34 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
           height: compact ? size : undefined,
           maxHeight: compact ? size : '100%',
         }}
-        animate={reduce || pulse === 0 ? { scale: 1 } : { scale: [1, MOTION.pulseScale, 1] }}
+        animate={still ? { scale: 1 } : { scale: [1, MOTION.pulseScale, 1] }}
         transition={{ duration: MOTION.pulseSec }}
       >
         <motion.div
-          className="relative h-full w-full overflow-hidden rounded-3xl"
-          style={{
-            background: useV2 || !missing ? 'transparent' : COLORS.placeholder[pose],
-          }}
-          animate={reduce ? { y: 0, scale: 1, rotate: 0 } : poseAnimate(pose)}
-          transition={reduce ? { duration: 0 } : poseTransition(pose)}
+          className="relative h-full w-full overflow-hidden"
+          animate={compact || reduce ? { y: 0, scale: 1, rotate: 0 } : poseAnimate(pose)}
+          transition={compact || reduce ? { duration: 0 } : poseTransition(pose)}
         >
           {useV2 ? (
             <PandaComposer pose={pose} appearance={appearance} />
           ) : (
-            <>
-              <AnimatePresence initial={false}>
-                {!missing && (
-                  <motion.img
-                    key={src}
-                    src={src}
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-contain object-bottom"
-                    style={{ filter: furFilter(appearance.fur) }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduce ? 0 : MOTION.crossfadeSec }}
-                    onError={() => setFailed((prev) => ({ ...prev, [src]: true }))}
-                  />
-                )}
-              </AnimatePresence>
-
-              {/* Nakładki kolorów — przejściowe do czasu masek panda-v2 */}
-              <ColorChip
-                hex={appearance.outfitColor}
-                x={anchors.collar.x}
-                y={anchors.collar.y}
-                w={42}
-                h={28}
-                opacity={0.35}
+            src && (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                className="pointer-events-none absolute inset-0 h-full w-full object-contain object-bottom"
+                style={{ filter: furFilter(appearance.fur) }}
+                onError={() => {
+                  setSrcIndex((i) => (i + 1 < srcs.length ? i + 1 : i));
+                }}
               />
-              <ColorChip
-                hex={appearance.headbandColor}
-                x={anchors.headband.x}
-                y={anchors.headband.y}
-                w={36}
-                h={10}
-                opacity={0.65}
-              />
-              <OverlayGlyph
-                glyph={logo}
-                x={anchors.logo.x}
-                y={anchors.logo.y}
-                scale={anchors.logo.scale}
-                rotate={anchors.logo.rotate}
-                sizePx={glyphSize * 0.7}
-              />
-            </>
+            )
           )}
 
-          {pose === 'sleeping' && !reduce && (
+          {!compact && pose === 'sleeping' && !reduce && (
             <div className="pointer-events-none absolute right-[12%] top-[8%] flex flex-col items-start text-muted">
-              {zzz.map((letter, index) => (
+              {(['z', 'Z', 'z'] as const).map((letter, index) => (
                 <motion.span
                   key={letter + String(index)}
                   className="leading-none"
@@ -220,7 +119,7 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
               ))}
             </div>
           )}
-          {pose === 'celebrating' && !reduce && (
+          {!compact && pose === 'celebrating' && !reduce && (
             <div className="pointer-events-none absolute inset-0">
               {CELEBRATE_STARS.map((star) => (
                 <motion.span

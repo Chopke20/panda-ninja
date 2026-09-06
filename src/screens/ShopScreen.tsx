@@ -143,7 +143,7 @@ export function ShopScreen() {
       </div>
 
       <div className="mx-4 flex items-center gap-4 rounded-3xl bg-white p-3">
-        <div className="h-28 w-28 shrink-0">
+        <div className="shrink-0">
           <PandaStage pose="training" appearance={preview} name={kid.name} pulse={0} compact />
         </div>
         <div className="min-w-0 flex-1">

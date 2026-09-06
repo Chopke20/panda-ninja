@@ -199,15 +199,13 @@ function KidsStep({
           style={{ borderLeft: `6px solid ${kids[index].panda.accent}` }}
         >
           <div className="mb-3 flex justify-center">
-            <div className="h-24 w-24">
-              <PandaStage
-                pose="training"
-                appearance={kids[index].panda}
-                name={names[index]}
-                pulse={0}
-                compact
-              />
-            </div>
+            <PandaStage
+              pose="training"
+              appearance={kids[index].panda}
+              name={names[index]}
+              pulse={0}
+              compact
+            />
           </div>
           <label className="text-sm text-muted">Imię</label>
           <input

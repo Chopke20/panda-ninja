@@ -98,9 +98,7 @@ function KidCard({
   return (
     <article className="rounded-3xl bg-white p-4" style={{ borderLeft: `6px solid ${kid.panda.accent}` }}>
       <div className="mb-3 flex justify-center">
-        <div className="h-28 w-28">
-          <PandaStage pose="training" appearance={kid.panda} name={kid.name} pulse={0} compact />
-        </div>
+        <PandaStage pose="training" appearance={kid.panda} name={kid.name} pulse={0} compact />
       </div>
 
       <label className="text-sm text-muted">Imię</label>
