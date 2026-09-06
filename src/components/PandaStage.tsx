@@ -125,7 +125,7 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
   const anchors = POSE_ANCHORS[pose];
   const logo = logoGlyph(appearance.logoId);
   const glyphSize = compact ? 18 : 28;
-  const useV2 = USE_PANDA_V2;
+  const useV2 = USE_PANDA_V2 && !compact;
 
   return (
     <div className="flex h-full min-h-0 flex-col items-center justify-center">

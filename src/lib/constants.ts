@@ -32,9 +32,11 @@ export const STORAGE_KEY = 'pandaninja.v1';
 
 export const SCHEMA_VERSION = 6;
 
-/** Włączyć dopiero gdy `npm run art:validate` da mvpReady=true. */
-/** Paper-doll v2 — włączone gdy art:validate → mvpReady. */
-export const USE_PANDA_V2 = true;
+/**
+ * Paper-doll v2 — wyłączone: draft warstw (shade/dłonie/logo) psuje miniatury.
+ * Włączyć po ComfyUI masters + `npm run art:validate`.
+ */
+export const USE_PANDA_V2 = false;
 
 export const ROUTINE_IDS = ['morning', 'evening'] as const;
 
