@@ -34,12 +34,24 @@ describe('pandaV2 compose', () => {
     expect(body?.kind === 'img' && body.src.includes('/agile/')).toBe(true);
   });
 
-  it('dłonie i broń mają kotwicę (draft bez wspólnej siatki)', () => {
+  it('dłonie i broń mają kotwicę', () => {
     const layers = buildComposeLayers(makeDefaultAppearance('kid-1'), 'training');
     const hands = layers.find((layer) => layer.kind === 'img' && layer.key === 'hands');
     const weapon = layers.find((layer) => layer.kind === 'img' && layer.key === 'weapon');
     expect(hands?.kind === 'img' && hands.anchor != null).toBe(true);
     expect(weapon?.kind === 'img' && weapon.anchor != null).toBe(true);
+  });
+
+  it('pięści to osobne pliki na rękę, a hurry ma tylko jedną', () => {
+    const two = buildComposeLayers(makeDefaultAppearance('kid-1'), 'training');
+    expect(two.map((l) => l.key)).toContain('hands-off');
+    const main = two.find((l) => l.kind === 'img' && l.key === 'hands');
+    expect(main?.kind === 'img' && main.src).toMatch(/training-r\.webp$/);
+
+    const one = buildComposeLayers(makeDefaultAppearance('kid-1'), 'hurry');
+    expect(one.map((l) => l.key)).not.toContain('hands-off');
+    const solo = one.find((l) => l.kind === 'img' && l.key === 'hands');
+    expect(solo?.kind === 'img' && solo.src).toMatch(/hurry-solo\.webp$/);
   });
 
   it('dodaje aurę i wzór kimona do stosu', () => {

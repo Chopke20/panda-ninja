@@ -1,0 +1,491 @@
+{
+  "_comment": "Jedno źródło prawdy dla paper-doll v2. Czyta to i aplikacja (src/lib/pandaAnchors.ts), i skrypty w scripts/. Wszystkie wartości w % płótna 512.",
+  "canvas": 512,
+  "poses": [
+    "sleeping",
+    "training",
+    "hurry",
+    "celebrating"
+  ],
+  "bodies": {
+    "round": {
+      "sx": 1,
+      "sy": 1
+    },
+    "agile": {
+      "sx": 0.88,
+      "sy": 1
+    }
+  },
+  "anchors": {
+    "sleeping": {
+      "handMain": {
+        "x": 67,
+        "y": 70
+      },
+      "handOff": {
+        "x": 28,
+        "y": 70
+      },
+      "grip": {
+        "x": 47.5,
+        "y": 70,
+        "angle": 0,
+        "span": 39
+      },
+      "plate": {
+        "x": 46,
+        "y": 30,
+        "angle": 0,
+        "w": 11
+      },
+      "face": {
+        "x": 46,
+        "y": 44,
+        "w": 34
+      },
+      "back": {
+        "x": 46,
+        "y": 50,
+        "w": 56
+      },
+      "belt": {
+        "x": 46,
+        "y": 64,
+        "w": 13
+      },
+      "aura": {
+        "x": 46,
+        "y": 52,
+        "w": 100
+      }
+    },
+    "training": {
+      "handMain": {
+        "x": 70,
+        "y": 59.5
+      },
+      "handOff": {
+        "x": 17,
+        "y": 55
+      },
+      "grip": {
+        "x": 43.5,
+        "y": 57.2,
+        "angle": 5,
+        "span": 53
+      },
+      "plate": {
+        "x": 42.5,
+        "y": 33,
+        "angle": -2,
+        "w": 12
+      },
+      "face": {
+        "x": 47,
+        "y": 44,
+        "w": 34
+      },
+      "back": {
+        "x": 44,
+        "y": 50,
+        "w": 54
+      },
+      "belt": {
+        "x": 33,
+        "y": 70,
+        "w": 13
+      },
+      "aura": {
+        "x": 47,
+        "y": 50,
+        "w": 100
+      }
+    },
+    "hurry": {
+      "handMain": {
+        "x": 33,
+        "y": 55
+      },
+      "handOff": null,
+      "grip": {
+        "x": 33,
+        "y": 55,
+        "angle": -12,
+        "span": 0
+      },
+      "plate": {
+        "x": 72.5,
+        "y": 43,
+        "angle": 9,
+        "w": 12
+      },
+      "face": {
+        "x": 72,
+        "y": 55,
+        "w": 32
+      },
+      "back": {
+        "x": 40,
+        "y": 60,
+        "w": 52
+      },
+      "belt": {
+        "x": 47,
+        "y": 73,
+        "w": 12
+      },
+      "aura": {
+        "x": 50,
+        "y": 58,
+        "w": 100
+      }
+    },
+    "celebrating": {
+      "handMain": {
+        "x": 81,
+        "y": 23
+      },
+      "handOff": {
+        "x": 18,
+        "y": 22
+      },
+      "grip": {
+        "x": 49.5,
+        "y": 22.5,
+        "angle": 1,
+        "span": 63
+      },
+      "plate": {
+        "x": 48,
+        "y": 19,
+        "angle": 0,
+        "w": 12
+      },
+      "face": {
+        "x": 48,
+        "y": 32,
+        "w": 34
+      },
+      "back": {
+        "x": 48,
+        "y": 40,
+        "w": 60
+      },
+      "belt": {
+        "x": 48,
+        "y": 60,
+        "w": 12
+      },
+      "aura": {
+        "x": 48,
+        "y": 44,
+        "w": 100
+      }
+    }
+  },
+  "slots": {
+    "weaponStaff": {
+      "anchor": "grip",
+      "wFromSpan": 1.75,
+      "wMin": 42,
+      "rotateFrom": "grip"
+    },
+    "weaponDual": {
+      "anchor": "grip",
+      "wFromSpan": 1.05,
+      "wMin": 30,
+      "rotateFrom": "grip"
+    },
+    "weaponFan": {
+      "anchor": "handMain",
+      "w": 26,
+      "rotate": -12
+    },
+    "fist": {
+      "w": 12.5,
+      "rotateFrom": "grip"
+    },
+    "back": {
+      "anchor": "back",
+      "wFromAnchor": 1
+    },
+    "head": {
+      "anchor": "face",
+      "wFromAnchor": 0.8
+    },
+    "belt": {
+      "anchor": "belt",
+      "wFromAnchor": 1
+    },
+    "logo": {
+      "anchor": "plate",
+      "wFromAnchor": 0.75,
+      "rotateFrom": "plate"
+    },
+    "aura": {
+      "anchor": "aura",
+      "wFromAnchor": 1
+    }
+  },
+  "items": {
+    "bo": {
+      "normalizeAxis": true
+    },
+    "bokken": {
+      "normalizeAxis": true,
+      "wMul": 0.85
+    },
+    "dragon-staff": {
+      "normalizeAxis": true
+    },
+    "naginata": {
+      "normalizeAxis": true
+    },
+    "master": {
+      "normalizeAxis": true
+    },
+    "nunchaku": {
+      "normalizeAxis": true
+    },
+    "sticks": {
+      "normalizeAxis": true,
+      "wMul": 0.85
+    },
+    "sai": {
+      "normalizeAxis": false,
+      "wMul": 0.9
+    },
+    "fan": {
+      "normalizeAxis": false
+    },
+    "pack": {
+      "wMul": 0.9,
+      "dy": 0
+    },
+    "dragon-pack": {
+      "wMul": 0.95,
+      "dy": 0
+    },
+    "cape": {
+      "wMul": 1.7,
+      "dy": 6
+    },
+    "glasses": {
+      "wMul": 0.95,
+      "dy": -3
+    },
+    "mask": {
+      "wMul": 0.9,
+      "dy": 1
+    },
+    "scarf": {
+      "wMul": 1.15,
+      "dy": 6
+    },
+    "talisman": {
+      "wMul": 1
+    },
+    "bottle": {
+      "wMul": 1
+    },
+    "pouch": {
+      "wMul": 1
+    }
+  },
+  "masks": {
+    "_comment": "Ziarna flood filla w % płótna, liczone na body round. Dla agile przeliczane przez bodies.agile.",
+    "sleeping": {
+      "robe": [
+        [
+          46,
+          62
+        ],
+        [
+          30,
+          73
+        ],
+        [
+          63,
+          73
+        ],
+        [
+          46,
+          82
+        ],
+        [
+          33,
+          86
+        ],
+        [
+          60,
+          86
+        ],
+        [
+          26,
+          66
+        ],
+        [
+          68,
+          66
+        ],
+        [
+          46,
+          55
+        ]
+      ],
+      "bandBox": [
+        20,
+        22,
+        80,
+        42
+      ]
+    },
+    "training": {
+      "robe": [
+        [
+          47,
+          60
+        ],
+        [
+          28,
+          80
+        ],
+        [
+          20,
+          54
+        ],
+        [
+          70,
+          58
+        ],
+        [
+          58,
+          80
+        ],
+        [
+          40,
+          66
+        ],
+        [
+          22,
+          88
+        ],
+        [
+          72,
+          90
+        ]
+      ],
+      "bandBox": [
+        20,
+        24,
+        72,
+        40
+      ]
+    },
+    "hurry": {
+      "robe": [
+        [
+          47,
+          70
+        ],
+        [
+          33,
+          55
+        ],
+        [
+          60,
+          72
+        ],
+        [
+          28,
+          80
+        ],
+        [
+          52,
+          80
+        ],
+        [
+          64,
+          78
+        ],
+        [
+          20,
+          66
+        ],
+        [
+          70,
+          84
+        ],
+        [
+          66,
+          82
+        ],
+        [
+          62,
+          86
+        ]
+      ],
+      "bandBox": [
+        50,
+        32,
+        92,
+        50
+      ]
+    },
+    "celebrating": {
+      "robe": [
+        [
+          48,
+          46
+        ],
+        [
+          48,
+          55
+        ],
+        [
+          30,
+          66
+        ],
+        [
+          64,
+          66
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          76,
+          27
+        ],
+        [
+          36,
+          72
+        ],
+        [
+          60,
+          72
+        ],
+        [
+          45,
+          78
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          58,
+          40
+        ]
+      ],
+      "bandBox": [
+        28,
+        10,
+        72,
+        28
+      ]
+    }
+  }
+}

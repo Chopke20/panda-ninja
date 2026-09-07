@@ -10,3 +10,6 @@ dev-dist
 !.vscode/extensions.json
 .env
 .env.*
+
+# kontaktówki QA (npm run art:sheet)
+art-qa/

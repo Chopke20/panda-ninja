@@ -85,7 +85,30 @@ Tło każdego pola musi być jednolite `#F2F2F2` — po tym kolorze skrypt rozpo
 
 Ikony PWA leżą w `public/icons/` (192, 512, maskable, apple-touch).
 
-Plan sklepiku warstwowego (pandy v2, bronie, gadżety): `docs/05-WDROZENIE-ART.md`.
+### Pandy v2 (paper-doll)
+
+Pełny przelot arkuszy → warstwy → WebP → walidacja:
+
+```bash
+npm run art:v2
+```
+
+Podgląd QA bez odpalania apki — 9 broni × 4 pozy z kolorami i gadżetami:
+
+```bash
+npm run art:sheet            # round
+npm run art:sheet -- agile
+```
+
+Kontaktówka ląduje w `art-qa/` (poza gitem).
+
+Warstwy nie są sadzane 1:1 — każda jest przycinana do bbox i ustawiana na
+kotwicy pozy z `src/data/panda-anchors.json`. Chcesz przesunąć broń albo
+powiększyć plecak: to jeden plik JSON, bez ruszania grafiki.
+
+- silnik i strojenie: `docs/07-KOTWICE.md`
+- plan i budżet assetów: `docs/05-WDROZENIE-ART.md`
+- kiedy w ogóle sięgać po ComfyUI: `docs/06-COMFYUI.md`
 
 ## Backup danych
 

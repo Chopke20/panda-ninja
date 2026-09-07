@@ -8,7 +8,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = process.env.PANDA_ROOT
+  ? path.resolve(process.env.PANDA_ROOT)
+  : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const v2Root = path.join(root, 'public', 'art', 'panda-v2');
 const manifestPath = path.join(v2Root, 'manifest.json');
 const statusPath = path.join(v2Root, 'status.json');
@@ -40,6 +42,10 @@ function requiredForBody(manifest, body) {
     required.push(`${body}/body/${pose}`);
     for (const grip of manifest.mvp.gripFamilies) {
       required.push(`${body}/hands/${grip}/${pose}`);
+      // pięści rozbite na ręce przez npm run art:anchor
+      required.push(`${body}/hands/${grip}/${pose}-l`);
+      required.push(`${body}/hands/${grip}/${pose}-r`);
+      required.push(`${body}/hands/${grip}/${pose}-solo`);
     }
     if (manifest.mvp.requireKimonoMasks) {
       required.push(`${body}/kimono/mask/${pose}`);

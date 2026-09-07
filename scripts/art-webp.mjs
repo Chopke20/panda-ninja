@@ -8,7 +8,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = process.env.PANDA_ROOT
+  ? path.resolve(process.env.PANDA_ROOT)
+  : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const v2Root = path.join(root, 'public', 'art', 'panda-v2');
 const QUALITY = 82;
 

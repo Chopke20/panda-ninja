@@ -1,0 +1,41 @@
+{
+  "builtAt": "2026-09-07T10:26:42.086Z",
+  "report": {
+    "round": {
+      "sleeping": {
+        "kimonoPx": 38393,
+        "headbandPx": 6281
+      },
+      "training": {
+        "kimonoPx": 35174,
+        "headbandPx": 3401
+      },
+      "hurry": {
+        "kimonoPx": 30702,
+        "headbandPx": 4733
+      },
+      "celebrating": {
+        "kimonoPx": 40986,
+        "headbandPx": 4538
+      }
+    },
+    "agile": {
+      "sleeping": {
+        "kimonoPx": 30156,
+        "headbandPx": 5537
+      },
+      "training": {
+        "kimonoPx": 30997,
+        "headbandPx": 2995
+      },
+      "hurry": {
+        "kimonoPx": 27069,
+        "headbandPx": 4169
+      },
+      "celebrating": {
+        "kimonoPx": 31942,
+        "headbandPx": 4004
+      }
+    }
+  }
+}

@@ -9,12 +9,15 @@
     "preview": "vite preview --host",
     "art": "node scripts/slice-sheets.mjs",
     "art:postprocess": "node scripts/art-postprocess-v2.mjs",
-    "art:v2": "npm run art && npm run art:postprocess && npm run art:thumbs && npm run art:agile && npm run art:webp && npm run art:validate",
+    "art:v2": "npm run art && npm run art:postprocess && npm run art:agile && npm run art:masks && npm run art:anchor && npm run art:thumbs && npm run art:webp && npm run art:validate",
     "art:agile": "node scripts/art-agile-from-round.mjs",
     "art:thumbs": "node scripts/art-shop-thumbs.mjs",
     "art:webp": "node scripts/art-webp.mjs",
     "art:validate": "node scripts/art-validate.mjs",
-    "test": "vitest"
+    "test": "vitest",
+    "art:masks": "node scripts/art-masks-v2.mjs",
+    "art:anchor": "node scripts/art-anchor-v2.mjs",
+    "art:sheet": "node scripts/art-contact-sheet.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.2.0",

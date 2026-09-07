@@ -1,32 +1,48 @@
 #!/usr/bin/env node
 /**
- * Buduje sylwetkę agile z round: lekko wyższa + węższa (brat).
- * Użycie: node scripts/art-agile-from-round.mjs
+ * Sylwetka agile (brat) z round.
+ *
+ * Zwężamy TYLKO body — reszta warstw jest kopiowana 1:1, bo pozycję i rozmiar
+ * przedmiotu i tak liczy kotwica, a ta zna współczynnik agile
+ * (src/data/panda-anchors.json → bodies.agile.sx). Skalowanie plików i kotwic
+ * naraz zwężałoby wszystko dwa razy.
+ *
+ * Maski kimona/opaski nie są kopiowane — generuje je npm run art:masks
+ * z już zwężonego body.
+ *
+ * Użycie: npm run art:agile
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const roundRoot = path.join(root, 'public', 'art', 'panda-v2', 'round');
-const agileRoot = path.join(root, 'public', 'art', 'panda-v2', 'agile');
+const root = process.env.PANDA_ROOT
+  ? path.resolve(process.env.PANDA_ROOT)
+  : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const v2Root = path.join(root, 'public', 'art', 'panda-v2');
+const roundRoot = path.join(v2Root, 'round');
+const agileRoot = path.join(v2Root, 'agile');
+const cfg = JSON.parse(
+  fs.readFileSync(path.join(root, 'src', 'data', 'panda-anchors.json'), 'utf8'),
+);
 
-/** Smuklejszy brat: wyższy, węższy, wyrównanie do dołu. */
-const SCALE_X = 0.9;
-const SCALE_Y = 1.07;
+const SCALE_X = cfg.bodies.agile.sx;
+const SCALE_Y = cfg.bodies.agile.sy;
+/** Regenerowane osobno — nie kopiujemy wersji round. */
+const SKIP_DIRS = new Set(['kimono', 'headband']);
 
 function listPngFiles(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
   for (const name of fs.readdirSync(dir)) {
     const full = path.join(dir, name);
-    const st = fs.statSync(full);
-    if (st.isDirectory()) listPngFiles(full, acc);
+    if (fs.statSync(full).isDirectory()) listPngFiles(full, acc);
     else if (name.endsWith('.png') && !name.startsWith('.')) acc.push(full);
   }
   return acc;
 }
 
+/** Węższy brat: ta sama wysokość, wyrównanie do dołu, płótno bez zmian. */
 async function slenderize(src, dest) {
   const meta = await sharp(src).metadata();
   const w = meta.width ?? 512;
@@ -38,35 +54,12 @@ async function slenderize(src, dest) {
     .ensureAlpha()
     .png()
     .toBuffer();
-
-  // Przytnij / wstaw z powrotem na płótno w×h, dół wyśrodkowany
-  const left = Math.round((w - tw) / 2);
-  const top = h - th;
-  let pipeline = sharp({
-    create: {
-      width: w,
-      height: h,
-      channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
-    },
-  });
-
-  if (th > h || tw > w) {
-    // za duże — najpierw contain w ramce
-    const fitted = await sharp(resized)
-      .resize(w, h, {
-        fit: 'contain',
-        position: 'bottom',
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
-      })
-      .png()
-      .toBuffer();
-    await sharp(fitted).png().toFile(dest);
-    return;
-  }
-
-  await pipeline
-    .composite([{ input: resized, left: Math.max(0, left), top: Math.max(0, top) }])
+  await sharp({
+    create: { width: w, height: h, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
+    .composite([
+      { input: resized, left: Math.max(0, Math.round((w - tw) / 2)), top: Math.max(0, h - th) },
+    ])
     .png()
     .toFile(dest);
 }
@@ -76,29 +69,23 @@ async function main() {
     console.error('Brak round — najpierw npm run art:v2');
     process.exit(1);
   }
-
-  const files = listPngFiles(roundRoot);
-  if (files.length === 0) {
-    console.error('Brak PNG w round/');
-    process.exit(1);
-  }
-
-  let n = 0;
-  for (const src of files) {
+  let slim = 0;
+  let copied = 0;
+  for (const src of listPngFiles(roundRoot)) {
     const rel = path.relative(roundRoot, src);
+    const kind = rel.split(path.sep)[0];
+    if (SKIP_DIRS.has(kind)) continue;
     const dest = path.join(agileRoot, rel);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    // Logo: bez smuklenia (emblematy)
-    if (rel.startsWith(`logos${path.sep}`) || rel.startsWith('logos/')) {
-      fs.copyFileSync(src, dest);
-    } else {
+    if (kind === 'body') {
       await slenderize(src, dest);
+      slim++;
+    } else {
+      fs.copyFileSync(src, dest);
+      copied++;
     }
-    n++;
   }
-
-  // .gitkeep w pustych katalogach round nie kopiujemy — ok
-  console.log(`agile: ${n} plików z round (scaleX=${SCALE_X}, scaleY=${SCALE_Y})`);
+  console.log(`agile: body ${slim} zwężone (sx=${SCALE_X}), ${copied} warstw skopiowanych 1:1`);
 }
 
 main().catch((err) => {

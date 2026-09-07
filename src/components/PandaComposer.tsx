@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { PandaAppearance, PandaPose } from '../types';
 import { buildComposeLayers, type ComposeLayer } from '../lib/pandaV2';
+import type { Placement } from '../lib/pandaAnchors';
 
 type Props = {
   pose: PandaPose;
@@ -20,7 +21,7 @@ function LayerImage({
 }: {
   src: string;
   z: number;
-  anchor?: { x: number; y: number; sizePct: number; rotate?: number };
+  anchor?: Placement;
   onMissing: () => void;
 }) {
   const [current, setCurrent] = useState(src);
@@ -34,19 +35,19 @@ function LayerImage({
   if (failed) return null;
 
   if (anchor) {
-    const rot = anchor.rotate ?? 0;
+    // Warstwa jest przycięta do bbox: szerokość z kotwicy, wysokość z proporcji.
     return (
       <img
         src={current}
         alt=""
-        className="pointer-events-none absolute object-contain"
+        className="pointer-events-none absolute"
         style={{
           zIndex: z,
           left: `${anchor.x}%`,
           top: `${anchor.y}%`,
-          width: `${anchor.sizePct}%`,
-          height: `${anchor.sizePct}%`,
-          transform: `translate(-50%, -50%) rotate(${rot}deg)`,
+          width: `${anchor.w}%`,
+          height: 'auto',
+          transform: `translate(-50%, -50%) rotate(${anchor.rotate}deg)`,
         }}
         onError={() => {
           const png = withPngFallback(current);
@@ -133,11 +134,12 @@ function MaskColorLayer({
         }}
       />
       {shadeOk && (
+        // Fałdy tkaniny: szarość regionu przez multiply na płaskim kolorze.
         <img
           src={shadeSrc}
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full object-contain object-bottom"
-          style={{ zIndex: layer.z + 1 }}
+          style={{ zIndex: layer.z + 1, mixBlendMode: 'multiply' }}
           onError={() => {
             const png = withPngFallback(shadeSrc);
             if (png !== shadeSrc) {
@@ -230,7 +232,8 @@ export function PandaComposer({ pose, appearance, className = '' }: Props) {
   const bump = () => setMissingTick((n) => n + 1);
 
   return (
-    <div className={`relative h-full w-full ${className}`}>
+    // isolation: multiply z warstw koloru nie może wyjść poza pandę.
+    <div className={`relative h-full w-full ${className}`} style={{ isolation: 'isolate' }}>
       {layers.map((layer) => {
         if (layer.kind === 'img') {
           return (

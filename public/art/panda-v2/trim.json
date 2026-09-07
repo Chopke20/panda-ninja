@@ -1,0 +1,719 @@
+{
+  "builtAt": "2026-09-07T10:42:51.147Z",
+  "trimmed": {
+    "round/hands/dual/celebrating-l.png": {
+      "w": 164,
+      "h": 219
+    },
+    "round/hands/dual/celebrating-r.png": {
+      "w": 164,
+      "h": 220
+    },
+    "round/hands/dual/celebrating-solo.png": {
+      "w": 164,
+      "h": 220
+    },
+    "round/hands/dual/hurry-l.png": {
+      "w": 180,
+      "h": 140
+    },
+    "round/hands/dual/hurry-r.png": {
+      "w": 179,
+      "h": 140
+    },
+    "round/hands/dual/hurry-solo.png": {
+      "w": 180,
+      "h": 140
+    },
+    "round/hands/dual/sleeping-l.png": {
+      "w": 114,
+      "h": 194
+    },
+    "round/hands/dual/sleeping-r.png": {
+      "w": 115,
+      "h": 194
+    },
+    "round/hands/dual/sleeping-solo.png": {
+      "w": 115,
+      "h": 194
+    },
+    "round/hands/dual/training-l.png": {
+      "w": 164,
+      "h": 133
+    },
+    "round/hands/dual/training-r.png": {
+      "w": 164,
+      "h": 133
+    },
+    "round/hands/dual/training-solo.png": {
+      "w": 164,
+      "h": 133
+    },
+    "round/hands/empty/celebrating-l.png": {
+      "w": 155,
+      "h": 206
+    },
+    "round/hands/empty/celebrating-r.png": {
+      "w": 154,
+      "h": 207
+    },
+    "round/hands/empty/celebrating-solo.png": {
+      "w": 155,
+      "h": 206
+    },
+    "round/hands/empty/hurry-l.png": {
+      "w": 188,
+      "h": 134
+    },
+    "round/hands/empty/hurry-r.png": {
+      "w": 187,
+      "h": 132
+    },
+    "round/hands/empty/hurry-solo.png": {
+      "w": 188,
+      "h": 134
+    },
+    "round/hands/empty/sleeping-l.png": {
+      "w": 175,
+      "h": 174
+    },
+    "round/hands/empty/sleeping-r.png": {
+      "w": 175,
+      "h": 176
+    },
+    "round/hands/empty/sleeping-solo.png": {
+      "w": 175,
+      "h": 176
+    },
+    "round/hands/empty/training-l.png": {
+      "w": 164,
+      "h": 144
+    },
+    "round/hands/empty/training-r.png": {
+      "w": 161,
+      "h": 146
+    },
+    "round/hands/empty/training-solo.png": {
+      "w": 164,
+      "h": 144
+    },
+    "round/hands/fan/celebrating-l.png": {
+      "w": 161,
+      "h": 176
+    },
+    "round/hands/fan/celebrating-r.png": {
+      "w": 176,
+      "h": 310
+    },
+    "round/hands/fan/celebrating-solo.png": {
+      "w": 176,
+      "h": 310
+    },
+    "round/hands/fan/hurry-l.png": {
+      "w": 237,
+      "h": 178
+    },
+    "round/hands/fan/hurry-r.png": {
+      "w": 153,
+      "h": 180
+    },
+    "round/hands/fan/hurry-solo.png": {
+      "w": 237,
+      "h": 178
+    },
+    "round/hands/fan/sleeping-l.png": {
+      "w": 152,
+      "h": 62
+    },
+    "round/hands/fan/sleeping-r.png": {
+      "w": 193,
+      "h": 143
+    },
+    "round/hands/fan/sleeping-solo.png": {
+      "w": 193,
+      "h": 143
+    },
+    "round/hands/fan/training-l.png": {
+      "w": 251,
+      "h": 198
+    },
+    "round/hands/fan/training-r.png": {
+      "w": 194,
+      "h": 178
+    },
+    "round/hands/fan/training-solo.png": {
+      "w": 251,
+      "h": 198
+    },
+    "round/hands/staff/celebrating-l.png": {
+      "w": 189,
+      "h": 276
+    },
+    "round/hands/staff/celebrating-r.png": {
+      "w": 225,
+      "h": 174
+    },
+    "round/hands/staff/celebrating-solo.png": {
+      "w": 189,
+      "h": 276
+    },
+    "round/hands/staff/hurry-l.png": {
+      "w": 243,
+      "h": 176
+    },
+    "round/hands/staff/hurry-r.png": {
+      "w": 194,
+      "h": 158
+    },
+    "round/hands/staff/hurry-solo.png": {
+      "w": 243,
+      "h": 176
+    },
+    "round/hands/staff/sleeping-l.png": {
+      "w": 220,
+      "h": 172
+    },
+    "round/hands/staff/sleeping-r.png": {
+      "w": 222,
+      "h": 162
+    },
+    "round/hands/staff/sleeping-solo.png": {
+      "w": 220,
+      "h": 172
+    },
+    "round/hands/staff/training-l.png": {
+      "w": 230,
+      "h": 179
+    },
+    "round/hands/staff/training-r.png": {
+      "w": 238,
+      "h": 175
+    },
+    "round/hands/staff/training-solo.png": {
+      "w": 230,
+      "h": 179
+    },
+    "agile/hands/dual/celebrating-l.png": {
+      "w": 164,
+      "h": 219
+    },
+    "agile/hands/dual/celebrating-r.png": {
+      "w": 164,
+      "h": 220
+    },
+    "agile/hands/dual/celebrating-solo.png": {
+      "w": 164,
+      "h": 220
+    },
+    "agile/hands/dual/hurry-l.png": {
+      "w": 180,
+      "h": 140
+    },
+    "agile/hands/dual/hurry-r.png": {
+      "w": 179,
+      "h": 140
+    },
+    "agile/hands/dual/hurry-solo.png": {
+      "w": 180,
+      "h": 140
+    },
+    "agile/hands/dual/sleeping-l.png": {
+      "w": 114,
+      "h": 194
+    },
+    "agile/hands/dual/sleeping-r.png": {
+      "w": 115,
+      "h": 194
+    },
+    "agile/hands/dual/sleeping-solo.png": {
+      "w": 115,
+      "h": 194
+    },
+    "agile/hands/dual/training-l.png": {
+      "w": 164,
+      "h": 133
+    },
+    "agile/hands/dual/training-r.png": {
+      "w": 164,
+      "h": 133
+    },
+    "agile/hands/dual/training-solo.png": {
+      "w": 164,
+      "h": 133
+    },
+    "agile/hands/empty/celebrating-l.png": {
+      "w": 155,
+      "h": 206
+    },
+    "agile/hands/empty/celebrating-r.png": {
+      "w": 154,
+      "h": 207
+    },
+    "agile/hands/empty/celebrating-solo.png": {
+      "w": 155,
+      "h": 206
+    },
+    "agile/hands/empty/hurry-l.png": {
+      "w": 188,
+      "h": 134
+    },
+    "agile/hands/empty/hurry-r.png": {
+      "w": 187,
+      "h": 132
+    },
+    "agile/hands/empty/hurry-solo.png": {
+      "w": 188,
+      "h": 134
+    },
+    "agile/hands/empty/sleeping-l.png": {
+      "w": 175,
+      "h": 174
+    },
+    "agile/hands/empty/sleeping-r.png": {
+      "w": 175,
+      "h": 176
+    },
+    "agile/hands/empty/sleeping-solo.png": {
+      "w": 175,
+      "h": 176
+    },
+    "agile/hands/empty/training-l.png": {
+      "w": 164,
+      "h": 144
+    },
+    "agile/hands/empty/training-r.png": {
+      "w": 161,
+      "h": 146
+    },
+    "agile/hands/empty/training-solo.png": {
+      "w": 164,
+      "h": 144
+    },
+    "agile/hands/fan/celebrating-l.png": {
+      "w": 161,
+      "h": 176
+    },
+    "agile/hands/fan/celebrating-r.png": {
+      "w": 176,
+      "h": 310
+    },
+    "agile/hands/fan/celebrating-solo.png": {
+      "w": 176,
+      "h": 310
+    },
+    "agile/hands/fan/hurry-l.png": {
+      "w": 237,
+      "h": 178
+    },
+    "agile/hands/fan/hurry-r.png": {
+      "w": 153,
+      "h": 180
+    },
+    "agile/hands/fan/hurry-solo.png": {
+      "w": 237,
+      "h": 178
+    },
+    "agile/hands/fan/sleeping-l.png": {
+      "w": 152,
+      "h": 62
+    },
+    "agile/hands/fan/sleeping-r.png": {
+      "w": 193,
+      "h": 143
+    },
+    "agile/hands/fan/sleeping-solo.png": {
+      "w": 193,
+      "h": 143
+    },
+    "agile/hands/fan/training-l.png": {
+      "w": 251,
+      "h": 198
+    },
+    "agile/hands/fan/training-r.png": {
+      "w": 194,
+      "h": 178
+    },
+    "agile/hands/fan/training-solo.png": {
+      "w": 251,
+      "h": 198
+    },
+    "agile/hands/staff/celebrating-l.png": {
+      "w": 189,
+      "h": 276
+    },
+    "agile/hands/staff/celebrating-r.png": {
+      "w": 225,
+      "h": 174
+    },
+    "agile/hands/staff/celebrating-solo.png": {
+      "w": 189,
+      "h": 276
+    },
+    "agile/hands/staff/hurry-l.png": {
+      "w": 243,
+      "h": 176
+    },
+    "agile/hands/staff/hurry-r.png": {
+      "w": 194,
+      "h": 158
+    },
+    "agile/hands/staff/hurry-solo.png": {
+      "w": 243,
+      "h": 176
+    },
+    "agile/hands/staff/sleeping-l.png": {
+      "w": 220,
+      "h": 172
+    },
+    "agile/hands/staff/sleeping-r.png": {
+      "w": 222,
+      "h": 162
+    },
+    "agile/hands/staff/sleeping-solo.png": {
+      "w": 220,
+      "h": 172
+    },
+    "agile/hands/staff/training-l.png": {
+      "w": 230,
+      "h": 179
+    },
+    "agile/hands/staff/training-r.png": {
+      "w": 238,
+      "h": 175
+    },
+    "agile/hands/staff/training-solo.png": {
+      "w": 230,
+      "h": 179
+    }
+  },
+  "rotated": {},
+  "hands": {
+    "round/hands/dual/celebrating.png": {
+      "pieces": 2
+    },
+    "round/hands/dual/hurry.png": {
+      "pieces": 2
+    },
+    "round/hands/dual/sleeping.png": {
+      "pieces": 2
+    },
+    "round/hands/dual/training.png": {
+      "pieces": 2
+    },
+    "round/hands/empty/celebrating.png": {
+      "pieces": 2
+    },
+    "round/hands/empty/hurry.png": {
+      "pieces": 2
+    },
+    "round/hands/empty/sleeping.png": {
+      "pieces": 2
+    },
+    "round/hands/empty/training.png": {
+      "pieces": 2
+    },
+    "round/hands/fan/celebrating.png": {
+      "pieces": 2
+    },
+    "round/hands/fan/hurry.png": {
+      "pieces": 2
+    },
+    "round/hands/fan/sleeping.png": {
+      "pieces": 2
+    },
+    "round/hands/fan/training.png": {
+      "pieces": 2
+    },
+    "round/hands/staff/celebrating.png": {
+      "pieces": 2
+    },
+    "round/hands/staff/hurry.png": {
+      "pieces": 2
+    },
+    "round/hands/staff/sleeping.png": {
+      "pieces": 2
+    },
+    "round/hands/staff/training.png": {
+      "pieces": 2
+    },
+    "agile/hands/dual/celebrating.png": {
+      "pieces": 2
+    },
+    "agile/hands/dual/hurry.png": {
+      "pieces": 2
+    },
+    "agile/hands/dual/sleeping.png": {
+      "pieces": 2
+    },
+    "agile/hands/dual/training.png": {
+      "pieces": 2
+    },
+    "agile/hands/empty/celebrating.png": {
+      "pieces": 2
+    },
+    "agile/hands/empty/hurry.png": {
+      "pieces": 2
+    },
+    "agile/hands/empty/sleeping.png": {
+      "pieces": 2
+    },
+    "agile/hands/empty/training.png": {
+      "pieces": 2
+    },
+    "agile/hands/fan/celebrating.png": {
+      "pieces": 2
+    },
+    "agile/hands/fan/hurry.png": {
+      "pieces": 2
+    },
+    "agile/hands/fan/sleeping.png": {
+      "pieces": 2
+    },
+    "agile/hands/fan/training.png": {
+      "pieces": 2
+    },
+    "agile/hands/staff/celebrating.png": {
+      "pieces": 2
+    },
+    "agile/hands/staff/hurry.png": {
+      "pieces": 2
+    },
+    "agile/hands/staff/sleeping.png": {
+      "pieces": 2
+    },
+    "agile/hands/staff/training.png": {
+      "pieces": 2
+    }
+  },
+  "cut": [
+    "round/hands/fan/sleeping.png",
+    "round/hands/staff/celebrating.png",
+    "round/hands/staff/hurry.png",
+    "round/hands/staff/sleeping.png",
+    "round/hands/staff/training.png",
+    "agile/hands/fan/sleeping.png",
+    "agile/hands/staff/celebrating.png",
+    "agile/hands/staff/hurry.png",
+    "agile/hands/staff/sleeping.png",
+    "agile/hands/staff/training.png"
+  ],
+  "skipped": [
+    "round/hands/dual/celebrating.png",
+    "round/hands/dual/hurry.png",
+    "round/hands/dual/sleeping.png",
+    "round/hands/dual/training.png",
+    "round/hands/empty/celebrating.png",
+    "round/hands/empty/hurry.png",
+    "round/hands/empty/sleeping.png",
+    "round/hands/empty/training.png",
+    "round/hands/fan/celebrating.png",
+    "round/hands/fan/hurry.png",
+    "round/hands/fan/sleeping.png",
+    "round/hands/fan/training.png",
+    "round/hands/staff/celebrating.png",
+    "round/hands/staff/hurry.png",
+    "round/hands/staff/sleeping.png",
+    "round/hands/staff/training.png",
+    "round/weapons/bo/celebrating.png",
+    "round/weapons/bo/hurry.png",
+    "round/weapons/bo/sleeping.png",
+    "round/weapons/bo/training.png",
+    "round/weapons/bokken/celebrating.png",
+    "round/weapons/bokken/hurry.png",
+    "round/weapons/bokken/sleeping.png",
+    "round/weapons/bokken/training.png",
+    "round/weapons/dragon-staff/celebrating.png",
+    "round/weapons/dragon-staff/hurry.png",
+    "round/weapons/dragon-staff/sleeping.png",
+    "round/weapons/dragon-staff/training.png",
+    "round/weapons/fan/celebrating.png",
+    "round/weapons/fan/hurry.png",
+    "round/weapons/fan/sleeping.png",
+    "round/weapons/fan/training.png",
+    "round/weapons/master/celebrating.png",
+    "round/weapons/master/hurry.png",
+    "round/weapons/master/sleeping.png",
+    "round/weapons/master/training.png",
+    "round/weapons/naginata/celebrating.png",
+    "round/weapons/naginata/hurry.png",
+    "round/weapons/naginata/sleeping.png",
+    "round/weapons/naginata/training.png",
+    "round/weapons/nunchaku/celebrating.png",
+    "round/weapons/nunchaku/hurry.png",
+    "round/weapons/nunchaku/sleeping.png",
+    "round/weapons/nunchaku/training.png",
+    "round/weapons/sai/celebrating.png",
+    "round/weapons/sai/hurry.png",
+    "round/weapons/sai/sleeping.png",
+    "round/weapons/sai/training.png",
+    "round/weapons/sticks/celebrating.png",
+    "round/weapons/sticks/hurry.png",
+    "round/weapons/sticks/sleeping.png",
+    "round/weapons/sticks/training.png",
+    "round/gadgets/bottle/celebrating.png",
+    "round/gadgets/bottle/hurry.png",
+    "round/gadgets/bottle/sleeping.png",
+    "round/gadgets/bottle/training.png",
+    "round/gadgets/cape/celebrating.png",
+    "round/gadgets/cape/hurry.png",
+    "round/gadgets/cape/sleeping.png",
+    "round/gadgets/cape/training.png",
+    "round/gadgets/dragon-pack/celebrating.png",
+    "round/gadgets/dragon-pack/hurry.png",
+    "round/gadgets/dragon-pack/sleeping.png",
+    "round/gadgets/dragon-pack/training.png",
+    "round/gadgets/glasses/celebrating.png",
+    "round/gadgets/glasses/hurry.png",
+    "round/gadgets/glasses/sleeping.png",
+    "round/gadgets/glasses/training.png",
+    "round/gadgets/mask/celebrating.png",
+    "round/gadgets/mask/hurry.png",
+    "round/gadgets/mask/sleeping.png",
+    "round/gadgets/mask/training.png",
+    "round/gadgets/pack/celebrating.png",
+    "round/gadgets/pack/hurry.png",
+    "round/gadgets/pack/sleeping.png",
+    "round/gadgets/pack/training.png",
+    "round/gadgets/pouch/celebrating.png",
+    "round/gadgets/pouch/hurry.png",
+    "round/gadgets/pouch/sleeping.png",
+    "round/gadgets/pouch/training.png",
+    "round/gadgets/scarf/celebrating.png",
+    "round/gadgets/scarf/hurry.png",
+    "round/gadgets/scarf/sleeping.png",
+    "round/gadgets/scarf/training.png",
+    "round/gadgets/talisman/celebrating.png",
+    "round/gadgets/talisman/hurry.png",
+    "round/gadgets/talisman/sleeping.png",
+    "round/gadgets/talisman/training.png",
+    "round/logos/bamboo.png",
+    "round/logos/bolt.png",
+    "round/logos/dragon.png",
+    "round/logos/moon.png",
+    "round/logos/mountain.png",
+    "round/logos/paw.png",
+    "round/logos/star.png",
+    "round/logos/wave.png",
+    "round/auras/cloud/celebrating.png",
+    "round/auras/cloud/hurry.png",
+    "round/auras/cloud/sleeping.png",
+    "round/auras/cloud/training.png",
+    "round/auras/leaves/celebrating.png",
+    "round/auras/leaves/hurry.png",
+    "round/auras/leaves/sleeping.png",
+    "round/auras/leaves/training.png",
+    "round/auras/sparks/celebrating.png",
+    "round/auras/sparks/hurry.png",
+    "round/auras/sparks/sleeping.png",
+    "round/auras/sparks/training.png",
+    "agile/hands/dual/celebrating.png",
+    "agile/hands/dual/hurry.png",
+    "agile/hands/dual/sleeping.png",
+    "agile/hands/dual/training.png",
+    "agile/hands/empty/celebrating.png",
+    "agile/hands/empty/hurry.png",
+    "agile/hands/empty/sleeping.png",
+    "agile/hands/empty/training.png",
+    "agile/hands/fan/celebrating.png",
+    "agile/hands/fan/hurry.png",
+    "agile/hands/fan/sleeping.png",
+    "agile/hands/fan/training.png",
+    "agile/hands/staff/celebrating.png",
+    "agile/hands/staff/hurry.png",
+    "agile/hands/staff/sleeping.png",
+    "agile/hands/staff/training.png",
+    "agile/weapons/bo/celebrating.png",
+    "agile/weapons/bo/hurry.png",
+    "agile/weapons/bo/sleeping.png",
+    "agile/weapons/bo/training.png",
+    "agile/weapons/bokken/celebrating.png",
+    "agile/weapons/bokken/hurry.png",
+    "agile/weapons/bokken/sleeping.png",
+    "agile/weapons/bokken/training.png",
+    "agile/weapons/dragon-staff/celebrating.png",
+    "agile/weapons/dragon-staff/hurry.png",
+    "agile/weapons/dragon-staff/sleeping.png",
+    "agile/weapons/dragon-staff/training.png",
+    "agile/weapons/fan/celebrating.png",
+    "agile/weapons/fan/hurry.png",
+    "agile/weapons/fan/sleeping.png",
+    "agile/weapons/fan/training.png",
+    "agile/weapons/master/celebrating.png",
+    "agile/weapons/master/hurry.png",
+    "agile/weapons/master/sleeping.png",
+    "agile/weapons/master/training.png",
+    "agile/weapons/naginata/celebrating.png",
+    "agile/weapons/naginata/hurry.png",
+    "agile/weapons/naginata/sleeping.png",
+    "agile/weapons/naginata/training.png",
+    "agile/weapons/nunchaku/celebrating.png",
+    "agile/weapons/nunchaku/hurry.png",
+    "agile/weapons/nunchaku/sleeping.png",
+    "agile/weapons/nunchaku/training.png",
+    "agile/weapons/sai/celebrating.png",
+    "agile/weapons/sai/hurry.png",
+    "agile/weapons/sai/sleeping.png",
+    "agile/weapons/sai/training.png",
+    "agile/weapons/sticks/celebrating.png",
+    "agile/weapons/sticks/hurry.png",
+    "agile/weapons/sticks/sleeping.png",
+    "agile/weapons/sticks/training.png",
+    "agile/gadgets/bottle/celebrating.png",
+    "agile/gadgets/bottle/hurry.png",
+    "agile/gadgets/bottle/sleeping.png",
+    "agile/gadgets/bottle/training.png",
+    "agile/gadgets/cape/celebrating.png",
+    "agile/gadgets/cape/hurry.png",
+    "agile/gadgets/cape/sleeping.png",
+    "agile/gadgets/cape/training.png",
+    "agile/gadgets/dragon-pack/celebrating.png",
+    "agile/gadgets/dragon-pack/hurry.png",
+    "agile/gadgets/dragon-pack/sleeping.png",
+    "agile/gadgets/dragon-pack/training.png",
+    "agile/gadgets/glasses/celebrating.png",
+    "agile/gadgets/glasses/hurry.png",
+    "agile/gadgets/glasses/sleeping.png",
+    "agile/gadgets/glasses/training.png",
+    "agile/gadgets/mask/celebrating.png",
+    "agile/gadgets/mask/hurry.png",
+    "agile/gadgets/mask/sleeping.png",
+    "agile/gadgets/mask/training.png",
+    "agile/gadgets/pack/celebrating.png",
+    "agile/gadgets/pack/hurry.png",
+    "agile/gadgets/pack/sleeping.png",
+    "agile/gadgets/pack/training.png",
+    "agile/gadgets/pouch/celebrating.png",
+    "agile/gadgets/pouch/hurry.png",
+    "agile/gadgets/pouch/sleeping.png",
+    "agile/gadgets/pouch/training.png",
+    "agile/gadgets/scarf/celebrating.png",
+    "agile/gadgets/scarf/hurry.png",
+    "agile/gadgets/scarf/sleeping.png",
+    "agile/gadgets/scarf/training.png",
+    "agile/gadgets/talisman/celebrating.png",
+    "agile/gadgets/talisman/hurry.png",
+    "agile/gadgets/talisman/sleeping.png",
+    "agile/gadgets/talisman/training.png",
+    "agile/logos/bamboo.png",
+    "agile/logos/bolt.png",
+    "agile/logos/dragon.png",
+    "agile/logos/moon.png",
+    "agile/logos/mountain.png",
+    "agile/logos/paw.png",
+    "agile/logos/star.png",
+    "agile/logos/wave.png",
+    "agile/auras/cloud/celebrating.png",
+    "agile/auras/cloud/hurry.png",
+    "agile/auras/cloud/sleeping.png",
+    "agile/auras/cloud/training.png",
+    "agile/auras/leaves/celebrating.png",
+    "agile/auras/leaves/hurry.png",
+    "agile/auras/leaves/sleeping.png",
+    "agile/auras/leaves/training.png",
+    "agile/auras/sparks/celebrating.png",
+    "agile/auras/sparks/hurry.png",
+    "agile/auras/sparks/sleeping.png",
+    "agile/auras/sparks/training.png"
+  ],
+  "empty": []
+}

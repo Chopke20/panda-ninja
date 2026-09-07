@@ -13,9 +13,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['art/**/*.png', 'art/**/*.webp', 'icons/*.png', 'manifest.webmanifest'],
+      // panda-v2 ma PNG tylko jako fallback dla starych Safari — do cache'u
+      // idzie sam WebP, inaczej iPad ciągnie ~34 MB duplikatów offline.
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,webp,svg,webmanifest,ico}'],
+        globIgnores: ['**/art/panda-v2/**/*.png'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
       },

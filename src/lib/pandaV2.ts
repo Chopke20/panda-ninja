@@ -1,8 +1,7 @@
-import type { CosmeticItem } from './cosmetics';
+import type { CosmeticItem, GripFamily } from './cosmetics';
 import { getCosmetic } from './cosmetics';
-import { PANDA_V2_HAND, PANDA_V2_LOGO, PANDA_V2_WEAPON } from './constants';
 import { assetUrl } from './assetUrl';
-import { POSE_ANCHORS } from './pandaCompose';
+import { hasOffHand, placementFor, type Placement } from './pandaAnchors';
 import type { PandaAppearance, PandaBodyId, PandaPose } from '../types';
 
 export type PandaV2Status = {
@@ -38,12 +37,17 @@ export function bodyLayerSrc(body: PandaBodyId, pose: PandaPose): string {
   return pandaV2LayerSrc(body, ['body', pose]);
 }
 
+export type HandVariant = 'l' | 'r' | 'solo';
+
+/** Pięści są rozbite na osobne pliki (npm run art:anchor) — po jednej na rękę. */
 export function handsLayerSrc(
   body: PandaBodyId,
   grip: string,
   pose: PandaPose,
+  variant?: HandVariant,
 ): string {
-  return pandaV2LayerSrc(body, ['hands', grip, pose]);
+  const name = variant ? `${pose}-${variant}` : pose;
+  return pandaV2LayerSrc(body, ['hands', grip, name]);
 }
 
 export function weaponLayerSrc(
@@ -137,8 +141,8 @@ export type ComposeLayer =
       key: string;
       src: string;
       z: number;
-      /** Kotwica % — logo / dłonie / broń (draft bez wspólnej siatki). */
-      anchor?: { x: number; y: number; sizePct: number; rotate?: number };
+      /** Warstwa przycięta do bbox — sadzana kotwicą pozy. Brak = pełna klatka. */
+      anchor?: Placement;
     }
   | {
       kind: 'maskColor';
@@ -161,31 +165,39 @@ export function buildComposeLayers(
   pose: PandaPose,
 ): ComposeLayer[] {
   const body = appearance.body;
-  const grip = gripFamilyForHand(appearance.handId);
+  const grip = gripFamilyForHand(appearance.handId) as GripFamily;
   const weaponKey = weaponAssetKey(appearance.handId);
   const auraKey = auraAssetKey(appearance.auraId);
   const patternKey = patternAssetKey(appearance.outfitPatternId);
   const layers: ComposeLayer[] = [];
 
+  const push = (
+    key: string,
+    src: string,
+    z: number,
+    anchor: Placement | null,
+  ): void => {
+    if (!anchor) return;
+    layers.push({ kind: 'img', key, src, z, anchor });
+  };
+
   if (auraKey) {
-    layers.push({
-      kind: 'img',
-      key: 'aura',
-      src: auraLayerSrc(body, auraKey, pose),
-      z: 2,
-    });
+    push(
+      'aura',
+      auraLayerSrc(body, auraKey, pose),
+      2,
+      placementFor('aura', body, pose, auraKey, grip),
+    );
   }
 
-  if (appearance.backId) {
-    const key = gadgetAssetKey(appearance.backId);
-    if (key) {
-      layers.push({
-        kind: 'img',
-        key: 'back',
-        src: gadgetLayerSrc(body, key, pose),
-        z: 5,
-      });
-    }
+  const backKey = gadgetAssetKey(appearance.backId);
+  if (backKey) {
+    push(
+      'back',
+      gadgetLayerSrc(body, backKey, pose),
+      5,
+      placementFor('back', body, pose, backKey, grip),
+    );
   }
 
   layers.push(
@@ -220,72 +232,64 @@ export function buildComposeLayers(
   });
 
   if (weaponKey) {
-    const hand = POSE_ANCHORS[pose].hand;
-    layers.push({
-      kind: 'img',
-      key: 'weapon',
-      src: weaponLayerSrc(body, weaponKey, pose),
-      z: 40,
-      anchor: {
-        x: hand.x,
-        y: hand.y,
-        sizePct: PANDA_V2_WEAPON.sizePct * hand.scale,
-        rotate: hand.rotate,
-      },
-    });
+    push(
+      'weapon',
+      weaponLayerSrc(body, weaponKey, pose),
+      40,
+      placementFor('weapon', body, pose, weaponKey, grip),
+    );
   }
 
-  {
-    const hand = POSE_ANCHORS[pose].hand;
-    layers.push({
-      kind: 'img',
-      key: 'hands',
-      src: handsLayerSrc(body, grip, pose),
-      z: 50,
-      anchor: {
-        x: hand.x,
-        y: hand.y,
-        sizePct: PANDA_V2_HAND.sizePct * hand.scale,
-        rotate: hand.rotate * 0.35,
-      },
-    });
+  // Pięści osobno na każdą rękę — w pozie z jedną widoczną ręką jeden plik.
+  if (hasOffHand(pose)) {
+    push(
+      'hands-off',
+      handsLayerSrc(body, grip, pose, 'l'),
+      48,
+      placementFor('fistOff', body, pose, null, grip),
+    );
+    push(
+      'hands',
+      handsLayerSrc(body, grip, pose, 'r'),
+      50,
+      placementFor('fistMain', body, pose, null, grip),
+    );
+  } else {
+    push(
+      'hands',
+      handsLayerSrc(body, grip, pose, 'solo'),
+      50,
+      placementFor('fistMain', body, pose, null, grip),
+    );
   }
 
-  if (appearance.headId) {
-    const key = gadgetAssetKey(appearance.headId);
-    if (key) {
-      layers.push({
-        kind: 'img',
-        key: 'head',
-        src: gadgetLayerSrc(body, key, pose),
-        z: 60,
-      });
-    }
+  const headKey = gadgetAssetKey(appearance.headId);
+  if (headKey) {
+    push(
+      'head',
+      gadgetLayerSrc(body, headKey, pose),
+      60,
+      placementFor('head', body, pose, headKey, grip),
+    );
   }
 
-  if (appearance.beltId) {
-    const key = gadgetAssetKey(appearance.beltId);
-    if (key) {
-      layers.push({
-        kind: 'img',
-        key: 'belt',
-        src: gadgetLayerSrc(body, key, pose),
-        z: 65,
-      });
-    }
+  const beltKey = gadgetAssetKey(appearance.beltId);
+  if (beltKey) {
+    push(
+      'belt',
+      gadgetLayerSrc(body, beltKey, pose),
+      65,
+      placementFor('belt', body, pose, beltKey, grip),
+    );
   }
 
-  layers.push({
-    kind: 'img',
-    key: 'logo',
-    src: logoLayerSrc(body, logoAssetKey(appearance.logoId)),
-    z: 70,
-    anchor: {
-      x: POSE_ANCHORS[pose].logo.x,
-      y: POSE_ANCHORS[pose].logo.y,
-      sizePct: PANDA_V2_LOGO.sizePct * POSE_ANCHORS[pose].logo.scale,
-    },
-  });
+  const logoKey = logoAssetKey(appearance.logoId);
+  push(
+    'logo',
+    logoLayerSrc(body, logoKey),
+    70,
+    placementFor('logo', body, pose, logoKey, grip),
+  );
 
   return layers.sort((a, b) => a.z - b.z);
 }

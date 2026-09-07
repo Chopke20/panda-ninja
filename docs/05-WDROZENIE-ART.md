@@ -1,7 +1,8 @@
 # Plan wdrożenia skór, sklepiku i generacji grafiki
 
-Status: **kanoniczny plan**.  
-`docs/04-PANDA-CUSTOMIZATION.md` = stary szkic koncepcji; przy konflikcie wygrywa ten plik.
+Status: **plan i budżet assetów**.  
+Silnik składania opisuje `docs/07-KOTWICE.md` — przy konflikcie o *mechanikę* wygrywa tamten plik.  
+`docs/04-PANDA-CUSTOMIZATION.md` = stary szkic koncepcji.
 
 Cel: sklepik naprawdę zmienia wygląd pandy (broń, gadżety, kolory, logo) w 4 pozach, offline na iPadzie, bez 3D i bez magicznego „doklej dowolną broń do jednej pięści”.
 
@@ -155,50 +156,40 @@ To wystarczy, by broń, kolor, logo i 3 gadżety były prawdziwe.
 
 ---
 
-## 5. Pipeline generacji (jak dostać spójność)
+## 5. Pipeline generacji
 
 ### Narzędzia
 
 | Etap | Narzędzie | Rola |
 | --- | --- | --- |
-| Moodboard / szybki test stylu | Cursor GenerateImage / Gemini | nie produkcja warstw |
-| Kanon pozycji (master) | ComfyUI + Flux/SDXL + **ControlNet OpenPose/Depth** + IP-Adapter/PuLID lub LoRA postaci | produkcja |
-| Korekta dłoni / masek | ręcznie w Affinity/Photoshop albo inpaint | obowiązkowy QA |
+| Body (4 pozy, bez dłoni) | generator obrazów + QA człowieka | jedyne miejsce, gdzie kadr ma znaczenie |
+| Przedmioty (bronie, gadżety, logo) | dowolny generator, przedmiot na `#F2F2F2` | kadr nieistotny — i tak leci bbox |
+| Maski koloru | `npm run art:masks` (flood fill z body) | zero AI, deterministyczne |
+| Sadzanie warstw | `npm run art:anchor` + `src/data/panda-anchors.json` | kotwice, nie lockFrame |
 | Cięcie / WebP / walidacja | `scripts/` w repo | automat |
 
-Gemini i Cursor **nie zastąpią** ControlNet przy warstwach. Test z 2026-09-05 pokazał: styl trzymają, ale „pięść z dziurą pod kij” i identyczny szkielet między wariantami nie wychodzą pewnie z samego promptu.
+**Poprawka do wcześniejszego wniosku (2026-09-05):** „bez ControlNet warstwy się
+nie złożą" było oparte na złym założeniu — że warstwa musi mieć ten sam kadr co
+body. Nie musi. Przedmiot jest przycinany do bbox i sadzany kotwicą, więc kadr
+generatora jest wyrzucany. Warstwy z Cursora/Gemini są dobre jako *przedmioty*;
+zepsute było sadzanie. Szczegóły: `docs/07-KOTWICE.md`, `docs/06-COMFYUI.md`.
 
-### Kolejność generacji (krytyczna)
+### Kolejność generacji
 
-1. **Zatwierdź master body BEZ dłoni** — 4 pozy, rękawy kończą się na nadgarstku.
-2. **Osobne arkusze dłoni per rodzina** — `empty`, `staff`, `dual`, `fan` (układy **różne**, nie kopia staff).
-3. Dopiero potem bronie staff — ten sam pose control co body; dłonie `staff` na wierzchu.
-4. Maski kimona/opaski.
-5. Gadżety.
-6. Logo.
-7. Miniatury sklepowe.
-8. Sylwetka `agile` dopiero po akceptacji `round`.
-
-**Pilnować przy każdej generacji dłoni:**  
-`staff` = obie pięści na jednej osi; `dual` = dwie osobne rękojeści w rozstawie; `fan` = chwyt asymetryczny z boku. Jeśli dwa arkusze wyglądają „tak samo” — odrzut.
+1. **Body** — 4 pozy, rękawy kończą się na nadgarstku, wspólna linia stóp.
+   To jedyny krok, przy którym trzeba pilnować kadru i kanonu.
+2. **Arkusz dłoni** — komplet pięści; skrypt sam rozbije je na lewą i prawą.
+3. **Przedmioty** — każdy osobno, wyśrodkowany, bez dłoni, bez cienia podłogi.
+4. Maski i kotwice — automat, nie generacja.
 
 ### Zasady każdego PNG
 
-- płótno 512 × 512 (produkcja może być 1024, skrypt downscaluje)
-- tło przezroczyste **albo** `#F2F2F2` do flood-fill (jak dziś)
-- wspólna linia stóp między pozami
+- tło jednolite `#F2F2F2` (albo przezroczyste)
 - zero tekstu, ramek, znaków wodnych
 - zero gwiazdek / Zzz / kanji (aplikacja dokłada efekty)
-- zero cienia podłogi pod przedmiotami gadżetów/broni (zostaje brudna smuga)
-- broń bez dłoni; dłonie osobno; albo broń + hands-front jako para
-
-### Referencje stylu (już mamy)
-
-- sheet użytkownika: arkusz Gemini (śpi / skupiona / świętuje / mruga / ikona)
-- testy Cursor: `Desktop/panda-testy/`
-- obecne `public/art/panda-a|b/` jako fallback i mood
-
----
+- zero cienia podłogi pod przedmiotami (zostaje brudna smuga)
+- **body**: wspólna linia stóp między pozami
+- **przedmioty**: kadr dowolny, byle przedmiot był cały i sam na obrazku
 
 ## 6. Plan kodu (równolegle do grafiki)
 
@@ -275,23 +266,25 @@ Odrzuć asset jeśli:
 
 ---
 
-## 10. Status (2026-09-06)
+## 10. Status (2026-09-07)
 
 1. ~~Faza 0 w kodzie.~~ **DONE**
 2. ~~`art-validate` + folder `panda-v2`.~~ **DONE**
-3. ~~Master body bez dłoni (round).~~ **DONE** — zaakceptowany
-4. ~~Hands staff/empty/dual/fan + 5 broni staff.~~ **DONE**
-5. ~~Maski kimono/opaska + 3 gadżety + 8 logo.~~ **DONE** (draft Cursor; QA na iPadzie)
-6. ~~`USE_PANDA_V2 = true`~~ po `npm run art:validate` → **68/68 mvpReady**
+3. ~~Master body bez dłoni (round + agile).~~ **DONE**
+4. ~~Dłonie, 9 broni, 9 gadżetów, 8 logo, 3 aury.~~ **DONE**
+5. ~~Maski kimona i opaski.~~ **DONE** — przeliczone flood fillem z body,
+   stare (progowanie z generatora) wyrzucone.
+6. ~~Silnik kotwic zamiast `lockFrame`.~~ **DONE** — `USE_PANDA_V2 = true`,
+   walidacja 92/92 dla `round` i `agile`.
 
-Pipeline: `npm run art:v2` (= slice + `art-postprocess-v2` + validate).
+Pipeline: `npm run art:v2`. QA: `npm run art:sheet` → `art-qa/contact-round.png`.
 
-**Znane niedociągnięcia draftu:** bronie czasem z resztkami dłoni; bokken sleeping mały; maska opaski heurystyczna z body; gadżety po odejmowaniu body; ComfyUI nadal docelowo do produkcji.
+**Co zostało do zrobienia:**
 
-**Następne:** test na iPadzie (WebP + logo na płytce + miniatury) → ComfyUI masters jeśli jakość nie wystarczy.
+- test na iPadzie (płynność composera przy zmianie stroju w sklepiku)
+- styl kilku gadżetów odstaje od dojo (okulary, podszewka peleryny)
+- `agile` to wciąż zwężony `round`, nie osobna sylwetka
+- wzory kimona (`outfitPattern`) są kafelkiem multiply — do oceny na ekranie
 
-**Faza 3 (polish):**
-- logo kotwiczone na płytce opaski (`PANDA_V2_LOGO`)
-- miniatury sklepu 128px (`npm run art:thumbs`)
-- WebP + fallback PNG w composerze (`npm run art:webp`); PWA cache’uje `.webp`
-- pipeline: `art → postprocess → thumbs → agile → webp → validate`
+**Czego już nie robimy:** ComfyUI + ControlNet do warstw. Powód i warunki
+powrotu: `docs/06-COMFYUI.md`.

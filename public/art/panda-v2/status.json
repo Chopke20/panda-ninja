@@ -1,15 +1,15 @@
 {
-  "checkedAt": "2026-09-06T11:45:40.913Z",
+  "checkedAt": "2026-09-07T10:48:30.267Z",
   "canvas": 512,
   "body": "round",
-  "required": 68,
-  "present": 68,
+  "required": 92,
+  "present": 92,
   "missing": [],
   "mvpReady": true,
   "agile": {
     "body": "agile",
-    "required": 68,
-    "present": 68,
+    "required": 92,
+    "present": 92,
     "missing": [],
     "ready": true
   }

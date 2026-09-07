@@ -33,10 +33,10 @@ export const STORAGE_KEY = 'pandaninja.v1';
 export const SCHEMA_VERSION = 6;
 
 /**
- * Paper-doll v2 — wyłączone: draft warstw (shade/dłonie/logo) psuje miniatury.
- * Włączyć po ComfyUI masters + `npm run art:validate`.
+ * Paper-doll v2 — warstwy sadzone kotwicami (src/data/panda-anchors.json).
+ * Wyłącz na false, żeby wrócić do płaskich sprite'ów panda-a / panda-b.
  */
-export const USE_PANDA_V2 = false;
+export const USE_PANDA_V2 = true;
 
 export const ROUTINE_IDS = ['morning', 'evening'] as const;
 
@@ -113,19 +113,6 @@ export const MOTION = {
 export const PANDA_STAGE = {
   width: '70%',
   startSizePx: 140,
-} as const;
-
-/** Kotwica logo / dłoni / broni na płótnie (procent). */
-export const PANDA_V2_LOGO = {
-  sizePct: 14,
-} as const;
-
-export const PANDA_V2_HAND = {
-  sizePct: 28,
-} as const;
-
-export const PANDA_V2_WEAPON = {
-  sizePct: 42,
 } as const;
 
 export const CELEBRATE_STARS: readonly { x: number; y: number; delay: number; size: number }[] = [
