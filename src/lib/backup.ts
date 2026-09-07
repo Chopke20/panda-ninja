@@ -16,8 +16,9 @@ import type {
 import { makeDefaultSettings, makeDefaultState } from '../store/defaults';
 import { TASK_ICONS } from './catalog';
 import { SCHEMA_VERSION, TIME } from './constants';
-import { eveningTasksForKey } from './onboarding';
-import { todayIso } from './time';
+import { eveningTasksForKey, kidKeyFromId, replaceMorningTasks } from './onboarding';
+import { snapshotTasks, tasksForToday } from './tasks';
+import { todayIso, weekdayFromIso } from './time';
 import {
   makeOpeningBalance,
   normalizeAppearance,
@@ -465,8 +466,44 @@ export function mergePersistedSlice(raw: unknown, fallback: PersistedSlice): Per
       : raw.onboardingDone === true
         ? true
         : true;
+
+  const prevVersion = typeof raw.version === 'number' ? raw.version : 0;
+  let kids = validated.kids;
+  let logs = validated.logs;
+
+  // v8: wspólna lista poranka (5 zadań) dla obu chłopców.
+  if (prevVersion < 8) {
+    kids = [
+      {
+        ...kids[0],
+        tasks: replaceMorningTasks(kids[0].tasks, kidKeyFromId(kids[0].id)),
+      },
+      {
+        ...kids[1],
+        tasks: replaceMorningTasks(kids[1].tasks, kidKeyFromId(kids[1].id)),
+      },
+    ];
+    const today = todayIso();
+    const weekday = weekdayFromIso(today);
+    logs = logs.map((log) => {
+      if (log.date !== today) return log;
+      const kid = kids.find((item) => item.id === log.kidId);
+      if (!kid) return log;
+      const routineId = log.routineId ?? 'morning';
+      const planned = snapshotTasks(tasksForToday(kid, weekday, routineId));
+      const allowed = new Set(planned.map((task) => task.id));
+      return {
+        ...log,
+        plannedTasks: planned,
+        completedTaskIds: log.completedTaskIds.filter((id) => allowed.has(id)),
+      };
+    });
+  }
+
   return {
     ...validated,
+    kids,
+    logs,
     mutedToday: raw.mutedToday === true,
     mutedDate: typeof raw.mutedDate === 'string' ? raw.mutedDate : null,
     playedWarnings: Array.isArray(warningsRaw)

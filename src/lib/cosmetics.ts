@@ -524,6 +524,7 @@ export const TASK_ICONS = [
   'clothes',
   'shirt',
   'cereal',
+  'chopsticks',
   'milk',
   'toothbrush',
   'hairbrush',
@@ -555,6 +556,9 @@ export const TASK_ICONS = [
 export type TaskIconId = (typeof TASK_ICONS)[number];
 
 export function taskIconSrc(icon: string): string {
+  if (icon === 'chopsticks') {
+    return assetUrl('art/icons/task-chopsticks.svg');
+  }
   return assetUrl(`art/icons/task-${icon}.png`);
 }
 

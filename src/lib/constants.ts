@@ -30,7 +30,7 @@ export const TYPE = {
 
 export const STORAGE_KEY = 'pandaninja.v1';
 
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 /**
  * Paper-doll v2 — wyłączone. Produkt = gotowe sprite’y ewolucji + kolor/logo.
@@ -59,6 +59,8 @@ export const TIME = {
   purchaseExpireMs: 48 * 60 * 60 * 1000,
   refundWindowMs: 24 * 60 * 60 * 1000,
   defaultToothTimerSec: 120,
+  /** Poranny timer zębów — 1 minuta. */
+  morningToothTimerSec: 60,
 } as const;
 
 export const BONUS = {

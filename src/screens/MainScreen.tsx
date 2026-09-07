@@ -6,7 +6,6 @@ import { KidColumn } from '../components/KidColumn';
 import { PandaStage } from '../components/PandaStage';
 import { PointsFly } from '../components/PointsFly';
 import { RoutineSwitcher } from '../components/RoutineSwitcher';
-import { WeeklyGoalBar } from '../components/WeeklyGoalBar';
 import { availableBalance } from '../lib/shop';
 import { isFreeDay } from '../lib/dayExceptions';
 import { findDayLog, tasksForToday } from '../lib/tasks';
@@ -69,7 +68,6 @@ export function MainScreen() {
         <ClockHeader />
         <RoutineSwitcher />
         <DepartureTimeline />
-        <WeeklyGoalBar />
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col landscape:flex-row">

@@ -122,7 +122,7 @@ describe('scoring', () => {
       routineId: 'morning',
     });
     expect(result?.ownJustCompleted).toBe(true);
-    expect(result?.kids[0].totalPoints).toBe(70 + 20 + 15);
+    expect(result?.kids[0].totalPoints).toBe(50 + 20 + 15);
     expect(result?.kids[0].streak).toBe(1);
   });
 
@@ -141,8 +141,8 @@ describe('scoring', () => {
       routineId: 'morning',
     });
     expect(result?.bothJustCompleted).toBe(true);
-    expect(result?.kids[0].totalPoints).toBe(70 + 20 + 15 + 50);
-    expect(result?.kids[1].totalPoints).toBe(70 + 20 + 15 + 50);
+    expect(result?.kids[0].totalPoints).toBe(50 + 20 + 15 + 50);
+    expect(result?.kids[1].totalPoints).toBe(50 + 20 + 15 + 50);
     expect(result?.flights.some((fly) => fly.kidId === 'kid-1' && fly.points === 50)).toBe(true);
   });
 
@@ -159,7 +159,7 @@ describe('scoring', () => {
       mode: 'complete',
       routineId: 'morning',
     });
-    expect(result?.kids[0].totalPoints).toBe(70 + 20);
+    expect(result?.kids[0].totalPoints).toBe(50 + 20);
     expect(
       result?.logs.find(
         (log) => log.kidId === 'kid-1' && (log.routineId ?? 'morning') === 'morning',
@@ -180,7 +180,7 @@ describe('scoring', () => {
       mode: 'complete',
       routineId: 'morning',
     });
-    expect(result?.kids[0].totalPoints).toBe(70 + 20 + 15);
+    expect(result?.kids[0].totalPoints).toBe(50 + 20 + 15);
   });
 
   it('komplet o T-5 nie daje bonusu za tempo', () => {
@@ -196,7 +196,7 @@ describe('scoring', () => {
       mode: 'complete',
       routineId: 'morning',
     });
-    expect(result?.kids[0].totalPoints).toBe(70 + 20);
+    expect(result?.kids[0].totalPoints).toBe(50 + 20);
   });
 
   it('odznaczenie zabiera punkty zadania i bonusy, nie spuszcza konta pod zero', () => {
@@ -271,7 +271,7 @@ describe('scoring', () => {
   it('isListComplete wymaga wszystkich zadań dnia', () => {
     const kid = makeKid1();
     const due = morningDue(kid);
-    expect(isListComplete(due, due.slice(0, 6).map((task) => task.id))).toBe(false);
+    expect(isListComplete(due, due.slice(0, 4).map((task) => task.id))).toBe(false);
     expect(isListComplete(due, due.map((task) => task.id))).toBe(true);
   });
 
@@ -295,7 +295,7 @@ describe('scoring', () => {
     const kid1Log = first.logs.find(
       (log) => log.kidId === 'kid-1' && (log.routineId ?? 'morning') === 'morning',
     );
-    expect(kid1Log?.pointsEarned).toBe(70 + 20 + 15);
+    expect(kid1Log?.pointsEarned).toBe(50 + 20 + 15);
     expect(kid1Log?.finishedAt).toBe(morning.toISOString());
 
     const second = completeAllBut(first.kids, first.logs, 'kid-2', 0, after);
@@ -306,8 +306,8 @@ describe('scoring', () => {
       (log) => log.kidId === 'kid-2' && (log.routineId ?? 'morning') === 'morning',
     );
     expect(afterKid1?.finishedAt).toBe(morning.toISOString());
-    expect(afterKid1?.pointsEarned).toBe(70 + 20 + 15);
-    expect(afterKid2?.pointsEarned).toBe(70 + 20);
+    expect(afterKid1?.pointsEarned).toBe(50 + 20 + 15);
+    expect(afterKid2?.pointsEarned).toBe(50 + 20);
     expect(afterKid2?.onTime).toBe(false);
   });
 });

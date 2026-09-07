@@ -3,8 +3,8 @@
  * Panda A (round): spokojniejsza, ścieżka bokkena.
  * Panda B (agile): żywiołowa, ścieżka nunchaku → naginata.
  *
- * Cena awansu = idealny tydzień szkolny pełnych punktów (8 lat):
- * 5 dni × (poranek 7 zadań + wieczór 5) × 10 + ownComplete + earlyFinish
+ * Cena awansu = idealny tydzień szkolny pełnych punktów:
+ * 5 dni × (poranek 5 zadań + wieczór 5) × 10 + ownComplete + earlyFinish
  * na każdą rutynę. Bez bothComplete (zależy od brata).
  */
 import type { PandaBodyId } from '../types';
@@ -15,8 +15,8 @@ export const EVOLUTION_STAGE_COUNT = 6;
 
 export type EvolutionStageId = 1 | 2 | 3 | 4 | 5 | 6;
 
-/** Zadania w presecie 8 lat (baza cenowa). */
-export const EVO_PRICE_MORNING_TASKS = 7;
+/** Zadania w aktualnym presecie (baza cenowa). */
+export const EVO_PRICE_MORNING_TASKS = 5;
 export const EVO_PRICE_EVENING_TASKS = 5;
 
 /**
@@ -29,7 +29,7 @@ export function perfectRoutinePoints(taskCount: number): number {
   );
 }
 
-/** Idealny dzień szkolny (poranek + wieczór) dla bazy cenowej 8 lat. */
+/** Idealny dzień szkolny (poranek + wieczór) dla bazy cenowej. */
 export function perfectSchoolDayPoints(): number {
   return (
     perfectRoutinePoints(EVO_PRICE_MORNING_TASKS) +
@@ -39,7 +39,7 @@ export function perfectSchoolDayPoints(): number {
 
 /**
  * Idealny tydzień szkolny — tyle kosztuje każdy kolejny poziom ewolucji.
- * 5 × (105 + 85) = 5 × 190 = 950.
+ * 5 × (85 + 85) = 5 × 170 = 850.
  */
 export function perfectSchoolWeekPoints(): number {
   return SCHOOL_DAYS.length * perfectSchoolDayPoints();

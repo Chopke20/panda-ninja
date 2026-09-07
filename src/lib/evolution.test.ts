@@ -39,17 +39,17 @@ describe('evolution', () => {
     expect(evolutionItemId('agile', 4)).toBe('evo-agile-4');
   });
 
-  it('cena awansu = idealny tydzień szkolny (950)', () => {
-    expect(perfectRoutinePoints(7)).toBe(
-      7 * BONUS.defaultTaskPoints + BONUS.ownComplete + BONUS.earlyFinish,
+  it('cena awansu = idealny tydzień szkolny (850)', () => {
+    expect(perfectRoutinePoints(5)).toBe(
+      5 * BONUS.defaultTaskPoints + BONUS.ownComplete + BONUS.earlyFinish,
     );
-    expect(perfectSchoolDayPoints()).toBe(190);
-    expect(perfectSchoolWeekPoints()).toBe(SCHOOL_DAYS.length * 190);
-    expect(EVOLUTION_WEEK_PRICE).toBe(950);
+    expect(perfectSchoolDayPoints()).toBe(170);
+    expect(perfectSchoolWeekPoints()).toBe(SCHOOL_DAYS.length * 170);
+    expect(EVOLUTION_WEEK_PRICE).toBe(850);
     for (const body of ['round', 'agile'] as const) {
       for (const stage of evolutionLine(body).stages) {
         if (stage.id === 1) expect(stage.price).toBe(0);
-        else expect(stage.price).toBe(950);
+        else expect(stage.price).toBe(850);
       }
     }
   });

@@ -3,19 +3,14 @@ import { BONUS, SCHOOL_DAYS, TIME } from './constants';
 
 export type AgePreset = 6 | 8;
 
-const FULL_MORNING: { label: string; icon: string; timerSec: number | null }[] = [
-  { label: 'Wstać', icon: 'bed', timerSec: null },
-  { label: 'Ubranie', icon: 'clothes', timerSec: null },
-  { label: 'Śniadanie', icon: 'cereal', timerSec: null },
-  { label: 'Zęby', icon: 'toothbrush', timerSec: TIME.defaultToothTimerSec },
-  { label: 'Uczesać się', icon: 'hairbrush', timerSec: null },
-  { label: 'Plecak', icon: 'backpack', timerSec: null },
-  { label: 'Buty', icon: 'shoes', timerSec: null },
+/** Wspólna lista poranka dla obu synów (kolejność = kolejność dnia). */
+const SHARED_MORNING: { label: string; icon: string; timerSec: number | null }[] = [
+  { label: 'Wstać z łóżka', icon: 'bed', timerSec: null },
+  { label: 'Śniadanie', icon: 'chopsticks', timerSec: null },
+  { label: 'Umyć zęby', icon: 'toothbrush', timerSec: TIME.morningToothTimerSec },
+  { label: 'Ubranie się', icon: 'clothes', timerSec: null },
+  { label: 'Spakowanie plecaka', icon: 'backpack', timerSec: null },
 ];
-
-const YOUNG_MORNING = FULL_MORNING.filter(
-  (item) => item.icon !== 'hairbrush' && item.icon !== 'backpack',
-);
 
 const EVENING_LABELS: { label: string; icon: string; timerSec: number | null }[] = [
   { label: 'Umyć się', icon: 'soap', timerSec: null },
@@ -47,13 +42,28 @@ function mapTasks(
   }));
 }
 
+export function morningTasksForKey(kidKey: string): Task[] {
+  return mapTasks(kidKey, 'morning', SHARED_MORNING);
+}
+
 export function eveningTasksForKey(kidKey: string): Task[] {
   return mapTasks(kidKey, 'evening', EVENING_LABELS);
 }
 
-export function tasksForAgePreset(kidKey: string, age: AgePreset): Task[] {
-  const morning = age === 6 ? YOUNG_MORNING : FULL_MORNING;
-  return [...mapTasks(kidKey, 'morning', morning), ...eveningTasksForKey(kidKey)];
+/** AgePreset zostaje w API (onboarding), lista poranka jest wspólna. */
+export function tasksForAgePreset(kidKey: string, _age: AgePreset): Task[] {
+  return [...morningTasksForKey(kidKey), ...eveningTasksForKey(kidKey)];
+}
+
+/** Podmiana tylko poranka — wieczór i punkty zostają (migracja schematu). */
+export function replaceMorningTasks(tasks: Task[], kidKey: string): Task[] {
+  const evening = tasks.filter((task) => task.routine === 'evening');
+  const morning = morningTasksForKey(kidKey);
+  const orderBase = morning.length;
+  return [
+    ...morning,
+    ...evening.map((task, index) => ({ ...task, order: orderBase + index })),
+  ];
 }
 
 export function kidKeyFromId(kidId: string): string {

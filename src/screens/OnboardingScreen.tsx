@@ -233,7 +233,7 @@ function KidsStep({
                 style={{ minHeight: TOUCH.minTilePx }}
                 onClick={() => onAge(index, age)}
               >
-                {age} lat · {age === 6 ? '5+5 zadań' : '7+5 zadań'}
+                {age} lat · 5+5 zadań
               </button>
             ))}
           </div>

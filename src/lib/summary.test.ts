@@ -27,7 +27,7 @@ describe('shouldShowSummary', () => {
 
 describe('summary copy', () => {
   it('liczy próg jako zadania + wszystkie bonusy', () => {
-    expect(summaryPossible(makeKid1(), 'wed', makeDefaultSettings())).toBe(70 + 20 + 50 + 15);
+    expect(summaryPossible(makeKid1(), 'wed', makeDefaultSettings())).toBe(50 + 20 + 50 + 15);
   });
 
   it('mówi życzliwie niezależnie od wyniku', () => {

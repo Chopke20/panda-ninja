@@ -117,6 +117,81 @@ describe('mergePersistedSlice', () => {
     expect(mergePersistedSlice(null, fallback)).toBe(fallback);
     expect(mergePersistedSlice('x', fallback)).toBe(fallback);
   });
+
+  it('v8 podmienia poranek na wspólną listę 5 zadań', () => {
+    const defaults = makeDefaultState();
+    const oldMorning = [
+      {
+        id: 'k1-morning-1',
+        label: 'Wstać',
+        icon: 'bed',
+        points: 10,
+        order: 0,
+        days: ['mon', 'tue', 'wed', 'thu', 'fri'],
+        enabled: true,
+        routine: 'morning' as const,
+        timerSec: null,
+      },
+      {
+        id: 'k1-morning-7',
+        label: 'Buty',
+        icon: 'shoes',
+        points: 10,
+        order: 6,
+        days: ['mon', 'tue', 'wed', 'thu', 'fri'],
+        enabled: true,
+        routine: 'morning' as const,
+        timerSec: null,
+      },
+    ];
+    const kid1 = {
+      ...defaults.kids[0],
+      tasks: [
+        ...oldMorning,
+        ...defaults.kids[0].tasks.filter((t) => t.routine === 'evening'),
+      ],
+    };
+    const kid2 = {
+      ...defaults.kids[1],
+      tasks: [
+        ...oldMorning.map((t) => ({ ...t, id: t.id.replace('k1', 'k2') })),
+        ...defaults.kids[1].tasks.filter((t) => t.routine === 'evening'),
+      ],
+    };
+    const fallback = {
+      ...defaults,
+      mutedToday: false,
+      mutedDate: null,
+      playedWarnings: [],
+      summaryDismissedDate: null,
+      lastBackupAt: null,
+      onboardingDone: true,
+    };
+    const merged = mergePersistedSlice(
+      {
+        kids: [kid1, kid2],
+        settings: defaults.settings,
+        logs: [],
+        transactions: defaults.transactions,
+        purchaseRequests: [],
+        weeklyClaims: [],
+        dayExceptions: [],
+        version: 7,
+      },
+      fallback,
+    );
+    const morning1 = merged.kids[0].tasks.filter((t) => t.routine === 'morning');
+    const morning2 = merged.kids[1].tasks.filter((t) => t.routine === 'morning');
+    expect(morning1.map((t) => t.label)).toEqual([
+      'Wstać z łóżka',
+      'Śniadanie',
+      'Umyć zęby',
+      'Ubranie się',
+      'Spakowanie plecaka',
+    ]);
+    expect(morning2.map((t) => t.label)).toEqual(morning1.map((t) => t.label));
+    expect(morning1[1]?.icon).toBe('chopsticks');
+  });
 });
 
 describe('normalizeSettings', () => {
