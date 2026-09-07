@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import { BONUS, SCHOOL_DAYS } from './constants';
 import {
+  EVOLUTION_WEEK_PRICE,
   canUnlockStage,
   clampStage,
   evolutionItemId,
   evolutionLine,
   parseEvolutionItemId,
+  perfectRoutinePoints,
+  perfectSchoolDayPoints,
+  perfectSchoolWeekPoints,
 } from './evolution';
 
 describe('evolution', () => {
@@ -32,5 +37,20 @@ describe('evolution', () => {
     expect(clampStage(0)).toBe(1);
     expect(clampStage(9)).toBe(6);
     expect(evolutionItemId('agile', 4)).toBe('evo-agile-4');
+  });
+
+  it('cena awansu = idealny tydzień szkolny (950)', () => {
+    expect(perfectRoutinePoints(7)).toBe(
+      7 * BONUS.defaultTaskPoints + BONUS.ownComplete + BONUS.earlyFinish,
+    );
+    expect(perfectSchoolDayPoints()).toBe(190);
+    expect(perfectSchoolWeekPoints()).toBe(SCHOOL_DAYS.length * 190);
+    expect(EVOLUTION_WEEK_PRICE).toBe(950);
+    for (const body of ['round', 'agile'] as const) {
+      for (const stage of evolutionLine(body).stages) {
+        if (stage.id === 1) expect(stage.price).toBe(0);
+        else expect(stage.price).toBe(950);
+      }
+    }
   });
 });

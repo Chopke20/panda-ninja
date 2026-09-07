@@ -1,14 +1,52 @@
 /**
  * Linie ewolucji pand — gotowe sprite’y stadiów, nie paper-doll.
  * Panda A (round): spokojniejsza, ścieżka bokkena.
- * Panda B (agile): żywiołowa, ścieżka nunchaku.
+ * Panda B (agile): żywiołowa, ścieżka nunchaku → naginata.
+ *
+ * Cena awansu = idealny tydzień szkolny pełnych punktów (8 lat):
+ * 5 dni × (poranek 7 zadań + wieczór 5) × 10 + ownComplete + earlyFinish
+ * na każdą rutynę. Bez bothComplete (zależy od brata).
  */
 import type { PandaBodyId } from '../types';
 import { assetUrl } from './assetUrl';
+import { BONUS, SCHOOL_DAYS } from './constants';
 
 export const EVOLUTION_STAGE_COUNT = 6;
 
 export type EvolutionStageId = 1 | 2 | 3 | 4 | 5 | 6;
+
+/** Zadania w presecie 8 lat (baza cenowa). */
+export const EVO_PRICE_MORNING_TASKS = 7;
+export const EVO_PRICE_EVENING_TASKS = 5;
+
+/**
+ * Punkty z jednej rutyny przy komplecie „na medal” (wszystkie zadania +
+ * własny komplet + wczesny finisz). Bez bonusu „obie pandy”.
+ */
+export function perfectRoutinePoints(taskCount: number): number {
+  return (
+    taskCount * BONUS.defaultTaskPoints + BONUS.ownComplete + BONUS.earlyFinish
+  );
+}
+
+/** Idealny dzień szkolny (poranek + wieczór) dla bazy cenowej 8 lat. */
+export function perfectSchoolDayPoints(): number {
+  return (
+    perfectRoutinePoints(EVO_PRICE_MORNING_TASKS) +
+    perfectRoutinePoints(EVO_PRICE_EVENING_TASKS)
+  );
+}
+
+/**
+ * Idealny tydzień szkolny — tyle kosztuje każdy kolejny poziom ewolucji.
+ * 5 × (105 + 85) = 5 × 190 = 950.
+ */
+export function perfectSchoolWeekPoints(): number {
+  return SCHOOL_DAYS.length * perfectSchoolDayPoints();
+}
+
+/** Cena jednego awansu (stadium 2…6). */
+export const EVOLUTION_WEEK_PRICE = perfectSchoolWeekPoints();
 
 export type EvolutionStageDef = {
   id: EvolutionStageId;
@@ -39,119 +77,96 @@ export type EvolutionLine = {
   stages: EvolutionStageDef[];
 };
 
-const ROUND_STAGES: EvolutionStageDef[] = [
+type StageDraft = Omit<EvolutionStageDef, 'price' | 'ready' | 'showLogo'> & {
+  price?: number;
+};
+
+function withWeekPrices(drafts: StageDraft[]): EvolutionStageDef[] {
+  return drafts.map((d) => ({
+    ...d,
+    price: d.id === 1 ? 0 : (d.price ?? EVOLUTION_WEEK_PRICE),
+    showLogo: true,
+    ready: true,
+  }));
+}
+
+const ROUND_STAGES: EvolutionStageDef[] = withWeekPrices([
   {
     id: 1,
     folder: '01',
     label: 'Nowicjusz',
     blurb: 'Puste dłonie, samo kimono — początek treningu.',
-    price: 0,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 2,
     folder: '02',
     label: 'Uczeń',
     blurb: 'Drewniany bokken do ćwiczeń w dojo.',
-    price: 20,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 3,
     folder: '03',
     label: 'Wojownik',
     blurb: 'Metalowa katana — poważniejszy trening.',
-    price: 40,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 4,
     folder: '04',
     label: 'Strażnik',
     blurb: 'Katana i prosty naramiennik.',
-    price: 70,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 5,
     folder: '05',
     label: 'Mistrz',
     blurb: 'Zawsze dwie katany i lekki plecak na misje.',
-    price: 110,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 6,
     folder: '06',
     label: 'Legenda dojo',
     blurb: 'Legendarny strój: złote detale, dwie katany, herb.',
-    price: 160,
-    showLogo: true,
-    ready: true,
   },
-];
+]);
 
-const AGILE_STAGES: EvolutionStageDef[] = [
+const AGILE_STAGES: EvolutionStageDef[] = withWeekPrices([
   {
     id: 1,
     folder: '01',
     label: 'Nowicjusz',
     blurb: 'Puste dłonie, czerwona opaska — start.',
-    price: 0,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 2,
     folder: '02',
     label: 'Uczeń',
     blurb: 'Pierwsze nunchaku z łańcuchem.',
-    price: 20,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 3,
     folder: '03',
     label: 'Wojownik',
     blurb: 'Lepsze nunchaku — jeden łańcuch, szybszy chwyt.',
-    price: 40,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 4,
     folder: '04',
     label: 'Strażnik',
     blurb: 'Naginata — długa pika z ostrzem — i peleryna.',
-    price: 70,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 5,
     folder: '05',
     label: 'Mistrz',
     blurb: 'Mistrzowska naginata i sakwa na pasie.',
-    price: 110,
-    showLogo: true,
-    ready: true,
   },
   {
     id: 6,
     folder: '06',
     label: 'Legenda dojo',
     blurb: 'Złota włócznia, peleryna i talizman.',
-    price: 160,
-    showLogo: true,
-    ready: true,
   },
-];
+]);
 
 /** Dziury na przyszłe stadia (7+) — UI może je pokazać jako zamknięte. */
 export const FUTURE_STAGE_SLOTS = [7, 8] as const;

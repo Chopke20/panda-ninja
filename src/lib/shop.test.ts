@@ -14,7 +14,7 @@ import {
   normalizeAppearance,
   walletBalance,
 } from './wallet';
-import { evolutionItemId } from './evolution';
+import { EVOLUTION_WEEK_PRICE, evolutionItemId } from './evolution';
 
 describe('normalizeAppearance', () => {
   it('migruje stary PandaConfig do ewolucji', () => {
@@ -46,7 +46,7 @@ describe('normalizeAppearance', () => {
 
 describe('ledger ewolucji', () => {
   it('pozwala kupić następne stadium gdy ready i jest saldo', () => {
-    const txs = [makeOpeningBalance('kid-1', 500, new Date().toISOString())];
+    const txs = [makeOpeningBalance('kid-1', 2000, new Date().toISOString())];
     const check = canRequestPurchase(
       txs,
       [],
@@ -58,7 +58,7 @@ describe('ledger ewolucji', () => {
       'round',
     );
     expect(check.ok).toBe(true);
-    if (check.ok) expect(check.price).toBe(20);
+    if (check.ok) expect(check.price).toBe(EVOLUTION_WEEK_PRICE);
   });
 
   it('księguje wczorajsze earn', () => {
@@ -91,7 +91,7 @@ describe('ledger ewolucji', () => {
 
   it('approve podnosi stadium', () => {
     const now = Date.now();
-    const txs = [makeOpeningBalance('kid-1', 500, new Date(now).toISOString())];
+    const txs = [makeOpeningBalance('kid-1', 2000, new Date(now).toISOString())];
     const created = createPurchaseRequest({
       transactions: txs,
       requests: [],
@@ -114,7 +114,7 @@ describe('ledger ewolucji', () => {
     expect(approved.ok).toBe(true);
     if (!approved.ok) return;
     expect(approved.kids[0].panda.stage).toBe(2);
-    expect(walletBalance(approved.transactions, 'kid-1')).toBe(480);
+    expect(walletBalance(approved.transactions, 'kid-1')).toBe(2000 - EVOLUTION_WEEK_PRICE);
 
     const refunded = refundPurchase({
       request: { ...created.request, status: 'approved' },
@@ -129,7 +129,7 @@ describe('ledger ewolucji', () => {
 
   it('availableBalance odejmuje pending', () => {
     const now = Date.now();
-    const txs = [makeOpeningBalance('kid-1', 500, new Date(now).toISOString())];
+    const txs = [makeOpeningBalance('kid-1', 2000, new Date(now).toISOString())];
     const created = createPurchaseRequest({
       transactions: txs,
       requests: [],
@@ -142,6 +142,8 @@ describe('ledger ewolucji', () => {
     });
     expect(created.ok).toBe(true);
     if (!created.ok) return;
-    expect(availableBalance(txs, [created.request], 'kid-1', now)).toBe(480);
+    expect(availableBalance(txs, [created.request], 'kid-1', now)).toBe(
+      2000 - EVOLUTION_WEEK_PRICE,
+    );
   });
 });

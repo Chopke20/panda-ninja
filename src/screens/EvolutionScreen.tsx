@@ -3,11 +3,11 @@ import { PandaStage } from '../components/PandaStage';
 import { TOUCH } from '../lib/constants';
 import {
   EVOLUTION_LINES,
+  EVOLUTION_WEEK_PRICE,
   FUTURE_STAGE_SLOTS,
   evolutionItemId,
   evolutionLine,
   nextPurchasableStage,
-  type EvolutionStageId,
 } from '../lib/evolution';
 import { availableBalance } from '../lib/shop';
 import { useStore } from '../store/useStore';
@@ -88,6 +88,9 @@ export function EvolutionScreen() {
             {line.name} · stadium {kid.panda.stage}/{line.stages.length}
           </p>
           <p className="mt-1 text-sm text-muted">{line.temperament}</p>
+          <p className="mt-1 text-sm text-muted">
+            Awans ≈ {EVOLUTION_WEEK_PRICE} ★ — tyle daje tydzień pełnych poranków i wieczorów.
+          </p>
         </div>
       </div>
 
@@ -173,6 +176,3 @@ function OtherLineHint({ body }: { body: PandaBodyId }) {
     </p>
   );
 }
-
-// cisza lintera — EvolutionStageId używane przy evolutionItemId
-void 0 as unknown as EvolutionStageId;
