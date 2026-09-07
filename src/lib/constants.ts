@@ -88,8 +88,23 @@ export const PANDA_SHEETS = ['panda-a', 'panda-b'] as const;
 
 export const DEFAULT_PIN = '1111';
 
-/** PIN tylko do resetu fabrycznego (panel Dane) — nie mylić z PIN-em rodzica. */
+/**
+ * Uniwersalny PIN admina: panel rodzica + reset fabryczny.
+ * Działa zawsze, nawet gdy PIN rodzica jest pusty / zapomniany.
+ */
 export const ADMIN_FACTORY_PIN = '1608';
+
+/** PIN rodzica do porównania — pusty / śmieci → domyślny. */
+export function effectiveParentPin(pin: string): string {
+  return /^\d{4}$/.test(pin) ? pin : DEFAULT_PIN;
+}
+
+/** Czy wpisany kod otwiera panel (PIN rodzica albo PIN admina). */
+export function acceptsParentPin(input: string, storedPin: string): boolean {
+  if (!/^\d{4}$/.test(input)) return false;
+  if (input === ADMIN_FACTORY_PIN) return true;
+  return input === effectiveParentPin(storedPin);
+}
 
 export const MOTION = {
   crossfadeSec: 0.25,

@@ -69,6 +69,11 @@ export function OnboardingScreen() {
       setPinError(null);
     }
     if (last) {
+      // Pomiń / koniec — zawsze zostaw poprawny 4-cyfrowy PIN.
+      const current = useStore.getState().settings.pin;
+      if (!/^\d{4}$/.test(current)) {
+        patchSettings({ pin: DEFAULT_PIN });
+      }
       completeOnboarding();
       return;
     }

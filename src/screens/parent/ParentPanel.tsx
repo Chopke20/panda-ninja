@@ -34,7 +34,7 @@ export function ParentPanel() {
     (s) => s.purchaseRequests.filter((req) => req.status === 'pending').length,
   );
   const keyboardOffset = useKeyboardOffset();
-  const defaultPin = pin === DEFAULT_PIN;
+  const defaultPin = pin === DEFAULT_PIN || !/^\d{4}$/.test(pin);
 
   if (!unlocked) {
     return <PinLock onUnlock={() => setUnlocked(true)} />;
@@ -60,7 +60,9 @@ export function ParentPanel() {
           style={{ minHeight: TOUCH.minTilePx }}
           onClick={() => setTab('data')}
         >
-          PIN to nadal {DEFAULT_PIN}. Zmień go w zakładce Dane.
+          {!/^\d{4}$/.test(pin)
+            ? 'PIN rodzica był pusty — ustaw nowy w zakładce Dane. Wejście też przez PIN admina.'
+            : `PIN to nadal ${DEFAULT_PIN}. Zmień go w zakładce Dane.`}
         </button>
       )}
       {pendingCount > 0 && (

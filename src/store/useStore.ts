@@ -10,7 +10,7 @@ import type {
   Task,
   UiScreen,
 } from '../types';
-import { BONUS, SCHEMA_VERSION, SCHOOL_DAYS, STORAGE_KEY } from '../lib/constants';
+import { BONUS, DEFAULT_PIN, SCHEMA_VERSION, SCHOOL_DAYS, STORAGE_KEY } from '../lib/constants';
 import { mergePersistedSlice, normalizeSettings, validateAppState } from '../lib/backup';
 import { applyDayRollover, isMutedToday } from '../lib/day';
 import {
@@ -514,7 +514,13 @@ export const useStore = create<Store>()(
         });
       },
       completeOnboarding: () => {
-        set({ onboardingDone: true, uiScreen: 'start' });
+        const pin = get().settings.pin;
+        const healed = /^\d{4}$/.test(pin) ? pin : DEFAULT_PIN;
+        set({
+          onboardingDone: true,
+          uiScreen: 'start',
+          settings: healed === pin ? get().settings : { ...get().settings, pin: healed },
+        });
       },
       factoryReset: () => {
         clearChromaCache();

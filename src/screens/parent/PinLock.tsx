@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { COLORS, TIME } from '../../lib/constants';
+import { COLORS, TIME, acceptsParentPin, effectiveParentPin } from '../../lib/constants';
 import { useNow } from '../../lib/useNow';
 import { useStore } from '../../store/useStore';
 
@@ -10,6 +10,7 @@ type Props = {
 
 export function PinLock({ onUnlock }: Props) {
   const pin = useStore((s) => s.settings.pin);
+  const patchSettings = useStore((s) => s.patchSettings);
   const now = useNow();
   const [digits, setDigits] = useState('');
   const [error, setError] = useState(false);
@@ -20,6 +21,13 @@ export function PinLock({ onUnlock }: Props) {
   const attemptsRef = useRef(0);
   const locked = now < lockedUntil;
   const remaining = Math.max(0, Math.ceil((lockedUntil - now) / 1000));
+
+  useEffect(() => {
+    // Napraw pusty / uszkodzony PIN w zapisie — inaczej panel jest martwy.
+    if (pin !== effectiveParentPin(pin)) {
+      patchSettings({ pin: effectiveParentPin(pin) });
+    }
+  }, [pin, patchSettings]);
 
   useEffect(() => {
     if (locked) {
@@ -44,9 +52,12 @@ export function PinLock({ onUnlock }: Props) {
     }
     digitsRef.current = '';
     setDigits('');
-    if (next === pin) {
+    if (acceptsParentPin(next, pin)) {
       attemptsRef.current = 0;
       setAttempts(0);
+      if (pin !== effectiveParentPin(pin)) {
+        patchSettings({ pin: effectiveParentPin(pin) });
+      }
       onUnlock();
       return;
     }
