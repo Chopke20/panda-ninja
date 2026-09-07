@@ -18,7 +18,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,webp,svg,webmanifest,ico}'],
-        globIgnores: ['**/art/panda-v2/**/*.png'],
+        globIgnores: ['**/art/panda-v2/**/*.png', '**/art/evo/**/*.png'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
       },

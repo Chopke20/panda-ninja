@@ -1,6 +1,5 @@
 import type { Kid, Settings, Task, Weekday, AppState } from '../types';
 import { BONUS, DEFAULT_PIN, SCHEMA_VERSION, SCHOOL_DAYS, TIME } from '../lib/constants';
-import { defaultOwnedIds } from '../lib/cosmetics';
 import { tasksForAgePreset } from '../lib/onboarding';
 import { makeDefaultAppearance, ownedFromAppearance } from '../lib/wallet';
 
@@ -16,17 +15,13 @@ function emptySchedule(defaultHm: string): Record<Weekday, string | null> {
   return schedule;
 }
 
-function makeInventory(panda: ReturnType<typeof makeDefaultAppearance>): string[] {
-  return [...new Set([...defaultOwnedIds(), ...ownedFromAppearance(panda)])];
-}
-
 export function makeKid1(): Kid {
   const panda = makeDefaultAppearance('kid-1');
   return {
     id: 'kid-1',
     name: 'Syn 1',
     panda,
-    inventory: makeInventory(panda),
+    inventory: ownedFromAppearance(panda),
     tasks: tasksForAgePreset('k1', 8),
     totalPoints: 0,
     streak: 0,
@@ -39,7 +34,7 @@ export function makeKid2(): Kid {
     id: 'kid-2',
     name: 'Syn 2',
     panda,
-    inventory: makeInventory(panda),
+    inventory: ownedFromAppearance(panda),
     tasks: tasksForAgePreset('k2', 8),
     totalPoints: 0,
     streak: 0,
@@ -92,7 +87,7 @@ export function makeDefaultState(): AppState {
   };
 }
 
-/** Pełna lista 7 zadań — do testów scoringu. */
+/** Pełna lista zadań — do testów scoringu. */
 export function makeTasksForTests(kidKey: string): Task[] {
   return tasksForAgePreset(kidKey, 8);
 }

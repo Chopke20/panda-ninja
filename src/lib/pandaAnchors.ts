@@ -35,16 +35,42 @@ type ItemFit = {
   rotate?: number;
 };
 
-const CFG = raw as unknown as {
+export type AnchorConfig = {
   canvas: number;
   poses: PandaPose[];
   bodies: Record<PandaBodyId, { sx: number; sy: number }>;
   anchors: Record<PandaPose, PoseAnchors>;
+  slots: {
+    weaponStaff: { wFromSpan: number; wMin: number };
+    weaponDual: { wFromSpan: number; wMin: number };
+    weaponFan: { w: number; rotate: number };
+    fist: { w: number };
+    head: { wFromAnchor: number };
+    logo: { wFromAnchor: number };
+  };
   items: Record<string, ItemFit>;
+  masks: Record<string, unknown>;
 };
 
-export const PANDA_CANVAS = CFG.canvas;
-export const PANDA_POSES = CFG.poses;
+const BASE = raw as unknown as AnchorConfig;
+
+/**
+ * Podmiana kotwic w locie — używa tego wyłącznie edytor `#kotwice` (dev),
+ * żeby podgląd składał się tym samym kodem co aplikacja.
+ */
+let override: AnchorConfig | null = null;
+
+export function setAnchorOverride(next: AnchorConfig | null): void {
+  override = next;
+}
+
+function cfg(): AnchorConfig {
+  return override ?? BASE;
+}
+
+export const BASE_ANCHORS = BASE;
+export const PANDA_CANVAS = BASE.canvas;
+export const PANDA_POSES = BASE.poses;
 
 /** Gdzie i jak duży — wszystko w % płótna, wysokość z proporcji obrazka. */
 export type Placement = { x: number; y: number; w: number; rotate: number };
@@ -60,12 +86,12 @@ export type PlacementKind =
   | 'aura';
 
 function anchorsFor(pose: PandaPose): PoseAnchors {
-  return CFG.anchors[pose];
+  return cfg().anchors[pose];
 }
 
 /** Kotwice opisano na sylwetce round; agile jest węższy o stały współczynnik. */
 function toBody(body: PandaBodyId, p: Placement): Placement {
-  const tf = CFG.bodies[body] ?? { sx: 1, sy: 1 };
+  const tf = cfg().bodies[body] ?? { sx: 1, sy: 1 };
   return {
     x: 50 + (p.x - 50) * tf.sx,
     y: 100 - (100 - p.y) * tf.sy,
@@ -75,7 +101,7 @@ function toBody(body: PandaBodyId, p: Placement): Placement {
 }
 
 function withItem(p: Placement, assetKey: string | null): Placement {
-  const fit: ItemFit = (assetKey && CFG.items[assetKey]) || {};
+  const fit: ItemFit = (assetKey && cfg().items[assetKey]) || {};
   return {
     x: p.x + (fit.dx ?? 0),
     y: p.y + (fit.dy ?? 0),
@@ -90,34 +116,34 @@ function basePlacement(
   grip: GripFamily,
 ): Placement | null {
   const a = anchorsFor(pose);
+  const s = cfg().slots;
   switch (kind) {
     case 'weapon': {
       if (grip === 'empty') return null;
       if (grip === 'fan') {
-        return { x: a.handMain.x, y: a.handMain.y, w: 26, rotate: -12 };
+        return { x: a.handMain.x, y: a.handMain.y, w: s.weaponFan.w, rotate: s.weaponFan.rotate };
       }
-      const mul = grip === 'dual' ? 1.05 : 1.75;
-      const min = grip === 'dual' ? 30 : 42;
+      const d = grip === 'dual' ? s.weaponDual : s.weaponStaff;
       return {
         x: a.grip.x,
         y: a.grip.y,
-        w: Math.max(a.grip.span * mul, min),
+        w: Math.max(a.grip.span * d.wFromSpan, d.wMin),
         rotate: a.grip.angle,
       };
     }
     case 'fistOff':
       if (!a.handOff) return null;
-      return { x: a.handOff.x, y: a.handOff.y, w: 12.5, rotate: a.grip.angle };
+      return { x: a.handOff.x, y: a.handOff.y, w: s.fist.w, rotate: a.grip.angle };
     case 'fistMain':
-      return { x: a.handMain.x, y: a.handMain.y, w: 12.5, rotate: a.grip.angle };
+      return { x: a.handMain.x, y: a.handMain.y, w: s.fist.w, rotate: a.grip.angle };
     case 'back':
       return { x: a.back.x, y: a.back.y, w: a.back.w, rotate: 0 };
     case 'head':
-      return { x: a.face.x, y: a.face.y, w: a.face.w * 0.8, rotate: 0 };
+      return { x: a.face.x, y: a.face.y, w: a.face.w * s.head.wFromAnchor, rotate: 0 };
     case 'belt':
       return { x: a.belt.x, y: a.belt.y, w: a.belt.w, rotate: 0 };
     case 'logo':
-      return { x: a.plate.x, y: a.plate.y, w: a.plate.w * 0.75, rotate: a.plate.angle ?? 0 };
+      return { x: a.plate.x, y: a.plate.y, w: a.plate.w * s.logo.wFromAnchor, rotate: a.plate.angle ?? 0 };
     case 'aura':
       return { x: a.aura.x, y: a.aura.y, w: a.aura.w, rotate: 0 };
     default:

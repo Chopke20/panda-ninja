@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { getCosmetic } from '../../../lib/cosmetics';
-import { canRefundPurchase, walletBalance } from '../../../lib/shop';
+import { shopItemLabel, canRefundPurchase, walletBalance } from '../../../lib/shop';
 import { useStore } from '../../../store/useStore';
 
+/** Panel rodzica: prośby o awans ewolucji (nie kosmetyki). */
 export function ShopTab() {
   const kids = useStore((s) => s.kids);
   const requests = useStore((s) => s.purchaseRequests);
@@ -27,21 +27,20 @@ export function ShopTab() {
       {info && <p className="rounded-2xl bg-white px-3 py-2">{info}</p>}
 
       <div>
-        <h2 className="mb-2 text-xl font-semibold">Prośby o zakup</h2>
+        <h2 className="mb-2 text-xl font-semibold">Prośby o awans</h2>
         {pending.length === 0 && <p className="text-muted">Brak oczekujących próśb.</p>}
         <div className="space-y-3">
           {pending.map((req) => {
             const kid = kids.find((item) => item.id === req.kidId);
-            const item = getCosmetic(req.itemId);
             const bal = kid ? walletBalance(transactions, kid.id) : 0;
             const after = bal - req.priceSnapshot;
             return (
               <article key={req.id} className="rounded-3xl bg-white p-4">
                 <p className="text-lg font-semibold">
-                  {kid?.name ?? req.kidId} · {item?.label ?? req.itemId}
+                  {kid?.name ?? req.kidId} · {shopItemLabel(req.itemId)}
                 </p>
                 <p className="text-muted">
-                  Cena ★ {req.priceSnapshot} · sakiewka ★ {bal} → po zakupie ★ {after}
+                  Cena ★ {req.priceSnapshot} · sakiewka ★ {bal} → po awansie ★ {after}
                 </p>
                 <div className="mt-3 flex gap-2">
                   <button
@@ -49,7 +48,7 @@ export function ShopTab() {
                     className="min-h-[56px] flex-1 rounded-2xl bg-dojo text-white"
                     onClick={() => {
                       const err = approve(req.id);
-                      setInfo(err ?? 'Zakup zatwierdzony. Skarb w szafie.');
+                      setInfo(err ?? 'Awans zatwierdzony.');
                     }}
                   >
                     Zatwierdź PIN-em
@@ -73,27 +72,26 @@ export function ShopTab() {
 
       <div>
         <h2 className="mb-2 text-xl font-semibold">Zwroty (24 h)</h2>
-        {approved.length === 0 && <p className="text-muted">Brak zatwierdzonych zakupów.</p>}
+        {approved.length === 0 && <p className="text-muted">Brak zatwierdzonych awansów.</p>}
         <div className="space-y-3">
           {approved.map((req) => {
             const check = canRefundPurchase(req, transactions);
             const kid = kids.find((item) => item.id === req.kidId);
-            const item = getCosmetic(req.itemId);
-            if (!check.ok) return null;
             return (
               <article key={req.id} className="rounded-3xl bg-white p-4">
                 <p className="text-lg font-semibold">
-                  {kid?.name} · {item?.label}
+                  {kid?.name ?? req.kidId} · {shopItemLabel(req.itemId)}
                 </p>
                 <button
                   type="button"
-                  className="mt-2 min-h-[56px] w-full rounded-2xl bg-paper"
+                  disabled={!check.ok}
+                  className="mt-2 min-h-[56px] w-full rounded-2xl bg-paper disabled:opacity-40"
                   onClick={() => {
                     const err = refund(req.id);
-                    setInfo(err ?? 'Zwrot wykonany. Skarb wrócił, gwiazdki też.');
+                    setInfo(err ?? 'Zwrot zrobiony. Stadium cofnięte.');
                   }}
                 >
-                  Zwróć ★ {req.priceSnapshot}
+                  {check.ok ? 'Zwróć gwiazdki' : check.reason}
                 </button>
               </article>
             );
@@ -102,51 +100,29 @@ export function ShopTab() {
       </div>
 
       <div>
-        <h2 className="mb-2 text-xl font-semibold">Nagrody tygodniowe</h2>
-        {openClaims.length === 0 && (
-          <p className="text-muted">Brak zdobytych nagród do oznaczenia.</p>
-        )}
-        <div className="space-y-3">
-          {openClaims.map((claim) => {
-            const kid = kids.find((item) => item.id === claim.kidId);
-            return (
-              <article
-                key={`${claim.weekStart}-${claim.kidId}`}
-                className="rounded-3xl bg-white p-4"
+        <h2 className="mb-2 text-xl font-semibold">Nagroda tygodnia</h2>
+        {openClaims.length === 0 && <p className="text-muted">Brak otwartych nagród.</p>}
+        {openClaims.map((claim) => {
+          const kid = kids.find((item) => item.id === claim.kidId);
+          return (
+            <article key={`${claim.weekStart}-${claim.kidId}`} className="mb-2 rounded-3xl bg-white p-4">
+              <p className="font-semibold">
+                {kid?.name} · {claim.label} (★ {claim.points})
+              </p>
+              <button
+                type="button"
+                className="mt-2 min-h-[56px] w-full rounded-2xl bg-dojo text-white"
+                onClick={() => markWeekly(claim.kidId, claim.weekStart)}
               >
-                <p className="text-lg font-semibold">
-                  {kid?.name} · {claim.label}
-                </p>
-                <p className="text-muted">Tydzień od {claim.weekStart} · zdobyta</p>
-                <button
-                  type="button"
-                  className="mt-2 min-h-[56px] w-full rounded-2xl bg-dojo text-white"
-                  onClick={() => {
-                    markWeekly(claim.kidId, claim.weekStart);
-                    setInfo('Nagroda oznaczona jako zrealizowana.');
-                  }}
-                >
-                  Zrealizowana
-                </button>
-              </article>
-            );
-          })}
-        </div>
+                Odebrane
+              </button>
+            </article>
+          );
+        })}
         {redeemedClaims.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-sm font-semibold text-muted">Historia realizacji</p>
-            {redeemedClaims.map((claim) => {
-              const kid = kids.find((item) => item.id === claim.kidId);
-              return (
-                <p
-                  key={`${claim.weekStart}-${claim.kidId}-done`}
-                  className="rounded-2xl bg-paper px-3 py-2 text-sm text-muted"
-                >
-                  {kid?.name} · {claim.label} · tydzień {claim.weekStart}
-                </p>
-              );
-            })}
-          </div>
+          <p className="mt-2 text-sm text-muted">
+            Ostatnio: {redeemedClaims.map((c) => c.label).join(' · ')}
+          </p>
         )}
       </div>
     </section>

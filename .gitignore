@@ -13,3 +13,6 @@ dev-dist
 
 # kontaktówki QA (npm run art:sheet)
 art-qa/
+
+# Evo: w repo tylko WebP (PNG lokalnie po art:evo-slice)
+public/art/evo/**/*.png

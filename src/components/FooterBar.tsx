@@ -43,7 +43,7 @@ export function FooterBar({ bothReady, showShop }: Props) {
             className="relative flex items-center justify-center rounded-2xl bg-white text-xl"
             style={{ minHeight: TOUCH.minTilePx, minWidth: TOUCH.minTilePx }}
             onClick={() => setUiScreen('shop')}
-            aria-label="Sklepik dojo"
+            aria-label="Awans pandy"
           >
             ★
             {pending > 0 && (

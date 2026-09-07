@@ -55,9 +55,10 @@ describe('parseAppState', () => {
     };
     const parsed = parseAppState(JSON.stringify(raw));
     expect(parsed).not.toBeNull();
-    expect(parsed?.kids[0].panda.handId).toBe('weapon-bokken');
-    expect(parsed?.kids[0].inventory).toContain('weapon-bokken');
-    expect(parsed?.kids[0].inventory).toContain('weapon-bo');
+    expect(parsed?.kids[0].panda.stage).toBe(1);
+    expect(parsed?.kids[0].panda.outfitColor).toBe('#3A3F46');
+    expect(parsed?.kids[0].inventory).toContain('logo-paw');
+    expect(parsed?.kids[0].inventory).toContain('evo-round-1');
     expect(parsed?.transactions.some((tx) => tx.kind === 'opening-balance' && tx.amount === 240)).toBe(
       true,
     );

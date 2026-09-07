@@ -8,10 +8,17 @@ import {
   kidKeyFromId,
   tasksForAgePreset,
 } from '../lib/onboarding';
+import {
+  EVOLUTION_LINES,
+  OUTFIT_SWATCHES,
+  STARTER_LOGOS,
+  evolutionLine,
+} from '../lib/evolution';
 import { chime, setVolume, unlockAudio } from '../lib/sfx';
 import { unlockSpeech } from '../lib/speech';
 import { scrollFieldIntoView } from '../lib/useKeyboardOffset';
 import { useStore } from '../store/useStore';
+import type { PandaBodyId } from '../types';
 
 export function OnboardingScreen() {
   const kids = useStore((s) => s.kids);
@@ -19,6 +26,7 @@ export function OnboardingScreen() {
   const updateKidName = useStore((s) => s.updateKidName);
   const applyAgePreset = useStore((s) => s.applyAgePreset);
   const patchSettings = useStore((s) => s.patchSettings);
+  const updateKidPanda = useStore((s) => s.updateKidPanda);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
   const [stepIndex, setStepIndex] = useState(0);
   const [ages, setAges] = useState<[AgePreset, AgePreset]>([8, 6]);
@@ -108,6 +116,7 @@ export function OnboardingScreen() {
             }
           />
         )}
+        {step === 'pandas' && <PandasStep onPanda={updateKidPanda} />}
         {step === 'timing' && (
           <TimingStep
             departure={settings.departure.mon ?? '07:40'}
@@ -191,22 +200,13 @@ function KidsStep({
   const kids = useStore((s) => s.kids);
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-semibold">Wasze pandy</h2>
+      <h2 className="text-2xl font-semibold">Imiona i wiek</h2>
       {([0, 1] as const).map((index) => (
         <article
           key={kids[index].id}
           className="rounded-3xl bg-white p-4"
           style={{ borderLeft: `6px solid ${kids[index].panda.accent}` }}
         >
-          <div className="mb-3 flex justify-center">
-            <PandaStage
-              pose="training"
-              appearance={kids[index].panda}
-              name={names[index]}
-              pulse={0}
-              compact
-            />
-          </div>
           <label className="text-sm text-muted">Imię</label>
           <input
             value={names[index]}
@@ -241,6 +241,106 @@ function KidsStep({
           </p>
         </article>
       ))}
+    </div>
+  );
+}
+
+function PandasStep({
+  onPanda,
+}: {
+  onPanda: (kidId: string, patch: Parameters<ReturnType<typeof useStore.getState>['updateKidPanda']>[1]) => void;
+}) {
+  const kids = useStore((s) => s.kids);
+
+  return (
+    <div className="space-y-5">
+      <h2 className="text-2xl font-semibold">Wybierzcie pandy</h2>
+      <p className="text-muted">
+        Dwie różne postacie — spokojna z bokkenem i zwinna z nunchaku. Kolor kimona i logo
+        wybieracie teraz; broń rośnie z ewolucją za gwiazdki.
+      </p>
+      {kids.map((kid) => {
+        const line = evolutionLine(kid.panda.body);
+        return (
+          <article
+            key={kid.id}
+            className="rounded-3xl bg-white p-4"
+            style={{ borderLeft: `6px solid ${kid.panda.accent}` }}
+          >
+            <p className="mb-2 text-xl font-semibold">{kid.name}</p>
+            <div className="mb-3 flex justify-center">
+              <PandaStage pose="training" appearance={kid.panda} name={kid.name} pulse={0} compact />
+            </div>
+
+            <p className="mb-2 font-semibold">Charakter</p>
+            <div className="flex flex-col gap-2">
+              {(Object.keys(EVOLUTION_LINES) as PandaBodyId[]).map((body) => {
+                const item = EVOLUTION_LINES[body];
+                const selected = kid.panda.body === body;
+                return (
+                  <button
+                    key={body}
+                    type="button"
+                    className={`rounded-2xl px-3 py-3 text-left ${
+                      selected ? 'bg-dojo text-white' : 'bg-paper'
+                    }`}
+                    style={{ minHeight: TOUCH.minTilePx }}
+                    onClick={() =>
+                      onPanda(kid.id, {
+                        body,
+                        stage: 1,
+                        outfitColor: item.defaultOutfit,
+                        logoId: item.defaultLogoId,
+                        accent: item.accent,
+                      })
+                    }
+                  >
+                    <span className="block text-lg font-semibold">{item.name}</span>
+                    <span className={`block text-sm ${selected ? 'text-white/85' : 'text-muted'}`}>
+                      {item.temperament}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-sm text-muted">Ścieżka: {line.weaponPath}</p>
+
+            <p className="mt-4 mb-2 font-semibold">Kolor kimona</p>
+            <div className="flex flex-wrap gap-2">
+              {OUTFIT_SWATCHES.map((swatch) => (
+                <button
+                  key={swatch.id}
+                  type="button"
+                  aria-label={swatch.label}
+                  onClick={() => onPanda(kid.id, { outfitColor: swatch.hex })}
+                  className="h-[72px] w-[72px] rounded-2xl"
+                  style={{
+                    background: swatch.hex,
+                    outline: kid.panda.outfitColor === swatch.hex ? '3px solid #2A2926' : 'none',
+                    outlineOffset: 2,
+                  }}
+                />
+              ))}
+            </div>
+
+            <p className="mt-4 mb-2 font-semibold">Logo na opasce</p>
+            <div className="flex flex-wrap gap-2">
+              {STARTER_LOGOS.map((logo) => (
+                <button
+                  key={logo.id}
+                  type="button"
+                  className={`min-h-[56px] rounded-2xl px-4 text-lg ${
+                    kid.panda.logoId === logo.id ? 'bg-dojo text-white' : 'bg-paper'
+                  }`}
+                  onClick={() => onPanda(kid.id, { logoId: logo.id })}
+                >
+                  {logo.label}
+                </button>
+              ))}
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 }

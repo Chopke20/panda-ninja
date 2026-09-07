@@ -17,7 +17,9 @@
     "test": "vitest",
     "art:masks": "node scripts/art-masks-v2.mjs",
     "art:anchor": "node scripts/art-anchor-v2.mjs",
-    "art:sheet": "node scripts/art-contact-sheet.mjs"
+    "art:sheet": "node scripts/art-contact-sheet.mjs",
+    "art:evo-contact": "node scripts/art-evo-contact.mjs",
+    "art:evo-slice": "node scripts/art-evo-slice.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.2.0",

@@ -5,9 +5,14 @@ import type {
   PurchaseRequest,
   WeeklyClaim,
 } from '../types';
-import { getCosmetic } from './cosmetics';
 import { addDaysIso, weekRange } from './time';
 import {
+  evolutionLine,
+  parseEvolutionItemId,
+  stageDef,
+} from './evolution';
+import {
+  applyEvolutionUnlock,
   availableBalance,
   canRequestPurchase,
   hasEarnForDay,
@@ -71,6 +76,9 @@ export function createPurchaseRequest(args: {
   kidId: string;
   itemId: string;
   nowMs?: number;
+  /** Stadium i ciało pandy — wymagane przy awansie ewolucji. */
+  currentStage?: number;
+  body?: import('../types').PandaBodyId;
 }): { ok: true; request: PurchaseRequest } | { ok: false; reason: string } {
   const nowMs = args.nowMs ?? Date.now();
   const check = canRequestPurchase(
@@ -80,6 +88,8 @@ export function createPurchaseRequest(args: {
     args.kidId,
     args.itemId,
     nowMs,
+    args.currentStage,
+    args.body,
   );
   if (!check.ok) return check;
   const createdAt = new Date(nowMs).toISOString();
@@ -138,8 +148,10 @@ export function approvePurchase(args: {
   const transactions = [...args.transactions, purchaseTx];
   const kids = args.kids.map((item) => {
     if (item.id !== kid.id) return item;
+    const unlocked = applyEvolutionUnlock(item.panda, args.request.itemId);
     const next = {
       ...item,
+      panda: unlocked ?? item.panda,
       inventory: [...item.inventory, args.request.itemId],
     };
     return syncKidWalletCache(next, transactions);
@@ -230,10 +242,16 @@ export function refundPurchase(args: {
     note: args.request.id,
   };
   const transactions = [...args.transactions, refundTx];
+  const evo = parseEvolutionItemId(args.request.itemId);
   const kids = args.kids.map((kid) => {
     if (kid.id !== args.request.kidId) return kid;
+    let panda = kid.panda;
+    if (evo && panda.body === evo.body && panda.stage === evo.stage) {
+      panda = { ...panda, stage: Math.max(1, evo.stage - 1) };
+    }
     const next = {
       ...kid,
+      panda,
       inventory: kid.inventory.filter((id) => id !== args.request.itemId),
     };
     return syncKidWalletCache(next, transactions);
@@ -317,5 +335,11 @@ export function redeemWeeklyClaim(
 }
 
 export function shopItemLabel(itemId: string): string {
-  return getCosmetic(itemId)?.label ?? itemId;
+  const evo = parseEvolutionItemId(itemId);
+  if (evo) {
+    const line = evolutionLine(evo.body);
+    const stage = stageDef(evo.body, evo.stage);
+    return stage ? `${line.name}: ${stage.label}` : itemId;
+  }
+  return itemId;
 }

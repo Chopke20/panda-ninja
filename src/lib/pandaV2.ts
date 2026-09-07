@@ -160,15 +160,28 @@ export type ComposeLayer =
       z: number;
     };
 
+/** Legacy pola paper-doll — ignorowane w modelu ewolucji. */
+type LegacyLook = PandaAppearance & {
+  handId?: string;
+  auraId?: string | null;
+  outfitPatternId?: string | null;
+  backId?: string | null;
+  headId?: string | null;
+  beltId?: string | null;
+  headbandColor?: string;
+};
+
 export function buildComposeLayers(
   appearance: PandaAppearance,
   pose: PandaPose,
 ): ComposeLayer[] {
-  const body = appearance.body;
-  const grip = gripFamilyForHand(appearance.handId) as GripFamily;
-  const weaponKey = weaponAssetKey(appearance.handId);
-  const auraKey = auraAssetKey(appearance.auraId);
-  const patternKey = patternAssetKey(appearance.outfitPatternId);
+  const look = appearance as LegacyLook;
+  const body = look.body;
+  const handId = look.handId ?? 'weapon-bokken';
+  const grip = gripFamilyForHand(handId) as GripFamily;
+  const weaponKey = weaponAssetKey(handId);
+  const auraKey = auraAssetKey(look.auraId ?? null);
+  const patternKey = patternAssetKey(look.outfitPatternId ?? null);
   const layers: ComposeLayer[] = [];
 
   const push = (
@@ -190,7 +203,7 @@ export function buildComposeLayers(
     );
   }
 
-  const backKey = gadgetAssetKey(appearance.backId);
+  const backKey = gadgetAssetKey(look.backId ?? null);
   if (backKey) {
     push(
       'back',
@@ -227,7 +240,7 @@ export function buildComposeLayers(
     key: 'headband',
     maskSrc: headbandMaskSrc(body, pose),
     shadeSrc: headbandShadeSrc(body, pose),
-    color: appearance.headbandColor,
+    color: look.headbandColor ?? '#2A2926',
     z: 30,
   });
 
@@ -263,7 +276,7 @@ export function buildComposeLayers(
     );
   }
 
-  const headKey = gadgetAssetKey(appearance.headId);
+  const headKey = gadgetAssetKey(look.headId ?? null);
   if (headKey) {
     push(
       'head',
@@ -273,7 +286,7 @@ export function buildComposeLayers(
     );
   }
 
-  const beltKey = gadgetAssetKey(appearance.beltId);
+  const beltKey = gadgetAssetKey(look.beltId ?? null);
   if (beltKey) {
     push(
       'belt',

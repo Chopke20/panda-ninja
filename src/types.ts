@@ -3,9 +3,27 @@ export type Weekday = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 export type RoutineId = 'morning' | 'evening';
 
 export type PandaBodyId = 'round' | 'agile';
-export type FurTone = 'classic' | 'snow' | 'bamboo';
-export type FaceMark = 'classic' | 'round' | 'bolt' | 'mask';
 
+/**
+ * Wygląd pandy po uproszczeniu: linia ewolucji + kolor kimona + logo.
+ * Futro, oczy, broń z warstw i gadżety — usunięte (były niewidoczne / kłamliwe).
+ */
+export type PandaAppearance = {
+  body: PandaBodyId;
+  /** Stadium ewolucji 1…6 (najwyższe odblokowane). */
+  stage: number;
+  /** Hex koloru kimona (recolor chroma w runtime). */
+  outfitColor: string;
+  logoId: string;
+  /** Kolor ramki panelu i pasków UI — nie panda. */
+  accent: string;
+};
+
+/** @deprecated — tylko migracja starych zapisów. */
+export type FurTone = 'classic' | 'snow' | 'bamboo';
+/** @deprecated — tylko migracja starych zapisów. */
+export type FaceMark = 'classic' | 'round' | 'bolt' | 'mask';
+/** @deprecated — paper-doll slots. */
 export type CosmeticSlot =
   | 'hand'
   | 'head'
@@ -14,25 +32,6 @@ export type CosmeticSlot =
   | 'aura'
   | 'headbandLogo'
   | 'outfitPattern';
-
-export type PandaAppearance = {
-  body: PandaBodyId;
-  fur: FurTone;
-  faceMark: FaceMark;
-  /** Hex koloru kimona — maska CSS / nakładka. */
-  outfitColor: string;
-  /** Hex koloru opaski. */
-  headbandColor: string;
-  logoId: string;
-  handId: string;
-  headId: string | null;
-  backId: string | null;
-  beltId: string | null;
-  auraId: string | null;
-  outfitPatternId: string | null;
-  /** Kolor ramki panelu i pasków UI. */
-  accent: string;
-};
 
 /** @deprecated — tylko do migracji starych kopii. */
 export type LegacyPandaConfig = {

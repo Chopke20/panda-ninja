@@ -1,6 +1,7 @@
 import type { PandaBodyId, PandaPose } from '../types';
 import { assetCandidates, assetUrl } from './assetUrl';
 import { PANDA_SHEETS } from './constants';
+import { evolutionSpriteRel, stageDef } from './evolution';
 import { bodySheet } from './pandaCompose';
 
 export const PANDA_POSES: readonly PandaPose[] = ['sleeping', 'training', 'hurry', 'celebrating'];
@@ -10,13 +11,21 @@ export function pandaArtSrc(sheet: (typeof PANDA_SHEETS)[number], pose: PandaPos
 }
 
 /**
- * Jeden kompletny sprite: najpierw flat panda-a/b, potem body v2.
- * Kilka URL-i, bo lokalny Vite bywa odpalony z VITE_BASE od Pages.
+ * Sprite pandy: ewolucja (gdy ready) → flat panda-a/b.
+ * Kilka URL-i, bo lokalny Vite bywa z VITE_BASE od Pages.
  */
-export function pandaSpriteSrcs(body: PandaBodyId, pose: PandaPose): string[] {
+export function pandaSpriteSrcs(
+  body: PandaBodyId,
+  pose: PandaPose,
+  stage: number = 1,
+): string[] {
   const sheet = bodySheet(body);
-  const v2 = body === 'agile' ? 'agile' : 'round';
-  const rels = [`art/${sheet}/${pose}.png`, `art/panda-v2/${v2}/body/${pose}.png`];
+  const rels: string[] = [];
+  const def = stageDef(body, stage);
+  if (def?.ready) {
+    rels.push(evolutionSpriteRel(body, stage, pose));
+  }
+  rels.push(`art/${sheet}/${pose}.png`);
   const urls: string[] = [];
   for (const rel of rels) {
     for (const url of assetCandidates(rel)) {
@@ -33,6 +42,15 @@ export function preloadPandaArt(): void {
     for (const pose of PANDA_POSES) {
       const img = new Image();
       img.src = pandaArtSrc(sheet, pose);
+    }
+  }
+  for (const body of ['round', 'agile'] as const) {
+    for (let stage = 1; stage <= 6; stage++) {
+      if (!stageDef(body, stage)?.ready) continue;
+      for (const pose of PANDA_POSES) {
+        const img = new Image();
+        img.src = assetUrl(evolutionSpriteRel(body, stage, pose));
+      }
     }
   }
 }

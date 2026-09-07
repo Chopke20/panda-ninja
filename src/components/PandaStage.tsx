@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { PandaAppearance, PandaPose } from '../types';
 import { CELEBRATE_STARS, COLORS, MOTION, PANDA_STAGE, USE_PANDA_V2 } from '../lib/constants';
-import { pandaSpriteSrcs } from '../lib/pandaArt';
-import { furFilter } from '../lib/pandaCompose';
+import { stageDef } from '../lib/evolution';
 import { PandaComposer } from './PandaComposer';
+import { PandaEvoSprite } from './PandaEvoSprite';
 
 const LABELS: Record<PandaPose, string> = {
   sleeping: 'śpi',
@@ -44,22 +44,13 @@ function poseTransition(pose: PandaPose) {
   return { duration, repeat: Infinity, ease: 'easeInOut' as const };
 }
 
-/**
- * Na ekranie zawsze jeden kompletny rysunek pandy.
- * Paper-doll v2 zostaje w kodzie, ale nie składa miniatur z popsutych warstw.
- */
+/** Sprite ewolucji (recolor + logo) albo legacy paper-doll gdy włączone. */
 export function PandaStage({ pose, appearance, name, pulse, compact = false }: Props) {
   const reduce = useReducedMotion();
-  const srcs = pandaSpriteSrcs(appearance.body, pose);
-  const [srcIndex, setSrcIndex] = useState(0);
-  const src = srcs[Math.min(srcIndex, srcs.length - 1)] ?? '';
   const size = compact ? PANDA_STAGE.startSizePx : undefined;
-  const useV2 = USE_PANDA_V2 && !compact;
+  const evoReady = stageDef(appearance.body, appearance.stage)?.ready === true;
+  const useV2 = USE_PANDA_V2 && !compact && !evoReady;
   const still = compact || reduce || pulse === 0;
-
-  useEffect(() => {
-    setSrcIndex(0);
-  }, [appearance.body, pose]);
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col items-center justify-center">
@@ -81,18 +72,7 @@ export function PandaStage({ pose, appearance, name, pulse, compact = false }: P
           {useV2 ? (
             <PandaComposer pose={pose} appearance={appearance} />
           ) : (
-            src && (
-              <img
-                key={src}
-                src={src}
-                alt=""
-                className="pointer-events-none absolute inset-0 h-full w-full object-contain object-bottom"
-                style={{ filter: furFilter(appearance.fur) }}
-                onError={() => {
-                  setSrcIndex((i) => (i + 1 < srcs.length ? i + 1 : i));
-                }}
-              />
-            )
+            <PandaEvoSprite pose={pose} appearance={appearance} compact={compact} />
           )}
 
           {!compact && pose === 'sleeping' && !reduce && (

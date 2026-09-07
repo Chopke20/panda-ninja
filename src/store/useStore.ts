@@ -38,7 +38,7 @@ import {
 import { kidKeyFromId, tasksForAgePreset, type AgePreset } from '../lib/onboarding';
 import { snapshotTasks, tasksForToday } from '../lib/tasks';
 import { todayIso, weekdayFromIso } from '../lib/time';
-import { equipItem, unequipSlot } from '../lib/wallet';
+import { ownedFromAppearance } from '../lib/wallet';
 import { makeDefaultState } from './defaults';
 
 export type UiFlight = PointFlight & { id: string };
@@ -65,10 +65,7 @@ type Store = AppState & {
   updateKidName: (kidId: string, name: string) => void;
   updateKidPanda: (kidId: string, panda: Partial<PandaAppearance>) => void;
   equipCosmetic: (kidId: string, itemId: string) => void;
-  unequipCosmetic: (
-    kidId: string,
-    slot: 'head' | 'back' | 'belt' | 'aura' | 'outfitPattern',
-  ) => void;
+  unequipCosmetic: (kidId: string, slot?: 'head' | 'back' | 'belt' | 'aura' | 'outfitPattern') => void;
   resetKidPoints: (kidId: string) => void;
   addTask: (kidId: string, routineId?: RoutineId) => void;
   updateTask: (kidId: string, taskId: string, patch: Partial<Task>) => void;
@@ -249,15 +246,7 @@ export const useStore = create<Store>()(
         set({
           kids: mapKid(get().kids, kidId, (kid) => {
             const nextPanda = { ...kid.panda, ...panda };
-            const idsToOwn = [
-              panda.logoId,
-              panda.handId,
-              panda.headId,
-              panda.backId,
-              panda.beltId,
-              panda.auraId,
-              panda.outfitPatternId,
-            ].filter((id): id is string => typeof id === 'string' && id.length > 0);
+            const idsToOwn = ownedFromAppearance(nextPanda);
             return {
               ...kid,
               panda: nextPanda,
@@ -267,21 +256,18 @@ export const useStore = create<Store>()(
         });
       },
       equipCosmetic: (kidId, itemId) => {
-        set({
-          kids: mapKid(get().kids, kidId, (kid) => {
-            if (!kid.inventory.includes(itemId)) return kid;
-            const next = equipItem(kid.panda, itemId);
-            return next ? { ...kid, panda: next } : kid;
-          }),
-        });
-      },
-      unequipCosmetic: (kidId, slot) => {
+        // Kosmetyki warstwowe usunięte — tylko logo z listy starterów.
+        if (!itemId.startsWith('logo-')) return;
         set({
           kids: mapKid(get().kids, kidId, (kid) => ({
             ...kid,
-            panda: unequipSlot(kid.panda, slot),
+            panda: { ...kid.panda, logoId: itemId },
+            inventory: [...new Set([...kid.inventory, itemId])],
           })),
         });
+      },
+      unequipCosmetic: () => {
+        // Brak slotów do zdejmowania w modelu ewolucji.
       },
       resetKidPoints: (kidId) => {
         const nowIso = new Date().toISOString();
@@ -412,6 +398,8 @@ export const useStore = create<Store>()(
           inventory: kid.inventory,
           kidId,
           itemId,
+          currentStage: kid.panda.stage,
+          body: kid.panda.body,
         });
         if (!result.ok) return result.reason;
         set({ purchaseRequests: [...current.purchaseRequests, result.request] });

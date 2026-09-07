@@ -6,7 +6,7 @@ import { SummaryDirector } from './components/SummaryDirector';
 import { MainScreen } from './screens/MainScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
 import { ParentPanel } from './screens/parent/ParentPanel';
-import { ShopScreen } from './screens/ShopScreen';
+import { EvolutionScreen } from './screens/EvolutionScreen';
 import { StartScreen } from './screens/StartScreen';
 import { SummaryScreen } from './screens/SummaryScreen';
 import { useStore } from './store/useStore';
@@ -18,7 +18,7 @@ function Screen() {
   if (screen === 'start') return <StartScreen />;
   if (screen === 'parent') return <ParentPanel />;
   if (screen === 'summary') return <SummaryScreen />;
-  if (screen === 'shop') return <ShopScreen />;
+  if (screen === 'shop') return <EvolutionScreen />;
   return <MainScreen />;
 }
 

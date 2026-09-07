@@ -14,7 +14,7 @@ import { ShopTab } from './tabs/Shop';
 
 const TABS = [
   { id: 'kids', label: 'Dzieci' },
-  { id: 'shop', label: 'Sklep' },
+  { id: 'shop', label: 'Awans' },
   { id: 'tasks', label: 'Zadania' },
   { id: 'timing', label: 'Czas' },
   { id: 'rewards', label: 'Nagrody' },
@@ -70,7 +70,7 @@ export function ParentPanel() {
           style={{ minHeight: TOUCH.minTilePx }}
           onClick={() => setTab('shop')}
         >
-          {pendingCount} {pendingCount === 1 ? 'prośba' : 'próśb'} o zakup czeka w Sklepie.
+          {pendingCount} {pendingCount === 1 ? 'prośba' : 'próśb'} o awans czeka w zakładce Awans.
         </button>
       )}
       <nav className="flex gap-1 overflow-x-auto px-2 py-2">

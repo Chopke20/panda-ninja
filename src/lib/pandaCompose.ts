@@ -1,33 +1,27 @@
-import type { PandaAppearance } from '../types';
+import type { PandaAppearance, PandaBodyId } from '../types';
 import { getCosmetic, LOGO_GLYPHS } from './cosmetics';
+import { STARTER_LOGOS } from './evolution';
 
-export function bodySheet(body: PandaAppearance['body']): 'panda-a' | 'panda-b' {
+export function bodySheet(body: PandaBodyId): 'panda-a' | 'panda-b' {
   return body === 'agile' ? 'panda-b' : 'panda-a';
 }
 
-export function furFilter(fur: PandaAppearance['fur']): string {
-  if (fur === 'snow') return 'brightness(1.08) saturate(0.85)';
-  if (fur === 'bamboo') return 'hue-rotate(-12deg) saturate(1.1)';
-  return 'none';
-}
-
 export function logoGlyph(logoId: string): string {
+  const fromStarter = STARTER_LOGOS.find((l) => l.id === logoId);
+  if (fromStarter) return LOGO_GLYPHS[fromStarter.assetKey] ?? '🐾';
   const item = getCosmetic(logoId);
   const key = item?.assetKey ?? 'paw';
   return LOGO_GLYPHS[key] ?? '🐾';
 }
 
-export function weaponPreview(_handId: string): string | null {
-  // Faza 0: flat sprite ma broń wypaloną — nie doklejamy drugiej.
-  // v2 wróci tu z warstwą z panda-v2.
-  return null;
-}
-
-/** Gadżety na flat sprite wyłączone (emoji kłamały). Logo zostaje. */
-export function gadgetGlyph(_itemId: string | null): string | null {
-  return null;
-}
-
 export function outfitLabelColor(hex: string): string {
   return hex;
+}
+
+/** Lekki tint całego sprite’u póki nie ma chroma-key na kimono. */
+export function outfitPreviewFilter(appearance: PandaAppearance): string {
+  // Bez chroma w pliku nie da się uczciwie przefarbować samego gi —
+  // zostawiamy naturalny kolor arkusza. Filtr nie kłamie „kolorem futra”.
+  void appearance;
+  return 'none';
 }

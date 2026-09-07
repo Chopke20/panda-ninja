@@ -1,41 +1,22 @@
 import { useEffect, useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PandaStage } from '../../../components/PandaStage';
+import { ACCENTS } from '../../../lib/cosmetics';
 import {
-  ACCENTS,
-  COSMETIC_CATALOG,
-  HEADBAND_COLORS,
-  OUTFIT_COLORS,
-} from '../../../lib/cosmetics';
+  EVOLUTION_LINES,
+  OUTFIT_SWATCHES,
+  STARTER_LOGOS,
+  evolutionLine,
+} from '../../../lib/evolution';
 import { availableBalance } from '../../../lib/shop';
 import { scrollFieldIntoView } from '../../../lib/useKeyboardOffset';
 import { useStore } from '../../../store/useStore';
-import type { FurTone, Kid, PandaBodyId, FaceMark } from '../../../types';
-
-const BODIES: { id: PandaBodyId; label: string }[] = [
-  { id: 'round', label: 'Okrągła' },
-  { id: 'agile', label: 'Zwinna' },
-];
-
-const FURS: { id: FurTone; label: string }[] = [
-  { id: 'classic', label: 'Klasyczne' },
-  { id: 'snow', label: 'Śnieżne' },
-  { id: 'bamboo', label: 'Bambusowe' },
-];
-
-const MARKS: { id: FaceMark; label: string }[] = [
-  { id: 'classic', label: 'Klasyczne' },
-  { id: 'round', label: 'Okrągłe' },
-  { id: 'bolt', label: 'Błyskawica' },
-  { id: 'mask', label: 'Maska' },
-];
+import type { Kid, PandaBodyId } from '../../../types';
 
 export function KidsTab() {
   const kids = useStore((s) => s.kids);
   const updateKidName = useStore((s) => s.updateKidName);
   const updateKidPanda = useStore((s) => s.updateKidPanda);
-  const equipCosmetic = useStore((s) => s.equipCosmetic);
-  const unequipCosmetic = useStore((s) => s.unequipCosmetic);
   const resetKidPoints = useStore((s) => s.resetKidPoints);
   const transactions = useStore((s) => s.transactions);
   const requests = useStore((s) => s.purchaseRequests);
@@ -50,15 +31,13 @@ export function KidsTab() {
           wallet={availableBalance(transactions, requests, kid.id)}
           onName={(name) => updateKidName(kid.id, name)}
           onPanda={(patch) => updateKidPanda(kid.id, patch)}
-          onEquip={(itemId) => equipCosmetic(kid.id, itemId)}
-          onUnequip={(slot) => unequipCosmetic(kid.id, slot)}
           onReset={() => setResetId(kid.id)}
         />
       ))}
       <ConfirmDialog
         open={resetId !== null}
         title="Wyzerować sakiewkę?"
-        body="Gwiazdki w sakiewce wrócą do zera. Seria dni i skarby w szafie zostają. Tego nie da się cofnąć."
+        body="Gwiazdki w sakiewce wrócą do zera. Seria dni i awanse pandy zostają. Tego nie da się cofnąć."
         confirmLabel="Wyzeruj"
         danger
         onCancel={() => setResetId(null)}
@@ -76,20 +55,16 @@ function KidCard({
   wallet,
   onName,
   onPanda,
-  onEquip,
-  onUnequip,
   onReset,
 }: {
   kid: Kid;
   wallet: number;
   onName: (name: string) => void;
   onPanda: (patch: Partial<Kid['panda']>) => void;
-  onEquip: (itemId: string) => void;
-  onUnequip: (slot: 'head' | 'back' | 'belt' | 'aura' | 'outfitPattern') => void;
   onReset: () => void;
 }) {
   const [name, setName] = useState(kid.name);
-  const owned = COSMETIC_CATALOG.filter((item) => kid.inventory.includes(item.id));
+  const line = evolutionLine(kid.panda.body);
 
   useEffect(() => {
     setName(kid.name);
@@ -123,46 +98,37 @@ function KidCard({
       <p className="mt-3 text-muted">
         Sakiewka ★ {wallet} · konto ★ {kid.totalPoints} · seria {kid.streak}
       </p>
+      <p className="mt-1 text-muted">
+        {line.name} · stadium {kid.panda.stage} ({line.stages.find((s) => s.id === kid.panda.stage)?.label})
+      </p>
 
-      <p className="mt-4 mb-2 font-semibold">Sylwetka</p>
+      <p className="mt-4 mb-2 font-semibold">Panda (charakter)</p>
       <div className="flex flex-wrap gap-2">
-        {BODIES.map((item) => (
-          <Chip
-            key={item.id}
-            selected={kid.panda.body === item.id}
-            label={item.label}
-            onClick={() => onPanda({ body: item.id })}
-          />
-        ))}
+        {(Object.keys(EVOLUTION_LINES) as PandaBodyId[]).map((body) => {
+          const item = EVOLUTION_LINES[body];
+          return (
+            <Chip
+              key={body}
+              selected={kid.panda.body === body}
+              label={item.name}
+              onClick={() =>
+                onPanda({
+                  body,
+                  stage: 1,
+                  outfitColor: item.defaultOutfit,
+                  logoId: item.defaultLogoId,
+                  accent: item.accent,
+                })
+              }
+            />
+          );
+        })}
       </div>
-
-      <p className="mt-4 mb-2 font-semibold">Futro</p>
-      <div className="flex flex-wrap gap-2">
-        {FURS.map((item) => (
-          <Chip
-            key={item.id}
-            selected={kid.panda.fur === item.id}
-            label={item.label}
-            onClick={() => onPanda({ fur: item.id })}
-          />
-        ))}
-      </div>
-
-      <p className="mt-4 mb-2 font-semibold">Plamy wokół oczu</p>
-      <div className="flex flex-wrap gap-2">
-        {MARKS.map((item) => (
-          <Chip
-            key={item.id}
-            selected={kid.panda.faceMark === item.id}
-            label={item.label}
-            onClick={() => onPanda({ faceMark: item.id })}
-          />
-        ))}
-      </div>
+      <p className="mt-2 text-sm text-muted">{line.temperament}</p>
 
       <p className="mt-4 mb-2 font-semibold">Kolor kimona</p>
       <div className="flex flex-wrap gap-2">
-        {OUTFIT_COLORS.map((item) => (
+        {OUTFIT_SWATCHES.map((item) => (
           <button
             key={item.id}
             type="button"
@@ -178,92 +144,19 @@ function KidCard({
         ))}
       </div>
 
-      <p className="mt-4 mb-2 font-semibold">Kolor opaski</p>
+      <p className="mt-4 mb-2 font-semibold">Logo opaski</p>
       <div className="flex flex-wrap gap-2">
-        {HEADBAND_COLORS.map((item) => (
-          <button
+        {STARTER_LOGOS.map((item) => (
+          <Chip
             key={item.id}
-            type="button"
-            aria-label={item.label}
-            onClick={() => onPanda({ headbandColor: item.hex })}
-            className="h-[72px] w-[72px] rounded-2xl"
-            style={{
-              background: item.hex,
-              outline: kid.panda.headbandColor === item.hex ? '3px solid #2A2926' : 'none',
-              outlineOffset: 2,
-            }}
+            selected={kid.panda.logoId === item.id}
+            label={item.label}
+            onClick={() => onPanda({ logoId: item.id })}
           />
         ))}
       </div>
 
-      <p className="mt-4 mb-2 font-semibold">Logo opaski</p>
-      <div className="flex flex-wrap gap-2">
-        {owned
-          .filter((item) => item.slot === 'headbandLogo')
-          .map((item) => (
-            <Chip
-              key={item.id}
-              selected={kid.panda.logoId === item.id}
-              label={item.label}
-              onClick={() => onEquip(item.id)}
-            />
-          ))}
-      </div>
-
-      <p className="mt-4 mb-2 font-semibold">Sprzęt treningowy</p>
-      <div className="flex flex-wrap gap-2">
-        {owned
-          .filter((item) => item.slot === 'hand')
-          .map((item) => (
-            <Chip
-              key={item.id}
-              selected={kid.panda.handId === item.id}
-              label={item.label}
-              onClick={() => onEquip(item.id)}
-            />
-          ))}
-      </div>
-
-      <EquipRow
-        title="Głowa"
-        items={owned.filter((item) => item.slot === 'head' && !item.comingSoon)}
-        activeId={kid.panda.headId}
-        onEquip={onEquip}
-        onClear={() => onUnequip('head')}
-      />
-      <EquipRow
-        title="Plecy"
-        items={owned.filter((item) => item.slot === 'back' && !item.comingSoon)}
-        activeId={kid.panda.backId}
-        onEquip={onEquip}
-        onClear={() => onUnequip('back')}
-      />
-      <EquipRow
-        title="Pas"
-        items={owned.filter((item) => item.slot === 'belt' && !item.comingSoon)}
-        activeId={kid.panda.beltId}
-        onEquip={onEquip}
-        onClear={() => onUnequip('belt')}
-      />
-      <EquipRow
-        title="Aura"
-        items={owned.filter((item) => item.slot === 'aura' && !item.comingSoon)}
-        activeId={kid.panda.auraId}
-        onEquip={onEquip}
-        onClear={() => onUnequip('aura')}
-      />
-      <EquipRow
-        title="Wzór kimona"
-        items={owned.filter((item) => item.slot === 'outfitPattern' && !item.comingSoon)}
-        activeId={kid.panda.outfitPatternId}
-        onEquip={onEquip}
-        onClear={() => onUnequip('outfitPattern')}
-      />
-      <p className="mt-3 text-sm text-muted">
-        Gadżety i wzory wrócą do szafy razem z grafiką warstwową (v2).
-      </p>
-
-      <p className="mt-4 mb-2 font-semibold">Kolor akcentu</p>
+      <p className="mt-4 mb-2 font-semibold">Kolor ramki UI</p>
       <div className="flex flex-wrap gap-2">
         {ACCENTS.map((item) => (
           <button
@@ -283,44 +176,13 @@ function KidCard({
 
       <button
         type="button"
-        className="mt-5 min-h-[56px] w-full rounded-2xl bg-paper text-lg text-belt"
+        className="mt-6 w-full rounded-2xl bg-paper text-lg text-red"
+        style={{ minHeight: 56 }}
         onClick={onReset}
       >
         Wyzeruj sakiewkę
       </button>
     </article>
-  );
-}
-
-function EquipRow({
-  title,
-  items,
-  activeId,
-  onEquip,
-  onClear,
-}: {
-  title: string;
-  items: { id: string; label: string }[];
-  activeId: string | null;
-  onEquip: (id: string) => void;
-  onClear: () => void;
-}) {
-  if (items.length === 0) return null;
-  return (
-    <>
-      <p className="mt-4 mb-2 font-semibold">{title}</p>
-      <div className="flex flex-wrap gap-2">
-        <Chip selected={activeId === null} label="Brak" onClick={onClear} />
-        {items.map((item) => (
-          <Chip
-            key={item.id}
-            selected={activeId === item.id}
-            label={item.label}
-            onClick={() => onEquip(item.id)}
-          />
-        ))}
-      </div>
-    </>
   );
 }
 
@@ -337,7 +199,9 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-[72px] rounded-2xl bg-paper px-3 text-sm ${selected ? 'ring-2 ring-ink' : ''}`}
+      className={`min-h-[56px] rounded-2xl px-4 text-lg ${
+        selected ? 'bg-dojo text-white' : 'bg-paper'
+      }`}
     >
       {label}
     </button>

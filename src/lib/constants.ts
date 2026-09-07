@@ -30,13 +30,13 @@ export const TYPE = {
 
 export const STORAGE_KEY = 'pandaninja.v1';
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 /**
- * Paper-doll v2 — warstwy sadzone kotwicami (src/data/panda-anchors.json).
- * Wyłącz na false, żeby wrócić do płaskich sprite'ów panda-a / panda-b.
+ * Paper-doll v2 — wyłączone. Produkt = gotowe sprite’y ewolucji + kolor/logo.
+ * Zostawione w kodzie na wypadek powrotu do warstw.
  */
-export const USE_PANDA_V2 = true;
+export const USE_PANDA_V2 = false;
 
 export const ROUTINE_IDS = ['morning', 'evening'] as const;
 

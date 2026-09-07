@@ -63,6 +63,7 @@ export function kidKeyFromId(kidId: string): string {
 export const ONBOARDING_STEPS = [
   'welcome',
   'kids',
+  'pandas',
   'timing',
   'pin',
   'sound',
@@ -74,6 +75,7 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number];
 export const ONBOARDING_STEP_LABELS: Record<OnboardingStep, string> = {
   welcome: 'Witaj',
   kids: 'Dzieci',
+  pandas: 'Pandy',
   timing: 'Poranek',
   pin: 'PIN',
   sound: 'Dźwięk',

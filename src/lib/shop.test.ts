@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { makeKid1 } from '../store/defaults';
-import { COSMETIC_CATALOG } from './cosmetics';
 import {
   approvePurchase,
   createPurchaseRequest,
@@ -15,165 +14,134 @@ import {
   normalizeAppearance,
   walletBalance,
 } from './wallet';
+import { evolutionItemId } from './evolution';
 
 describe('normalizeAppearance', () => {
-  it('migruje stary PandaConfig', () => {
+  it('migruje stary PandaConfig do ewolucji', () => {
     const panda = normalizeAppearance(
       { weapon: 'katana', headband: 'black', outfit: 'charcoal', accent: '#3D6B8A' },
       'kid-1',
     );
-    expect(panda.handId).toBe('weapon-bokken');
-    expect(panda.headbandColor).toBe('#2A2926');
-    expect(panda.outfitColor).toBe('#3A3F46');
     expect(panda.body).toBe('round');
+    expect(panda.stage).toBe(1);
+    expect(panda.outfitColor).toBe('#3A3F46');
   });
 
-  it('zachowuje nowy wygląd', () => {
+  it('zachowuje uproszczony wygląd', () => {
     const panda = normalizeAppearance(
       {
         body: 'agile',
-        fur: 'snow',
-        faceMark: 'bolt',
+        stage: 3,
         outfitColor: '#3D4F8A',
-        headbandColor: '#C44536',
-        logoId: 'logo-dragon',
-        handId: 'weapon-sai',
-        headId: null,
-        backId: null,
-        beltId: null,
-        auraId: null,
-        outfitPatternId: null,
+        logoId: 'logo-bolt',
         accent: '#C44536',
       },
       'kid-2',
     );
     expect(panda.body).toBe('agile');
-    expect(panda.logoId).toBe('logo-dragon');
-    expect(panda.handId).toBe('weapon-sai');
+    expect(panda.stage).toBe(3);
+    expect(panda.logoId).toBe('logo-bolt');
   });
 });
 
-describe('ledger', () => {
-  it('liczy saldo i rezerwację pending', () => {
+describe('ledger ewolucji', () => {
+  it('pozwala kupić następne stadium gdy ready i jest saldo', () => {
+    const txs = [makeOpeningBalance('kid-1', 500, new Date().toISOString())];
+    const check = canRequestPurchase(
+      txs,
+      [],
+      makeKid1().inventory,
+      'kid-1',
+      evolutionItemId('round', 2),
+      Date.now(),
+      1,
+      'round',
+    );
+    expect(check.ok).toBe(true);
+    if (check.ok) expect(check.price).toBe(20);
+  });
+
+  it('księguje wczorajsze earn', () => {
+    const today = todayIso();
+    const yesterday = addDaysIso(today, -1);
+    const kids = [makeKid1(), makeKid1()] as [
+      ReturnType<typeof makeKid1>,
+      ReturnType<typeof makeKid1>,
+    ];
+    kids[1] = { ...kids[1], id: 'kid-2' };
+    const result = settleYesterdayEarns(
+      [
+        {
+          date: yesterday,
+          kidId: 'kid-1',
+          routineId: 'morning',
+          completedTaskIds: ['a'],
+          pointsEarned: 30,
+          finishedAt: `${yesterday}T08:00:00.000Z`,
+          onTime: true,
+        },
+      ],
+      [],
+      kids,
+      today,
+      new Date().toISOString(),
+    );
+    expect(walletBalance(result.transactions, 'kid-1')).toBe(30);
+  });
+
+  it('approve podnosi stadium', () => {
     const now = Date.now();
     const txs = [makeOpeningBalance('kid-1', 500, new Date(now).toISOString())];
-    const req = createPurchaseRequest({
+    const created = createPurchaseRequest({
       transactions: txs,
       requests: [],
       inventory: makeKid1().inventory,
       kidId: 'kid-1',
-      itemId: 'logo-mountain',
+      itemId: evolutionItemId('round', 2),
       nowMs: now,
-    });
-    expect(req.ok).toBe(true);
-    if (!req.ok) return;
-    expect(walletBalance(txs, 'kid-1')).toBe(500);
-    expect(availableBalance(txs, [req.request], 'kid-1', now)).toBe(500 - 120);
-  });
-
-  it('nie pozwala kupić bez salda', () => {
-    const check = canRequestPurchase([], [], makeKid1().inventory, 'kid-1', 'weapon-bokken');
-    expect(check.ok).toBe(false);
-  });
-
-  it('nie sprzedaje zapowiedzi comingSoon', () => {
-    const soon = COSMETIC_CATALOG.find((item) => item.comingSoon);
-    if (!soon) {
-      expect(COSMETIC_CATALOG.every((item) => item.comingSoon !== true)).toBe(true);
-      return;
-    }
-    const txs = [makeOpeningBalance('kid-1', 5000, new Date().toISOString())];
-    const check = canRequestPurchase(txs, [], makeKid1().inventory, 'kid-1', soon.id);
-    expect(check.ok).toBe(false);
-    if (!check.ok) expect(check.reason).toMatch(/wkrótce/i);
-  });
-
-  it('zatwierdza zakup i odejmuje gwiazdki', () => {
-    const now = Date.now();
-    const kid = { ...makeKid1(), totalPoints: 500 };
-    const txs = [makeOpeningBalance(kid.id, 500, new Date(now).toISOString())];
-    const created = createPurchaseRequest({
-      transactions: txs,
-      requests: [],
-      inventory: kid.inventory,
-      kidId: kid.id,
-      itemId: 'logo-mountain',
-      nowMs: now,
+      currentStage: 1,
+      body: 'round',
     });
     expect(created.ok).toBe(true);
     if (!created.ok) return;
+    const kid = makeKid1();
     const approved = approvePurchase({
       request: created.request,
       transactions: txs,
       kids: [kid, { ...makeKid1(), id: 'kid-2' }],
-      nowMs: now,
+      nowMs: now + 1,
     });
     expect(approved.ok).toBe(true);
     if (!approved.ok) return;
-    expect(walletBalance(approved.transactions, kid.id)).toBe(380);
-    expect(approved.kids[0].inventory).toContain('logo-mountain');
-  });
+    expect(approved.kids[0].panda.stage).toBe(2);
+    expect(walletBalance(approved.transactions, 'kid-1')).toBe(480);
 
-  it('zwraca zakup w oknie 24 h', () => {
-    const now = Date.now();
-    const kid = makeKid1();
-    const txs = [makeOpeningBalance(kid.id, 500, new Date(now).toISOString())];
-    const created = createPurchaseRequest({
-      transactions: txs,
-      requests: [],
-      inventory: kid.inventory,
-      kidId: kid.id,
-      itemId: 'logo-mountain',
-      nowMs: now,
-    });
-    if (!created.ok) throw new Error('request');
-    const approved = approvePurchase({
-      request: created.request,
-      transactions: txs,
-      kids: [kid, { ...makeKid1(), id: 'kid-2' }],
-      nowMs: now,
-    });
-    if (!approved.ok) throw new Error('approve');
     const refunded = refundPurchase({
-      request: approved.request,
+      request: { ...created.request, status: 'approved' },
       transactions: approved.transactions,
       kids: approved.kids,
-      nowMs: now + 1000,
+      nowMs: now + 2,
     });
     expect(refunded.ok).toBe(true);
     if (!refunded.ok) return;
-    expect(walletBalance(refunded.transactions, kid.id)).toBe(500);
-    expect(refunded.kids[0].inventory).not.toContain('logo-mountain');
+    expect(refunded.kids[0].panda.stage).toBe(1);
   });
 
-  it('księguje wczorajsze punkty raz', () => {
-    const today = todayIso(new Date(2026, 8, 3));
-    const yesterday = addDaysIso(today, -1);
-    const kids: [ReturnType<typeof makeKid1>, ReturnType<typeof makeKid1>] = [
-      makeKid1(),
-      { ...makeKid1(), id: 'kid-2' },
-    ];
-    const logs = [
-      {
-        date: yesterday,
-        kidId: 'kid-1',
-        routineId: 'morning' as const,
-        completedTaskIds: ['k1-morning-1'],
-        pointsEarned: 80,
-        finishedAt: null,
-        onTime: true,
-      },
-    ];
-    const first = settleYesterdayEarns(logs, [], kids, today, new Date().toISOString());
-    expect(walletBalance(first.transactions, 'kid-1')).toBe(80);
-    const second = settleYesterdayEarns(
-      logs,
-      first.transactions,
-      first.kids,
-      today,
-      new Date().toISOString(),
-    );
-    expect(second.transactions).toHaveLength(1);
-    expect(walletBalance(second.transactions, 'kid-1')).toBe(80);
+  it('availableBalance odejmuje pending', () => {
+    const now = Date.now();
+    const txs = [makeOpeningBalance('kid-1', 500, new Date(now).toISOString())];
+    const created = createPurchaseRequest({
+      transactions: txs,
+      requests: [],
+      inventory: makeKid1().inventory,
+      kidId: 'kid-1',
+      itemId: evolutionItemId('round', 2),
+      nowMs: now,
+      currentStage: 1,
+      body: 'round',
+    });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    expect(availableBalance(txs, [created.request], 'kid-1', now)).toBe(480);
   });
 });

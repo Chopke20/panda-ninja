@@ -1,33 +1,25 @@
+/**
+ * Wygląd i sakiewka — model ewolucji (bez paper-doll).
+ */
 import type {
   Kid,
   LegacyPandaConfig,
   PandaAppearance,
+  PandaBodyId,
   PointTransaction,
   PurchaseRequest,
 } from '../types';
 import {
-  defaultOwnedIds,
-  getCosmetic,
-  HEADBAND_COLORS,
-  OUTFIT_COLORS,
-} from './cosmetics';
-
-const LEGACY_WEAPON: Record<string, string> = {
-  bo: 'weapon-bo',
-  katana: 'weapon-bokken',
-  nunchaku: 'weapon-nunchaku',
-  kama: 'weapon-fan',
-  shuriken: 'weapon-sticks',
-  sai: 'weapon-sai',
-};
-
-const LEGACY_HEADBAND: Record<string, string> = {
-  white: '#F2F0EA',
-  red: '#C44536',
-  blue: '#3D6B8A',
-  green: '#3F8F62',
-  black: '#2A2926',
-};
+  clampStage,
+  canUnlockStage,
+  evolutionItemId,
+  evolutionLine,
+  OUTFIT_SWATCHES,
+  parseEvolutionItemId,
+  stageDef,
+  STARTER_LOGOS,
+  type EvolutionStageId,
+} from './evolution';
 
 const LEGACY_OUTFIT: Record<string, string> = {
   charcoal: '#3A3F46',
@@ -37,107 +29,70 @@ const LEGACY_OUTFIT: Record<string, string> = {
 };
 
 export function makeDefaultAppearance(seed: 'kid-1' | 'kid-2' = 'kid-1'): PandaAppearance {
-  if (seed === 'kid-2') {
-    return {
-      body: 'agile',
-      fur: 'classic',
-      faceMark: 'classic',
-      outfitColor: LEGACY_OUTFIT.indigo ?? '#3D4F8A',
-      headbandColor: LEGACY_HEADBAND.red ?? '#C44536',
-      logoId: 'logo-bamboo',
-      handId: 'weapon-nunchaku',
-      headId: null,
-      backId: null,
-      beltId: null,
-      auraId: null,
-      outfitPatternId: null,
-      accent: '#C44536',
-    };
-  }
+  const body: PandaBodyId = seed === 'kid-2' ? 'agile' : 'round';
+  const line = evolutionLine(body);
   return {
-    body: 'round',
-    fur: 'classic',
-    faceMark: 'classic',
-    outfitColor: LEGACY_OUTFIT.charcoal ?? '#3A3F46',
-    headbandColor: LEGACY_HEADBAND.black ?? '#2A2926',
-    logoId: 'logo-paw',
-    handId: 'weapon-bokken',
-    headId: null,
-    backId: null,
-    beltId: null,
-    auraId: null,
-    outfitPatternId: null,
-    accent: '#3D6B8A',
+    body,
+    stage: 1,
+    outfitColor: line.defaultOutfit,
+    logoId: line.defaultLogoId,
+    accent: line.accent,
   };
 }
 
-/** Zamienia stary PandaConfig / częściowy wygląd na pełny PandaAppearance. */
+/** Zamienia stary / częściowy wygląd na uproszczony PandaAppearance. */
 export function normalizeAppearance(raw: unknown, seed: 'kid-1' | 'kid-2'): PandaAppearance {
   const fallback = makeDefaultAppearance(seed);
   if (!raw || typeof raw !== 'object') return fallback;
-  const r = raw as Partial<PandaAppearance> & LegacyPandaConfig;
-
-  if (typeof r.outfitColor === 'string' && typeof r.headbandColor === 'string') {
-    return {
-      body: r.body === 'agile' ? 'agile' : 'round',
-      fur: r.fur === 'snow' || r.fur === 'bamboo' ? r.fur : 'classic',
-      faceMark:
-        r.faceMark === 'round' || r.faceMark === 'bolt' || r.faceMark === 'mask'
-          ? r.faceMark
-          : 'classic',
-      outfitColor: r.outfitColor,
-      headbandColor: r.headbandColor,
-      logoId: typeof r.logoId === 'string' ? r.logoId : fallback.logoId,
-      handId: typeof r.handId === 'string' ? r.handId : fallback.handId,
-      headId: typeof r.headId === 'string' ? r.headId : null,
-      backId: typeof r.backId === 'string' ? r.backId : null,
-      beltId: typeof r.beltId === 'string' ? r.beltId : null,
-      auraId: typeof r.auraId === 'string' ? r.auraId : null,
-      outfitPatternId: typeof r.outfitPatternId === 'string' ? r.outfitPatternId : null,
-      accent: typeof r.accent === 'string' ? r.accent : fallback.accent,
+  const r = raw as Partial<PandaAppearance> &
+    LegacyPandaConfig & {
+      headbandColor?: string;
+      handId?: string;
+      fur?: string;
+      faceMark?: string;
+      stage?: number;
     };
+
+  const body: PandaBodyId =
+    r.body === 'agile' || r.body === 'round'
+      ? r.body
+      : seed === 'kid-2'
+        ? 'agile'
+        : 'round';
+  const line = evolutionLine(body);
+
+  let outfitColor = fallback.outfitColor;
+  if (typeof r.outfitColor === 'string') {
+    outfitColor = r.outfitColor;
+  } else if (typeof r.outfit === 'string' && LEGACY_OUTFIT[r.outfit]) {
+    outfitColor = LEGACY_OUTFIT[r.outfit] ?? outfitColor;
   }
 
-  // Migracja ze starego modelu weapon/headband/outfit
-  const weaponId =
-    typeof r.weapon === 'string' && LEGACY_WEAPON[r.weapon]
-      ? LEGACY_WEAPON[r.weapon]
-      : fallback.handId;
-  const headbandColor =
-    typeof r.headband === 'string' && LEGACY_HEADBAND[r.headband]
-      ? LEGACY_HEADBAND[r.headband]
-      : fallback.headbandColor;
-  const outfitColor =
-    typeof r.outfit === 'string' && LEGACY_OUTFIT[r.outfit]
-      ? LEGACY_OUTFIT[r.outfit]
-      : fallback.outfitColor;
+  const logoId =
+    typeof r.logoId === 'string' && STARTER_LOGOS.some((l) => l.id === r.logoId)
+      ? r.logoId
+      : line.defaultLogoId;
+
+  const stage = clampStage(typeof r.stage === 'number' ? r.stage : 1);
 
   return {
-    ...fallback,
-    body: seed === 'kid-2' ? 'agile' : 'round',
+    body,
+    stage,
     outfitColor,
-    headbandColor,
-    handId: weaponId,
-    accent: typeof r.accent === 'string' ? r.accent : fallback.accent,
+    logoId,
+    accent: typeof r.accent === 'string' ? r.accent : line.accent,
   };
 }
 
-/** Przedmioty, które muszą być w inventory po migracji wyglądu. */
+/** Inventory po migracji: logo + odblokowane stadia ewolucji. */
 export function ownedFromAppearance(panda: PandaAppearance): string[] {
-  const ids = new Set(defaultOwnedIds());
+  const ids = new Set<string>();
   ids.add(panda.logoId);
-  ids.add(panda.handId);
-  if (panda.headId) ids.add(panda.headId);
-  if (panda.backId) ids.add(panda.backId);
-  if (panda.beltId) ids.add(panda.beltId);
-  if (panda.auraId) ids.add(panda.auraId);
-  if (panda.outfitPatternId) ids.add(panda.outfitPatternId);
-
-  const outfitMatch = OUTFIT_COLORS.find((c) => c.hex === panda.outfitColor);
-  if (outfitMatch) ids.add(outfitMatch.id);
-  const hbMatch = HEADBAND_COLORS.find((c) => c.hex === panda.headbandColor);
-  if (hbMatch) ids.add(hbMatch.id);
-
+  for (const logo of STARTER_LOGOS) ids.add(logo.id);
+  for (const swatch of OUTFIT_SWATCHES) ids.add(swatch.id);
+  for (let s = 1; s <= panda.stage; s++) {
+    ids.add(evolutionItemId(panda.body, s as EvolutionStageId));
+  }
   return [...ids];
 }
 
@@ -197,7 +152,7 @@ export function makeOpeningBalance(
     itemId: null,
     dayLogKey: null,
     createdAt,
-    note: 'Saldo przed sklepikiem',
+    note: 'Saldo startowe',
   };
 }
 
@@ -222,6 +177,12 @@ export function syncKidWalletCache(kid: Kid, transactions: PointTransaction[]): 
   return { ...kid, totalPoints: walletBalance(transactions, kid.id) };
 }
 
+export function evolutionPrice(itemId: string): number | null {
+  const parsed = parseEvolutionItemId(itemId);
+  if (!parsed) return null;
+  return stageDef(parsed.body, parsed.stage)?.price ?? null;
+}
+
 export function canRequestPurchase(
   transactions: PointTransaction[],
   requests: PurchaseRequest[],
@@ -229,49 +190,49 @@ export function canRequestPurchase(
   kidId: string,
   itemId: string,
   nowMs: number = Date.now(),
+  currentStage?: number,
+  body?: PandaBodyId,
 ): { ok: true; price: number } | { ok: false; reason: string } {
-  const item = getCosmetic(itemId);
-  if (!item) return { ok: false, reason: 'Nie ma takiego skarbu.' };
-  if (item.comingSoon) return { ok: false, reason: 'Ten skarb będzie wkrótce — czekamy na grafikę.' };
-  if (item.price <= 0) return { ok: false, reason: 'Ten skarb masz już na start.' };
-  if (inventory.includes(itemId)) return { ok: false, reason: 'Już posiadasz ten skarb.' };
-  const pendingSame = requests.some(
-    (req) =>
-      req.kidId === kidId &&
-      req.itemId === itemId &&
-      req.status === 'pending' &&
-      new Date(req.expiresAt).getTime() > nowMs,
-  );
-  if (pendingSame) return { ok: false, reason: 'Prośba już czeka na rodzica.' };
-  const available = availableBalance(transactions, requests, kidId, nowMs);
-  if (available < item.price) {
-    return { ok: false, reason: `Brakuje ${item.price - available} pkt. Trening przybliża Cię do skarbu.` };
+  const evo = parseEvolutionItemId(itemId);
+  if (evo) {
+    if (body && body !== evo.body) {
+      return { ok: false, reason: 'To stadium należy do drugiej pandy.' };
+    }
+    const stage = currentStage ?? 1;
+    const unlock = canUnlockStage(evo.body, stage, evo.stage);
+    if (!unlock.ok) return unlock;
+    const price = stageDef(evo.body, evo.stage)?.price ?? 0;
+    if (inventory.includes(itemId)) return { ok: false, reason: 'Już masz to stadium.' };
+    const pendingSame = requests.some(
+      (req) =>
+        req.kidId === kidId &&
+        req.itemId === itemId &&
+        req.status === 'pending' &&
+        new Date(req.expiresAt).getTime() > nowMs,
+    );
+    if (pendingSame) return { ok: false, reason: 'Prośba już czeka na rodzica.' };
+    const available = availableBalance(transactions, requests, kidId, nowMs);
+    if (available < price) {
+      return {
+        ok: false,
+        reason: `Brakuje ${price - available} pkt. Trening przybliża Cię do awansu.`,
+      };
+    }
+    return { ok: true, price };
   }
-  return { ok: true, price: item.price };
+
+  return { ok: false, reason: 'Nie ma takiego skarbu.' };
 }
 
-export function equipItem(panda: PandaAppearance, itemId: string): PandaAppearance | null {
-  const item = getCosmetic(itemId);
-  if (!item) return null;
-  if (item.slot === 'hand') return { ...panda, handId: itemId };
-  if (item.slot === 'head') return { ...panda, headId: itemId };
-  if (item.slot === 'back') return { ...panda, backId: itemId };
-  if (item.slot === 'belt') return { ...panda, beltId: itemId };
-  if (item.slot === 'aura') return { ...panda, auraId: itemId };
-  if (item.slot === 'headbandLogo') return { ...panda, logoId: itemId };
-  if (item.slot === 'outfitPattern') return { ...panda, outfitPatternId: itemId };
-  return null;
-}
-
-export function unequipSlot(
+/** Po zatwierdzeniu awansu — podnieś stadium. */
+export function applyEvolutionUnlock(
   panda: PandaAppearance,
-  slot: 'head' | 'back' | 'belt' | 'aura' | 'outfitPattern',
-): PandaAppearance {
-  if (slot === 'head') return { ...panda, headId: null };
-  if (slot === 'back') return { ...panda, backId: null };
-  if (slot === 'belt') return { ...panda, beltId: null };
-  if (slot === 'aura') return { ...panda, auraId: null };
-  return { ...panda, outfitPatternId: null };
+  itemId: string,
+): PandaAppearance | null {
+  const evo = parseEvolutionItemId(itemId);
+  if (!evo || evo.body !== panda.body) return null;
+  if (evo.stage !== panda.stage + 1) return null;
+  return { ...panda, stage: evo.stage };
 }
 
 export const PURCHASE_EXPIRE_MS = 48 * 60 * 60 * 1000;
