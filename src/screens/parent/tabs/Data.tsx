@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { downloadText, parseAppState, serializeAppState } from '../../../lib/backup';
+import { ADMIN_FACTORY_PIN, TOUCH } from '../../../lib/constants';
 import { todayIso } from '../../../lib/time';
 import { scrollFieldIntoView } from '../../../lib/useKeyboardOffset';
 import { useStore } from '../../../store/useStore';
@@ -17,6 +18,7 @@ export function DataTab() {
   const importState = useStore((s) => s.importState);
   const patchSettings = useStore((s) => s.patchSettings);
   const markBackupDone = useStore((s) => s.markBackupDone);
+  const factoryReset = useStore((s) => s.factoryReset);
   const lastBackupAt = useStore((s) => s.lastBackupAt);
   const fileRef = useRef<HTMLInputElement>(null);
   const [pendingJson, setPendingJson] = useState<string | null>(null);
@@ -24,6 +26,8 @@ export function DataTab() {
   const [error, setError] = useState<string | null>(null);
   const [pin, setPin] = useState('');
   const [pin2, setPin2] = useState('');
+  const [adminPin, setAdminPin] = useState('');
+  const [resetOpen, setResetOpen] = useState(false);
 
   function exportJson() {
     const text = serializeAppState({
@@ -140,6 +144,41 @@ export function DataTab() {
       {error && <p className="text-belt">{error}</p>}
       {message && <p className="text-dojo">{message}</p>}
 
+      <div className="mt-6 space-y-3 rounded-3xl bg-white p-4">
+        <p className="font-semibold">Reset fabryczny</p>
+        <p className="text-sm text-muted">
+          Kasuje tylko dane Pandy Ninja na tym iPadzie (imiona, punkty, ustawienia). Nie rusza innych
+          stron na github.io. Wymaga PIN-u admina.
+        </p>
+        <input
+          inputMode="numeric"
+          autoComplete="off"
+          maxLength={4}
+          value={adminPin}
+          onChange={(e) => setAdminPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+          onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
+          className="w-full min-h-[52px] rounded-xl bg-paper px-3 text-lg tracking-[0.3em]"
+          placeholder="PIN admina"
+          aria-label="PIN admina do resetu"
+        />
+        <button
+          type="button"
+          className="w-full rounded-2xl bg-belt text-lg text-white"
+          style={{ minHeight: TOUCH.minTilePx }}
+          onClick={() => {
+            if (adminPin !== ADMIN_FACTORY_PIN) {
+              setError('Zły PIN admina.');
+              setMessage(null);
+              return;
+            }
+            setError(null);
+            setResetOpen(true);
+          }}
+        >
+          Reset fabryczny…
+        </button>
+      </div>
+
       <ConfirmDialog
         open={parsed !== null}
         title="Wgrać kopię?"
@@ -152,6 +191,20 @@ export function DataTab() {
           setPendingJson(null);
           setMessage('Kopia wgrana.');
           setError(null);
+        }}
+      />
+
+      <ConfirmDialog
+        open={resetOpen}
+        title="Zresetować Pandę Ninja?"
+        body="Wrócicie do pierwszego uruchomienia. Imiona, pandy, gwiazdki, historia i PIN rodzica znikną. Inne apki na github.io zostają."
+        confirmLabel="Resetuj"
+        danger
+        onCancel={() => setResetOpen(false)}
+        onConfirm={() => {
+          setResetOpen(false);
+          setAdminPin('');
+          factoryReset();
         }}
       />
     </section>

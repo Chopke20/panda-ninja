@@ -20,7 +20,8 @@ import {
   trimDayExceptions,
   upsertDayException,
 } from '../lib/dayExceptions';
-import { createDebouncedStorage } from '../lib/persistStorage';
+import { clearChromaCache } from '../lib/pandaChroma';
+import { createDebouncedStorage, flushPersistWrites } from '../lib/persistStorage';
 import { applyTaskToggle, settleStreaks, type PointFlight, type ToggleMode } from '../lib/scoring';
 import {
   approvePurchase,
@@ -87,6 +88,8 @@ type Store = AppState & {
   setTodayException: (patch: Partial<Omit<DayException, 'date'>>) => void;
   applyAgePreset: (kidId: string, age: AgePreset) => void;
   completeOnboarding: () => void;
+  /** Kasuje tylko dane tej apki (localStorage pandaninja.v1) i wraca do onboardingu. */
+  factoryReset: () => void;
 };
 
 function mapKid(kids: [Kid, Kid], kidId: string, fn: (kid: Kid) => Kid): [Kid, Kid] {
@@ -512,6 +515,25 @@ export const useStore = create<Store>()(
       },
       completeOnboarding: () => {
         set({ onboardingDone: true, uiScreen: 'start' });
+      },
+      factoryReset: () => {
+        clearChromaCache();
+        void useStore.persist.clearStorage();
+        const defaults = makeDefaultState();
+        set({
+          ...defaults,
+          uiScreen: 'onboarding',
+          mutedToday: false,
+          mutedDate: null,
+          playedWarnings: [],
+          summaryDismissedDate: null,
+          flights: [],
+          pandaPulse: {},
+          lastBackupAt: null,
+          onboardingDone: false,
+          _hasHydrated: true,
+        });
+        flushPersistWrites();
       },
     }),
     {

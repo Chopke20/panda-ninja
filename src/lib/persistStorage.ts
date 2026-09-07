@@ -13,6 +13,12 @@ type PersistStorage = {
 };
 
 let quotaWarned = false;
+let flushPendingWrites: (() => void) | null = null;
+
+/** Natychmiast zapisuje kolejki debounce (np. po resecie fabrycznym). */
+export function flushPersistWrites(): void {
+  flushPendingWrites?.();
+}
 
 /** Debounce zapisu + łagodna obsługa QuotaExceededError. */
 export function createDebouncedStorage(
@@ -36,6 +42,16 @@ export function createDebouncedStorage(
       }
     }
   }
+
+  flushPendingWrites = () => {
+    for (const name of [...timers.keys()]) {
+      const existing = timers.get(name);
+      if (existing) window.clearTimeout(existing);
+      timers.delete(name);
+      flush(name);
+    }
+    for (const name of [...pending.keys()]) flush(name);
+  };
 
   return {
     getItem: (name) => {

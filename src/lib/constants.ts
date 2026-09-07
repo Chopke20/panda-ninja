@@ -88,6 +88,9 @@ export const PANDA_SHEETS = ['panda-a', 'panda-b'] as const;
 
 export const DEFAULT_PIN = '1111';
 
+/** PIN tylko do resetu fabrycznego (panel Dane) — nie mylić z PIN-em rodzica. */
+export const ADMIN_FACTORY_PIN = '1608';
+
 export const MOTION = {
   crossfadeSec: 0.25,
   sleepScale: 1.025,
