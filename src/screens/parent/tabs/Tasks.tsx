@@ -58,8 +58,8 @@ export function TasksTab() {
 
       {tasks.map((task, index) => (
         <article key={task.id} className="flex items-center gap-2 rounded-2xl bg-white p-3">
-          <img src={taskIconSrc(task.icon)} alt="" className="h-12 w-12 object-contain" />
-          <button type="button" className="min-h-[56px] flex-1 text-left" onClick={() => setEditing(task)}>
+          <img src={taskIconSrc(task.icon)} alt="" className="h-12 w-12 shrink-0 object-contain" />
+          <button type="button" className="min-h-[72px] min-w-0 flex-1 text-left" onClick={() => setEditing(task)}>
             <p className="text-lg font-semibold">{task.label}</p>
             <p className="text-sm text-muted">
               {task.points} pkt
@@ -67,21 +67,27 @@ export function TasksTab() {
               {task.days.map((d) => WEEKDAYS.find((w) => w.id === d)?.short).join(' ')}
             </p>
           </button>
-          <div className="flex flex-col">
+          <div className="flex shrink-0 flex-col gap-1">
             <button
               type="button"
-              className="min-h-[44px] min-w-[44px]"
+              className="flex min-h-[72px] min-w-[72px] items-center justify-center rounded-xl bg-paper text-2xl font-semibold disabled:opacity-25"
               disabled={index === 0}
-              onClick={() => moveTask(kid.id, task.id, 'up')}
+              onClick={(event) => {
+                event.stopPropagation();
+                moveTask(kid.id, task.id, 'up');
+              }}
               aria-label="Wyżej"
             >
               ↑
             </button>
             <button
               type="button"
-              className="min-h-[44px] min-w-[44px]"
+              className="flex min-h-[72px] min-w-[72px] items-center justify-center rounded-xl bg-paper text-2xl font-semibold disabled:opacity-25"
               disabled={index === tasks.length - 1}
-              onClick={() => moveTask(kid.id, task.id, 'down')}
+              onClick={(event) => {
+                event.stopPropagation();
+                moveTask(kid.id, task.id, 'down');
+              }}
               aria-label="Niżej"
             >
               ↓
@@ -89,7 +95,7 @@ export function TasksTab() {
           </div>
           <button
             type="button"
-            className="min-h-[44px] px-2 text-belt"
+            className="min-h-[72px] shrink-0 px-2 text-belt"
             onClick={() => setRemoveId(task.id)}
           >
             Usuń

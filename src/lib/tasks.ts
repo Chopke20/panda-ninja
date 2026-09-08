@@ -63,3 +63,37 @@ export function findDayLog<T extends { date: string; kidId: string; routineId?: 
       (log.routineId ?? 'morning') === routineId,
   );
 }
+
+/**
+ * Przestawia zadanie w górę/dół tylko w obrębie tej samej rutyny
+ * (w UI rodzica widać poranek albo wieczór osobno).
+ * Nadaje gęste order 0…n−1 w tej rutynie — działa też przy dziurach / kolizjach.
+ */
+export function moveTaskInRoutine(
+  tasks: Task[],
+  taskId: string,
+  direction: 'up' | 'down',
+): Task[] {
+  const target = tasks.find((task) => task.id === taskId);
+  if (!target) return tasks;
+  const routine = target.routine ?? 'morning';
+  const inRoutine = tasks
+    .filter((task) => (task.routine ?? 'morning') === routine)
+    .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+  const index = inRoutine.findIndex((task) => task.id === taskId);
+  const swapWith = direction === 'up' ? index - 1 : index + 1;
+  if (index < 0 || swapWith < 0 || swapWith >= inRoutine.length) return tasks;
+
+  const reordered = [...inRoutine];
+  const current = reordered[index];
+  const neighbor = reordered[swapWith];
+  if (!current || !neighbor) return tasks;
+  reordered[index] = neighbor;
+  reordered[swapWith] = current;
+
+  const orderById = new Map(reordered.map((task, i) => [task.id, i]));
+  return tasks.map((task) => {
+    const nextOrder = orderById.get(task.id);
+    return nextOrder === undefined ? task : { ...task, order: nextOrder };
+  });
+}

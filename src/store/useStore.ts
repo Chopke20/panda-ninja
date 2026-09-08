@@ -37,7 +37,7 @@ import {
   zeroKidWallet,
 } from '../lib/shop';
 import { kidKeyFromId, tasksForAgePreset, type AgePreset } from '../lib/onboarding';
-import { snapshotTasks, tasksForToday } from '../lib/tasks';
+import { snapshotTasks, tasksForToday, moveTaskInRoutine } from '../lib/tasks';
 import { todayIso, weekdayFromIso } from '../lib/time';
 import { ownedFromAppearance } from '../lib/wallet';
 import { makeDefaultState } from './defaults';
@@ -289,7 +289,10 @@ export const useStore = create<Store>()(
       addTask: (kidId, routineId) => {
         set({
           kids: mapKid(get().kids, kidId, (kid) => {
-            const order = kid.tasks.length === 0 ? 0 : Math.max(...kid.tasks.map((t) => t.order)) + 1;
+            const routine = routineId ?? get().settings.activeRoutine ?? 'morning';
+            const inRoutine = kid.tasks.filter((t) => (t.routine ?? 'morning') === routine);
+            const order =
+              inRoutine.length === 0 ? 0 : Math.max(...inRoutine.map((t) => t.order)) + 1;
             const task: Task = {
               id: newTaskId(kidId),
               label: 'Nowe zadanie',
@@ -298,7 +301,7 @@ export const useStore = create<Store>()(
               order,
               days: [...SCHOOL_DAYS],
               enabled: true,
-              routine: routineId ?? get().settings.activeRoutine ?? 'morning',
+              routine,
               timerSec: null,
             };
             return { ...kid, tasks: [...kid.tasks, task] };
@@ -323,24 +326,10 @@ export const useStore = create<Store>()(
       },
       moveTask: (kidId, taskId, direction) => {
         set({
-          kids: mapKid(get().kids, kidId, (kid) => {
-            const sorted = [...kid.tasks].sort((a, b) => a.order - b.order);
-            const index = sorted.findIndex((task) => task.id === taskId);
-            const swapWith = direction === 'up' ? index - 1 : index + 1;
-            if (index < 0 || swapWith < 0 || swapWith >= sorted.length) return kid;
-            const a = sorted[index];
-            const b = sorted[swapWith];
-            if (!a || !b) return kid;
-            const orderA = a.order;
-            return {
-              ...kid,
-              tasks: kid.tasks.map((task) => {
-                if (task.id === a.id) return { ...task, order: b.order };
-                if (task.id === b.id) return { ...task, order: orderA };
-                return task;
-              }),
-            };
-          }),
+          kids: mapKid(get().kids, kidId, (kid) => ({
+            ...kid,
+            tasks: moveTaskInRoutine(kid.tasks, taskId, direction),
+          })),
         });
       },
       copyTasksToOther: (fromKidId) => {
