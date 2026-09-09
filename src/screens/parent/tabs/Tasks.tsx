@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { TASK_ICONS, taskIconSrc } from '../../../lib/catalog';
 import { WEEKDAYS } from '../../../lib/constants';
@@ -34,7 +34,7 @@ export function TasksTab() {
             key={item.id}
             type="button"
             onClick={() => setKidId(item.id)}
-            className={`min-h-[52px] flex-1 rounded-2xl ${kidId === item.id ? 'bg-dojo text-white' : 'bg-white'}`}
+            className={`min-h-[52px] flex-1 rounded-2xl ${kidId === item.id ? 'bg-dojo text-white' : 'bg-panel'}`}
           >
             {item.name}
           </button>
@@ -48,7 +48,7 @@ export function TasksTab() {
             type="button"
             onClick={() => setRoutineFilter(id)}
             className={`min-h-[52px] flex-1 rounded-2xl ${
-              routineFilter === id ? 'bg-dojo text-white' : 'bg-white'
+              routineFilter === id ? 'bg-dojo text-white' : 'bg-panel'
             }`}
           >
             {ROUTINE_LABELS[id]}
@@ -57,7 +57,7 @@ export function TasksTab() {
       </div>
 
       {tasks.map((task, index) => (
-        <article key={task.id} className="flex items-center gap-2 rounded-2xl bg-white p-3">
+        <article key={task.id} className="flex items-center gap-2 rounded-2xl bg-panel p-3">
           <img src={taskIconSrc(task.icon)} alt="" className="h-12 w-12 shrink-0 object-contain" />
           <div className="min-w-0 flex-1">
             <p className="text-lg font-semibold">{task.label}</p>
@@ -119,7 +119,7 @@ export function TasksTab() {
       </button>
       <button
         type="button"
-        className="min-h-[56px] w-full rounded-2xl bg-white text-lg"
+        className="min-h-[56px] w-full rounded-2xl bg-panel text-lg"
         onClick={() => setCopyOpen(true)}
       >
         Skopiuj listę do: {other.name}
@@ -201,7 +201,7 @@ function TaskEditor({
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-          className="mt-1 w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+          className="mt-1 w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         />
         <label className="mt-4 block text-sm text-muted">Punkty</label>
         <input
@@ -212,7 +212,7 @@ function TaskEditor({
           value={points}
           onChange={(e) => setPoints(e.target.value)}
           onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-          className="mt-1 w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+          className="mt-1 w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         />
         <p className="mt-4 mb-2 font-semibold">Rutyna</p>
         <div className="flex gap-2">
@@ -222,7 +222,7 @@ function TaskEditor({
               type="button"
               onClick={() => setRoutine(id)}
               className={`min-h-[52px] flex-1 rounded-xl ${
-                routine === id ? 'bg-dojo text-white' : 'bg-white'
+                routine === id ? 'bg-dojo text-white' : 'bg-panel'
               }`}
             >
               {ROUTINE_LABELS[id]}
@@ -241,7 +241,7 @@ function TaskEditor({
           onChange={(e) => setTimerMin(e.target.value)}
           onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
           placeholder="np. 2"
-          className="mt-1 w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+          className="mt-1 w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         />
         <p className="mt-4 mb-2 font-semibold">Ikona</p>
         <div className="grid grid-cols-6 gap-2">
@@ -250,7 +250,7 @@ function TaskEditor({
               key={id}
               type="button"
               onClick={() => setIcon(id)}
-              className={`flex min-h-[72px] items-center justify-center rounded-xl bg-white ${icon === id ? 'ring-2 ring-ink' : ''}`}
+              className={`flex min-h-[72px] items-center justify-center rounded-xl bg-panel ${icon === id ? 'ring-2 ring-ink' : ''}`}
             >
               <img src={taskIconSrc(id)} alt={id} className="h-10 w-10 object-contain" />
             </button>
@@ -263,7 +263,7 @@ function TaskEditor({
               key={day.id}
               type="button"
               onClick={() => toggleDay(day.id)}
-              className={`min-h-[72px] min-w-[72px] rounded-xl ${days.includes(day.id) ? 'bg-dojo text-white' : 'bg-white'}`}
+              className={`min-h-[72px] min-w-[72px] rounded-xl ${days.includes(day.id) ? 'bg-dojo text-white' : 'bg-panel'}`}
             >
               {day.short}
             </button>

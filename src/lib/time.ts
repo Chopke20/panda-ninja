@@ -21,6 +21,33 @@ export function routineFromHour(now: Date): RoutineId {
   return hour >= BG.eveningFromHour || hour < 5 ? 'evening' : 'morning';
 }
 
+/** Linia pod przyciskiem startu: wyjście rano albo sen wieczorem. */
+export function startScheduleHint(
+  settings: Settings,
+  now: Date,
+  exceptions: DayException[] = [],
+  routineId: RoutineId = routineFromHour(now),
+): string {
+  const dayLabel = now.toLocaleDateString('pl-PL', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+  const key = weekdayFromDate(now);
+
+  if (routineId === 'evening') {
+    const target = getEveningTargetToday(settings, now, exceptions);
+    const hm = target ? settings.eveningTarget?.[key] : null;
+    if (hm) return `${dayLabel} · sen ${hm}`;
+    return `${dayLabel} · wieczorna rutyna`;
+  }
+
+  const departure = getDepartureToday(settings, now, exceptions);
+  const hm = departure ? settings.departure[key] : null;
+  if (hm) return `${dayLabel} · wyjście ${hm}`;
+  return `${dayLabel} · dziś bez wyznaczonej godziny wyjścia`;
+}
+
 export function weekdayFromIso(iso: string): Weekday {
   const [y, m, d] = iso.split('-').map(Number);
   return weekdayFromDate(new Date(y ?? 0, (m ?? 1) - 1, d ?? 1));

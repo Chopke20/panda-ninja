@@ -1,4 +1,4 @@
-import { WEEKDAYS, TOUCH } from '../../../lib/constants';
+﻿import { WEEKDAYS, TOUCH } from '../../../lib/constants';
 import {
   emptyDayException,
   getDayException,
@@ -36,7 +36,7 @@ export function TimingTab() {
 
   return (
     <section className="space-y-4 py-4">
-      <article className="rounded-3xl bg-white p-4">
+      <article className="rounded-3xl bg-panel p-4">
         <h2 className="text-xl font-semibold">Dzisiaj</h2>
         <p className="mt-1 text-sm text-muted">
           Choroba, wycieczka albo wolne — bez psucia serii.
@@ -91,7 +91,7 @@ export function TimingTab() {
         />
       </article>
 
-      <article className="rounded-3xl bg-white p-4">
+      <article className="rounded-3xl bg-panel p-4">
         <h2 className="text-xl font-semibold">Tryb listy</h2>
         <p className="mt-1 text-sm text-muted">
           Sześciolatkowi łatwiej z jednym dużym krokiem naraz.
@@ -114,7 +114,7 @@ export function TimingTab() {
         const on = value !== null;
         const eveningOn = evening !== null;
         return (
-          <article key={day.id} className="rounded-2xl bg-white p-4">
+          <article key={day.id} className="rounded-2xl bg-panel p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-lg font-semibold">{day.long}</p>
               <button
@@ -173,7 +173,7 @@ export function TimingTab() {
           patchSettings({ routineWindowMin: Math.max(15, Math.min(180, Number(e.target.value) || 90)) })
         }
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full min-h-[56px] rounded-xl bg-white px-3 text-lg"
+        className="w-full min-h-[56px] rounded-xl bg-panel px-3 text-lg"
       />
 
       <p className="pt-2 font-semibold">Ostrzeżenia (minuty przed wyjściem)</p>
@@ -187,7 +187,7 @@ export function TimingTab() {
           value={mark}
           onChange={(e) => setWarning(index, e.target.value)}
           onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-          className="w-full min-h-[56px] rounded-xl bg-white px-3 text-lg"
+          className="w-full min-h-[56px] rounded-xl bg-panel px-3 text-lg"
           aria-label={`Ostrzeżenie ${index + 1}`}
         />
       ))}

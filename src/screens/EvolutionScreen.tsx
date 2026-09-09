@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { PandaStage } from '../components/PandaStage';
 import { TOUCH } from '../lib/constants';
 import {
@@ -10,6 +10,7 @@ import {
   nextPurchasableStage,
 } from '../lib/evolution';
 import { availableBalance } from '../lib/shop';
+import { fanfare, setVolume } from '../lib/sfx';
 import { useStore } from '../store/useStore';
 import type { PandaBodyId } from '../types';
 
@@ -18,9 +19,10 @@ export function EvolutionScreen() {
   const kids = useStore((s) => s.kids);
   const transactions = useStore((s) => s.transactions);
   const requests = useStore((s) => s.purchaseRequests);
+  const settings = useStore((s) => s.settings);
+  const pandaPulse = useStore((s) => s.pandaPulse);
   const setUiScreen = useStore((s) => s.setUiScreen);
   const requestPurchase = useStore((s) => s.requestPurchase);
-  const cancelPurchaseRequest = useStore((s) => s.cancelPurchaseRequest);
   const [kidId, setKidId] = useState(kids[0].id);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -28,7 +30,6 @@ export function EvolutionScreen() {
   const wallet = availableBalance(transactions, requests, kid.id);
   const line = evolutionLine(kid.panda.body);
   const next = nextPurchasableStage(kid.panda.body, kid.panda.stage);
-  const pending = requests.filter((req) => req.kidId === kid.id && req.status === 'pending');
 
   const stages = useMemo(() => line.stages, [line]);
 
@@ -43,16 +44,18 @@ export function EvolutionScreen() {
       setMessage(reason);
       return;
     }
-    setMessage('Prośba poszła do rodzica. Po PIN-ie panda awansuje.');
+    setVolume(settings.volume);
+    fanfare();
+    setMessage(`Panda awansowała do: ${next.label}!`);
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-paper text-ink pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+    <div className="flex h-[100dvh] flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <header className="flex items-center justify-between gap-2 px-4 pt-[env(safe-area-inset-top)]">
         <h1 className="text-2xl font-semibold">Awans pandy</h1>
         <button
           type="button"
-          className="rounded-2xl bg-white px-4 text-lg"
+          className="rounded-2xl bg-panel px-4 text-lg"
           style={{ minHeight: TOUCH.minTilePx }}
           onClick={() => setUiScreen('main')}
         >
@@ -70,7 +73,7 @@ export function EvolutionScreen() {
               setMessage(null);
             }}
             className={`min-h-[56px] flex-1 rounded-2xl text-lg ${
-              kid.id === item.id ? 'bg-dojo text-white' : 'bg-white'
+              kid.id === item.id ? 'bg-dojo text-white' : 'bg-panel'
             }`}
           >
             {item.name}
@@ -78,12 +81,18 @@ export function EvolutionScreen() {
         ))}
       </div>
 
-      <div className="mx-4 flex items-center gap-4 rounded-3xl bg-white p-3">
+      <div className="mx-4 flex items-center gap-4 rounded-3xl bg-panel p-3">
         <div className="shrink-0">
-          <PandaStage pose="training" appearance={kid.panda} name={kid.name} pulse={0} compact />
+          <PandaStage
+            pose="training"
+            appearance={kid.panda}
+            name={kid.name}
+            pulse={pandaPulse[kid.id] ?? 0}
+            compact
+          />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-semibold">Sakiewka ★ {wallet}</p>
+          <p className="text-lg font-semibold">★ {wallet} do awansu</p>
           <p className="text-muted">
             {line.name} · stadium {kid.panda.stage}/{line.stages.length}
           </p>
@@ -95,7 +104,7 @@ export function EvolutionScreen() {
       </div>
 
       {message && (
-        <p className="mx-4 mt-2 rounded-2xl bg-white px-3 py-2 text-base">{message}</p>
+        <p className="mx-4 mt-2 rounded-2xl bg-panel px-3 py-2 text-base">{message}</p>
       )}
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
@@ -108,7 +117,7 @@ export function EvolutionScreen() {
             return (
               <article
                 key={stage.id}
-                className={`rounded-3xl p-4 ${isCurrent ? 'bg-dojo text-white' : 'bg-white'}`}
+                className={`rounded-3xl p-4 ${isCurrent ? 'bg-dojo text-white' : 'bg-panel'}`}
               >
                 <p className="text-lg font-semibold">
                   {stage.id}. {stage.label}
@@ -128,7 +137,7 @@ export function EvolutionScreen() {
                     style={{ minHeight: TOUCH.minTilePx }}
                     onClick={buyNext}
                   >
-                    Poproś o awans ★ {stage.price}
+                    Kup awans ★ {stage.price}
                   </button>
                 )}
               </article>
@@ -136,30 +145,12 @@ export function EvolutionScreen() {
           })}
 
           {FUTURE_STAGE_SLOTS.map((slot) => (
-            <article key={slot} className="rounded-3xl bg-white/70 p-4 opacity-70">
+            <article key={slot} className="rounded-3xl bg-panel/70 p-4 opacity-70">
               <p className="text-lg font-semibold">{slot}. ???</p>
               <p className="text-muted">Miejsce na kolejne stadium — wymyślimy później.</p>
             </article>
           ))}
         </div>
-
-        {pending.length > 0 && (
-          <div className="mt-6">
-            <h2 className="mb-2 text-xl font-semibold">Czeka na rodzica</h2>
-            {pending.map((req) => (
-              <div key={req.id} className="mb-2 flex items-center gap-2 rounded-2xl bg-white p-3">
-                <p className="flex-1">Awans · ★ {req.priceSnapshot}</p>
-                <button
-                  type="button"
-                  className="rounded-xl bg-paper px-3 py-2"
-                  onClick={() => cancelPurchaseRequest(req.id)}
-                >
-                  Anuluj
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
 
         <OtherLineHint body={kid.panda.body} />
       </div>

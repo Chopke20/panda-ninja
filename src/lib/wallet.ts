@@ -210,7 +210,7 @@ export function canRequestPurchase(
         req.status === 'pending' &&
         new Date(req.expiresAt).getTime() > nowMs,
     );
-    if (pendingSame) return { ok: false, reason: 'Prośba już czeka na rodzica.' };
+    if (pendingSame) return { ok: false, reason: 'Ten awans już jest w toku.' };
     const available = availableBalance(transactions, requests, kidId, nowMs);
     if (available < price) {
       return {

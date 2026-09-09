@@ -12,6 +12,7 @@ import {
   getTimelineColor,
   parseHm,
   routineFromHour,
+  startScheduleHint,
   todayIso,
   warningMarkerPositions,
   weekdayFromDate,
@@ -162,5 +163,14 @@ describe('time', () => {
     expect(routineFromHour(new Date(2026, 8, 2, 14, 59, 0))).toBe('morning');
     expect(routineFromHour(new Date(2026, 8, 2, 15, 0, 0))).toBe('evening');
     expect(routineFromHour(new Date(2026, 8, 2, 3, 0, 0))).toBe('evening');
+  });
+
+  it('startScheduleHint: wieczorem sen, rano wyjście', () => {
+    const settings = makeDefaultSettings();
+    const morning = new Date(2026, 8, 9, 7, 0, 0);
+    const evening = new Date(2026, 8, 9, 21, 0, 0);
+    expect(startScheduleHint(settings, morning, [], 'morning')).toMatch(/wyjście 07:40/);
+    expect(startScheduleHint(settings, evening, [], 'evening')).toMatch(/sen 20:00/);
+    expect(startScheduleHint(settings, evening, [], 'evening')).not.toMatch(/wyjście/);
   });
 });

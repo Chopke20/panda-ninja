@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { RoutineId } from '../types';
 
-/** Ustawia data-theme na <html> — nocny theme przy wieczorze. */
+/** Ustawia data-theme na <html> — nocny theme przy wieczorze. Bez cleanup, żeby nie gasić motywu przy zmianie ekranu. */
 export function useRoutineTheme(routineId: RoutineId): void {
   useEffect(() => {
     const root = document.documentElement;
@@ -10,8 +10,5 @@ export function useRoutineTheme(routineId: RoutineId): void {
     } else {
       root.removeAttribute('data-theme');
     }
-    return () => {
-      root.removeAttribute('data-theme');
-    };
   }, [routineId]);
 }

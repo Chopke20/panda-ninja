@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { NowProvider } from './lib/useNow';
 import { preloadPandaArt } from './lib/pandaArt';
+import { AppShell } from './components/AppShell';
 import { WarningScheduler } from './components/WarningScheduler';
 import { SummaryDirector } from './components/SummaryDirector';
 import { MainScreen } from './screens/MainScreen';
@@ -39,9 +40,11 @@ export function App() {
 
   return (
     <NowProvider>
-      <WarningScheduler />
-      <SummaryDirector />
-      <Screen />
+      <AppShell>
+        <WarningScheduler />
+        <SummaryDirector />
+        <Screen />
+      </AppShell>
     </NowProvider>
   );
 }

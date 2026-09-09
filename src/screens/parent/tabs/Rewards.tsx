@@ -1,4 +1,4 @@
-import { scrollFieldIntoView } from '../../../lib/useKeyboardOffset';
+﻿import { scrollFieldIntoView } from '../../../lib/useKeyboardOffset';
 import { useStore } from '../../../store/useStore';
 
 export function RewardsTab() {
@@ -17,7 +17,7 @@ export function RewardsTab() {
           })
         }
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+        className="w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         placeholder="Np. Wybór filmu w piątek"
       />
       <label className="text-sm text-muted">Próg punktów w tygodniu</label>
@@ -35,7 +35,7 @@ export function RewardsTab() {
           })
         }
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+        className="w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
       />
       <label className="text-sm text-muted">Nagroda specjalna</label>
       <textarea
@@ -43,7 +43,7 @@ export function RewardsTab() {
         onChange={(e) => patchSettings({ specialReward: e.target.value })}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
         rows={4}
-        className="w-full rounded-xl bg-white px-3 py-3 text-lg"
+        className="w-full rounded-xl bg-panel px-3 py-3 text-lg"
         placeholder="Ad-hoc, np. lody po kompletnej środzie"
       />
     </section>

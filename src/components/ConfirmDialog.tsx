@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from 'react';
+﻿import { useEffect, useId, useRef } from 'react';
 import { TOUCH } from '../lib/constants';
 
 type Props = {
@@ -47,7 +47,7 @@ export function ConfirmDialog({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={bodyId}
-        className="w-full max-w-md rounded-3xl bg-paper p-6 text-ink"
+        className="w-full max-w-md rounded-3xl bg-panel p-6 text-ink"
         onClick={(event) => event.stopPropagation()}
       >
         <h2 id={titleId} className="text-2xl font-semibold">
@@ -60,7 +60,7 @@ export function ConfirmDialog({
           <button
             ref={cancelRef}
             type="button"
-            className="flex-1 rounded-2xl bg-white text-lg"
+            className="flex-1 rounded-2xl bg-paper text-lg"
             style={{ minHeight: TOUCH.minTilePx }}
             onClick={onCancel}
           >

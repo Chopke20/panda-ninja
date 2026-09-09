@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { VOICE_LINE_FIELDS } from '../../../lib/catalog';
 import { COLORS } from '../../../lib/constants';
 import { fillVoiceLine } from '../../../lib/schedule';
@@ -55,7 +55,7 @@ export function SoundTab() {
 
       <button
         type="button"
-        className={`min-h-[56px] w-full rounded-2xl text-lg ${settings.ttsEnabled ? 'bg-dojo text-white' : 'bg-white'}`}
+        className={`min-h-[56px] w-full rounded-2xl text-lg ${settings.ttsEnabled ? 'bg-dojo text-white' : 'bg-panel'}`}
         onClick={() => patchSettings({ ttsEnabled: !settings.ttsEnabled })}
       >
         Lektor {settings.ttsEnabled ? 'włączony' : 'wyłączony'}
@@ -68,7 +68,7 @@ export function SoundTab() {
         <div className="space-y-2">
           <button
             type="button"
-            className={`min-h-[52px] w-full rounded-2xl px-3 text-left ${settings.ttsVoiceURI === null ? 'bg-dojo text-white' : 'bg-white'}`}
+            className={`min-h-[52px] w-full rounded-2xl px-3 text-left ${settings.ttsVoiceURI === null ? 'bg-dojo text-white' : 'bg-panel'}`}
             onClick={() => patchSettings({ ttsVoiceURI: null })}
           >
             Domyślny
@@ -77,7 +77,7 @@ export function SoundTab() {
             <button
               key={voice.voiceURI}
               type="button"
-              className={`min-h-[52px] w-full rounded-2xl px-3 text-left ${settings.ttsVoiceURI === voice.voiceURI ? 'bg-dojo text-white' : 'bg-white'}`}
+              className={`min-h-[52px] w-full rounded-2xl px-3 text-left ${settings.ttsVoiceURI === voice.voiceURI ? 'bg-dojo text-white' : 'bg-panel'}`}
               onClick={() => patchSettings({ ttsVoiceURI: voice.voiceURI })}
             >
               {voice.name} ({voice.lang})
@@ -92,7 +92,7 @@ export function SoundTab() {
           <button
             key={item.id}
             type="button"
-            className="min-h-[72px] rounded-2xl bg-white px-2 text-sm"
+            className="min-h-[72px] rounded-2xl bg-panel px-2 text-sm"
             onClick={() => void playSfx(item.play)}
           >
             {item.label}
@@ -107,7 +107,7 @@ export function SoundTab() {
             <label className="text-sm text-muted">{field.label}</label>
             <button
               type="button"
-              className="min-h-[44px] rounded-xl bg-white px-3 text-sm"
+              className="min-h-[44px] rounded-xl bg-panel px-3 text-sm"
               style={{ color: COLORS.dojo }}
               onClick={() => previewLine(field.key)}
             >
@@ -123,7 +123,7 @@ export function SoundTab() {
             }
             onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
             rows={2}
-            className="w-full rounded-xl bg-white px-3 py-3 text-lg"
+            className="w-full rounded-xl bg-panel px-3 py-3 text-lg"
           />
         </div>
       ))}

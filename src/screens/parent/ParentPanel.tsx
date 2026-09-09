@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { DEFAULT_PIN, TOUCH } from '../../lib/constants';
 import { useKeyboardOffset } from '../../lib/useKeyboardOffset';
 import { useStore } from '../../store/useStore';
@@ -41,7 +41,7 @@ export function ParentPanel() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-paper text-ink">
+    <div className="flex h-[100dvh] flex-col">
       <header className="flex items-center justify-between px-4 pt-[env(safe-area-inset-top)]">
         <h1 className="text-2xl font-semibold">Panel rodzica</h1>
         <button
@@ -81,7 +81,7 @@ export function ParentPanel() {
             key={item.id}
             type="button"
             onClick={() => setTab(item.id)}
-            className={`shrink-0 rounded-xl px-3 ${tab === item.id ? 'bg-dojo text-white' : 'bg-white'}`}
+            className={`shrink-0 rounded-xl px-3 ${tab === item.id ? 'bg-dojo text-white' : 'bg-panel'}`}
             style={{ minHeight: TOUCH.minTilePx }}
           >
             {item.label}

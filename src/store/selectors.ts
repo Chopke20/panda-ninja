@@ -2,6 +2,16 @@ import type { PandaPose, RoutinePhase } from '../types';
 
 export { tasksForToday } from '../lib/tasks';
 
+/**
+ * Pozy pandy na ekranie głównym (4 sprite’y):
+ * - sleeping — jeszcze nic nie odhaczone
+ * - training — w trakcie listy
+ * - hurry — w trakcie, ale mało czasu / po deadline
+ * - celebrating — wszystkie zadania dnia zrobione
+ *
+ * Postęp zadań ma pierwszeństwo przed fazą zegara — inaczej poza oknem
+ * rutyny widać tylko medytację i radość.
+ */
 export function getPandaPose(args: {
   completedCount: number;
   totalCount: number;
@@ -15,11 +25,13 @@ export function getPandaPose(args: {
     return 'celebrating';
   }
 
-  if (phase !== 'active' || completedCount === 0) {
+  if (completedCount <= 0) {
     return 'sleeping';
   }
 
-  if (minutesLeft !== null && windowMin > 0 && minutesLeft / windowMin < 0.2) {
+  const timeTight =
+    minutesLeft !== null && windowMin > 0 && minutesLeft / windowMin < 0.2;
+  if (phase === 'past' || timeTight) {
     return 'hurry';
   }
 

@@ -1,4 +1,4 @@
-import { weeklyPoints } from '../lib/scoring';
+﻿import { weeklyPoints } from '../lib/scoring';
 import { weekRange } from '../lib/time';
 import { useNow } from '../lib/useNow';
 import { useStore } from '../store/useStore';
@@ -15,7 +15,7 @@ export function WeeklyGoalBar() {
   if (!weekly || weekly.points <= 0) return null;
 
   return (
-    <div className="mx-4 mb-1 rounded-2xl bg-white/90 px-3 py-2">
+    <div className="mx-4 mb-1 rounded-2xl bg-panel/90 px-3 py-2">
       <p className="mb-2 text-sm font-semibold text-ink">Tydzień · {weekly.label}</p>
       <div className="grid grid-cols-2 gap-3">
         {kids.map((kid) => {

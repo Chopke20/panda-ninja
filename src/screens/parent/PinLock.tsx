@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { COLORS, TIME, acceptsParentPin, effectiveParentPin } from '../../lib/constants';
 import { useNow } from '../../lib/useNow';
@@ -72,7 +72,7 @@ export function PinLock({ onUnlock }: Props) {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col items-center justify-center gap-6 bg-paper px-8 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-ink">
+    <div className="flex h-[100dvh] flex-col items-center justify-center gap-6 px-8 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <h1 className="text-2xl font-semibold">Panel rodzica</h1>
       <motion.div
         key={shake}
@@ -88,8 +88,8 @@ export function PinLock({ onUnlock }: Props) {
               background: error
                 ? COLORS.red
                 : i < digits.length
-                  ? COLORS.ink
-                  : 'rgba(42,41,38,0.2)',
+                  ? 'var(--color-ink)'
+                  : 'var(--color-track)',
             }}
           />
         ))}
@@ -105,7 +105,7 @@ export function PinLock({ onUnlock }: Props) {
             key={key || 'empty'}
             type="button"
             disabled={key === '' || locked}
-            className="min-h-[72px] rounded-2xl bg-white text-2xl font-semibold disabled:opacity-0"
+            className="min-h-[72px] rounded-2xl bg-panel text-2xl font-semibold disabled:opacity-0"
             onClick={() => {
               if (key === '⌫') {
                 digitsRef.current = digitsRef.current.slice(0, -1);

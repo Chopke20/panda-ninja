@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+﻿import { useRef, useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { downloadText, parseAppState, serializeAppState } from '../../../lib/backup';
 import { ADMIN_FACTORY_PIN, TOUCH } from '../../../lib/constants';
@@ -101,7 +101,7 @@ export function DataTab() {
       </button>
       <button
         type="button"
-        className="min-h-[56px] w-full rounded-2xl bg-white text-lg"
+        className="min-h-[56px] w-full rounded-2xl bg-panel text-lg"
         onClick={() => fileRef.current?.click()}
       >
         Import JSON
@@ -125,7 +125,7 @@ export function DataTab() {
         value={pin}
         onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+        className="w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         placeholder="Nowy PIN"
       />
       <input
@@ -135,16 +135,16 @@ export function DataTab() {
         value={pin2}
         onChange={(e) => setPin2(e.target.value.replace(/\D/g, '').slice(0, 4))}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full min-h-[52px] rounded-xl bg-white px-3 text-lg"
+        className="w-full min-h-[52px] rounded-xl bg-panel px-3 text-lg"
         placeholder="Powtórz PIN"
       />
-      <button type="button" className="min-h-[56px] w-full rounded-2xl bg-white text-lg" onClick={savePin}>
+      <button type="button" className="min-h-[56px] w-full rounded-2xl bg-panel text-lg" onClick={savePin}>
         Zapisz PIN
       </button>
       {error && <p className="text-belt">{error}</p>}
       {message && <p className="text-dojo">{message}</p>}
 
-      <div className="mt-6 space-y-3 rounded-3xl bg-white p-4">
+      <div className="mt-6 space-y-3 rounded-3xl bg-panel p-4">
         <p className="font-semibold">Reset fabryczny</p>
         <p className="text-sm text-muted">
           Kasuje tylko dane Pandy Ninja na tym iPadzie (imiona, punkty, ustawienia). Nie rusza innych

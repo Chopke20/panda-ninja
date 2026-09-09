@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { PandaStage } from '../components/PandaStage';
 import { DEFAULT_PIN, TOUCH } from '../lib/constants';
 import {
@@ -83,7 +83,7 @@ export function OnboardingScreen() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-paper text-ink pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+    <div className="flex h-[100dvh] flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <header className="px-4 pt-[env(safe-area-inset-top)] pb-2">
         <p className="text-sm uppercase tracking-[0.15em] text-muted">Pierwsze uruchomienie</p>
         <div className="mt-2 flex gap-1">
@@ -138,7 +138,7 @@ export function OnboardingScreen() {
         {stepIndex > 0 ? (
           <button
             type="button"
-            className="min-h-[72px] flex-1 rounded-2xl bg-white text-lg"
+            className="min-h-[72px] flex-1 rounded-2xl bg-panel text-lg"
             onClick={back}
           >
             Wstecz
@@ -146,7 +146,7 @@ export function OnboardingScreen() {
         ) : (
           <button
             type="button"
-            className="min-h-[72px] flex-1 rounded-2xl bg-white text-lg text-muted"
+            className="min-h-[72px] flex-1 rounded-2xl bg-panel text-lg text-muted"
             onClick={() => completeOnboarding()}
           >
             Pomiń
@@ -194,7 +194,7 @@ function KidsStep({
       {([0, 1] as const).map((index) => (
         <article
           key={kids[index].id}
-          className="rounded-3xl bg-white p-4"
+          className="rounded-3xl bg-panel p-4"
           style={{ borderLeft: `6px solid ${kids[index].panda.accent}` }}
         >
           <label className="text-sm text-muted">Imię</label>
@@ -231,7 +231,7 @@ function PandasStep({
         return (
           <article
             key={kid.id}
-            className="rounded-3xl bg-white p-4"
+            className="rounded-3xl bg-panel p-4"
             style={{ borderLeft: `6px solid ${kid.panda.accent}` }}
           >
             <p className="mb-2 text-xl font-semibold">{kid.name}</p>
@@ -332,12 +332,12 @@ function TimingStep({
         value={departure}
         onChange={(e) => onDeparture(e.target.value || '07:40')}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full rounded-2xl bg-white px-3 text-xl"
+        className="w-full rounded-2xl bg-panel px-3 text-xl"
         style={{ minHeight: TOUCH.minTilePx }}
       />
       <button
         type="button"
-        className={`w-full rounded-2xl text-lg ${mission ? 'bg-dojo text-white' : 'bg-white'}`}
+        className={`w-full rounded-2xl text-lg ${mission ? 'bg-dojo text-white' : 'bg-panel'}`}
         style={{ minHeight: TOUCH.minTilePx }}
         onClick={() => onMission(!mission)}
       >
@@ -376,7 +376,7 @@ function PinStep({
         value={pin}
         onChange={(e) => onPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full rounded-2xl bg-white px-3 text-center text-2xl tracking-[0.4em]"
+        className="w-full rounded-2xl bg-panel px-3 text-center text-2xl tracking-[0.4em]"
         style={{ minHeight: TOUCH.minTilePx }}
       />
       <input
@@ -387,7 +387,7 @@ function PinStep({
         value={pin2}
         onChange={(e) => onPin2(e.target.value.replace(/\D/g, '').slice(0, 4))}
         onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="w-full rounded-2xl bg-white px-3 text-center text-2xl tracking-[0.4em]"
+        className="w-full rounded-2xl bg-panel px-3 text-center text-2xl tracking-[0.4em]"
         style={{ minHeight: TOUCH.minTilePx }}
       />
       {error && <p className="text-belt">{error}</p>}
@@ -431,7 +431,7 @@ function IpadStep() {
           Zrób <strong>eksport JSON</strong> w panelu rodzica (Dane) i trzymaj kopię poza Safari.
         </li>
       </ol>
-      <p className="rounded-2xl bg-white p-4 text-muted">
+      <p className="rounded-2xl bg-panel p-4 text-muted">
         Po pierwszym załadowaniu aplikacja działa offline. Budzik zostaw na Zegarze iOS.
       </p>
     </div>

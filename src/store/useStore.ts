@@ -403,7 +403,7 @@ export const useStore = create<Store>()(
         const current = get();
         const kid = current.kids.find((item) => item.id === kidId);
         if (!kid) return 'Nie znaleziono dziecka.';
-        const result = createPurchaseRequest({
+        const created = createPurchaseRequest({
           transactions: current.transactions,
           requests: current.purchaseRequests,
           inventory: kid.inventory,
@@ -412,8 +412,23 @@ export const useStore = create<Store>()(
           currentStage: kid.panda.stage,
           body: kid.panda.body,
         });
+        if (!created.ok) return created.reason;
+        // Awans od razu — bez zatwierdzania przez rodzica.
+        const result = approvePurchase({
+          request: created.request,
+          transactions: current.transactions,
+          kids: current.kids,
+        });
         if (!result.ok) return result.reason;
-        set({ purchaseRequests: [...current.purchaseRequests, result.request] });
+        const today = todayIso();
+        const pandaPulse = { ...current.pandaPulse };
+        pandaPulse[kidId] = (pandaPulse[kidId] ?? 0) + 1;
+        set({
+          transactions: result.transactions,
+          kids: syncKidsDisplay(result.kids, result.transactions, current.logs, today),
+          purchaseRequests: [...current.purchaseRequests, result.request],
+          pandaPulse,
+        });
         return null;
       },
       cancelPurchaseRequest: (requestId) => {

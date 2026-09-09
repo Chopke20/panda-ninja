@@ -1,4 +1,4 @@
-import type { DayLog, Kid } from '../../../types';
+﻿import type { DayLog, Kid } from '../../../types';
 import { TIME } from '../../../lib/constants';
 import { logsToCsv, downloadText } from '../../../lib/backup';
 import { addDaysIso, todayIso } from '../../../lib/time';
@@ -45,7 +45,7 @@ export function HistoryTab() {
       >
         Eksport CSV
       </button>
-      <div className="overflow-x-auto rounded-2xl bg-white">
+      <div className="overflow-x-auto rounded-2xl bg-panel">
         <table className="w-full min-w-[520px] text-left text-base">
           <thead>
             <tr className="border-b border-ink/10 text-muted">

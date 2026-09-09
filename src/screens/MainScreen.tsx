@@ -5,7 +5,6 @@ import { FooterBar } from '../components/FooterBar';
 import { KidColumn } from '../components/KidColumn';
 import { PandaStage } from '../components/PandaStage';
 import { PointsFly } from '../components/PointsFly';
-import { RoutineBackdrop } from '../components/RoutineBackdrop';
 import { availableBalance } from '../lib/shop';
 import { isFreeDay } from '../lib/dayExceptions';
 import { findDayLog, tasksForToday } from '../lib/tasks';
@@ -17,7 +16,6 @@ import {
   weekdayFromDate,
 } from '../lib/time';
 import { useNow } from '../lib/useNow';
-import { useRoutineTheme } from '../lib/useRoutineTheme';
 import { getPandaPose } from '../store/selectors';
 import { useStore } from '../store/useStore';
 
@@ -35,7 +33,6 @@ export function MainScreen() {
   const date = todayIso(now);
   const weekday = weekdayFromDate(now);
   const routineId = settings.activeRoutine ?? 'morning';
-  useRoutineTheme(routineId);
   const target = getTargetToday(settings, now, routineId, dayExceptions);
   const phase = getRoutinePhase(now, target, settings.routineWindowMin);
   const minutes = getMinutesLeft(now, target);
@@ -65,8 +62,7 @@ export function MainScreen() {
   );
 
   return (
-    <div className="relative flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-paper pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] text-ink">
-      <RoutineBackdrop routineId={routineId} />
+    <div className="relative flex h-[100dvh] min-h-0 flex-col overflow-hidden pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <div className="relative z-10 flex min-h-0 flex-1 flex-col">
         <div className="relative shrink-0">
           <ClockHeader />

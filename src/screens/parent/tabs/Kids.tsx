@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PandaStage } from '../../../components/PandaStage';
 import { ACCENTS } from '../../../lib/cosmetics';
@@ -82,7 +82,7 @@ function KidCard({
   }
 
   return (
-    <article className="rounded-3xl bg-white p-4" style={{ borderLeft: `6px solid ${kid.panda.accent}` }}>
+    <article className="rounded-3xl bg-panel p-4" style={{ borderLeft: `6px solid ${kid.panda.accent}` }}>
       <div className="mb-3 flex justify-center">
         <PandaStage pose="training" appearance={kid.panda} name={kid.name} pulse={0} compact />
       </div>
@@ -107,7 +107,9 @@ function KidCard({
         maxLength={24}
       />
       <p className="mt-3 text-muted">
-        Sakiewka ★ {wallet} · konto ★ {kid.totalPoints} · seria {kid.streak}
+        ★ {wallet} do awansu
+        {kid.totalPoints > wallet ? ` · dziś łącznie ★ ${kid.totalPoints}` : ''}
+        {kid.streak > 0 ? ` · seria ${kid.streak}` : ''}
       </p>
       <p className="mt-1 text-muted">
         {line.name} · stadium {kid.panda.stage} ({line.stages.find((s) => s.id === kid.panda.stage)?.label})

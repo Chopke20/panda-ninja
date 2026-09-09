@@ -54,7 +54,7 @@ export function SummaryScreen() {
       : closingPhrase(everyoneComplete);
 
   return (
-    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-paper px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-center text-ink">
+    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-center">
       <h1 className="text-3xl font-semibold">Koniec treningu</h1>
       {departure && <p className="text-muted">Wyjście {settings.departure[weekday]}</p>}
       <div className="flex w-full max-w-3xl justify-center gap-6">
@@ -73,7 +73,7 @@ export function SummaryScreen() {
               {card.kid.name}: {card.earned} z {card.possible} punktów
             </p>
             <p className="text-muted">
-              dziś +{card.earned} · sakiewka ★ {card.wallet}
+              dziś +{card.earned} · ★ {card.wallet}
             </p>
             <p>{streakPhrase(card.kid.streak)}</p>
             {card.weekly && <p className="text-sm text-muted">{card.weekly}</p>}
