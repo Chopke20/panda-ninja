@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "art": "node scripts/slice-sheets.mjs",
+    "art:icons": "node scripts/art-icons-recrop.mjs",
     "art:postprocess": "node scripts/art-postprocess-v2.mjs",
     "art:v2": "npm run art && npm run art:postprocess && npm run art:agile && npm run art:masks && npm run art:anchor && npm run art:thumbs && npm run art:webp && npm run art:validate",
     "art:agile": "node scripts/art-agile-from-round.mjs",

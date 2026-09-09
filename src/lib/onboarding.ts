@@ -6,7 +6,7 @@ export type AgePreset = 6 | 8;
 /** Wspólna lista poranka dla obu synów (kolejność = kolejność dnia). */
 const SHARED_MORNING: { label: string; icon: string; timerSec: number | null }[] = [
   { label: 'Wstać z łóżka', icon: 'bed', timerSec: null },
-  { label: 'Śniadanie', icon: 'chopsticks', timerSec: null },
+  { label: 'Śniadanie', icon: 'cereal', timerSec: null },
   { label: 'Umyć zęby', icon: 'toothbrush', timerSec: TIME.morningToothTimerSec },
   { label: 'Ubranie się', icon: 'clothes', timerSec: null },
   { label: 'Spakowanie plecaka', icon: 'backpack', timerSec: null },

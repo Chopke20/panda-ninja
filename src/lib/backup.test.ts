@@ -190,7 +190,7 @@ describe('mergePersistedSlice', () => {
       'Spakowanie plecaka',
     ]);
     expect(morning2.map((t) => t.label)).toEqual(morning1.map((t) => t.label));
-    expect(morning1[1]?.icon).toBe('chopsticks');
+    expect(morning1[1]?.icon).toBe('cereal');
   });
 });
 

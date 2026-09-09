@@ -86,10 +86,10 @@ export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
           </button>
         </div>
       )}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-1">
+      <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-0.5">
         {mission ? (
           next ? (
-            <div className="flex min-h-full flex-col justify-center py-2">
+            <div className="flex min-h-full min-w-0 flex-col justify-center py-2">
               <p className="mb-2 text-center text-sm text-muted">
                 Następna misja · {done.length}/{tasks.length}
               </p>
@@ -126,7 +126,12 @@ export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
           )
         ) : (
           ordered.map((task) => (
-            <motion.div key={task.id} layout="position" transition={{ duration: 0.22 }} className="mb-1.5">
+            <motion.div
+              key={task.id}
+              layout="position"
+              transition={{ duration: 0.22 }}
+              className="mb-1.5 min-w-0"
+            >
               <TaskTile
                 taskLabel={task.label}
                 icon={task.icon}

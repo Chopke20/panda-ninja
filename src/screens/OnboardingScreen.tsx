@@ -4,9 +4,6 @@ import { DEFAULT_PIN, TOUCH } from '../lib/constants';
 import {
   ONBOARDING_STEPS,
   ONBOARDING_STEP_LABELS,
-  type AgePreset,
-  kidKeyFromId,
-  tasksForAgePreset,
 } from '../lib/onboarding';
 import {
   EVOLUTION_LINES,
@@ -24,12 +21,10 @@ export function OnboardingScreen() {
   const kids = useStore((s) => s.kids);
   const settings = useStore((s) => s.settings);
   const updateKidName = useStore((s) => s.updateKidName);
-  const applyAgePreset = useStore((s) => s.applyAgePreset);
   const patchSettings = useStore((s) => s.patchSettings);
   const updateKidPanda = useStore((s) => s.updateKidPanda);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
   const [stepIndex, setStepIndex] = useState(0);
-  const [ages, setAges] = useState<[AgePreset, AgePreset]>([8, 6]);
   const [pin, setPin] = useState('');
   const [pin2, setPin2] = useState('');
   const [pinError, setPinError] = useState<string | null>(null);
@@ -46,11 +41,6 @@ export function OnboardingScreen() {
       if (!n0 || !n1) return;
       updateKidName(kids[0].id, n0);
       updateKidName(kids[1].id, n1);
-      applyAgePreset(kids[0].id, ages[0]);
-      applyAgePreset(kids[1].id, ages[1]);
-      if (ages[0] === 6 || ages[1] === 6) {
-        patchSettings({ nextMissionMode: true });
-      }
     }
     if (step === 'pin') {
       if (!/^\d{4}$/.test(pin)) {
@@ -112,12 +102,8 @@ export function OnboardingScreen() {
         {step === 'kids' && (
           <KidsStep
             names={names}
-            ages={ages}
             onName={(index, value) =>
               setNames((prev) => (index === 0 ? [value, prev[1]] : [prev[0], value]))
-            }
-            onAge={(index, age) =>
-              setAges((prev) => (index === 0 ? [age, prev[1]] : [prev[0], age]))
             }
           />
         )}
@@ -193,19 +179,18 @@ function WelcomeStep() {
 
 function KidsStep({
   names,
-  ages,
   onName,
-  onAge,
 }: {
   names: [string, string];
-  ages: [AgePreset, AgePreset];
   onName: (index: 0 | 1, value: string) => void;
-  onAge: (index: 0 | 1, age: AgePreset) => void;
 }) {
   const kids = useStore((s) => s.kids);
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-semibold">Imiona i wiek</h2>
+      <h2 className="text-2xl font-semibold">Imiona</h2>
+      <p className="text-muted">
+        Listę obowiązków i punkty ustawisz później w panelu rodzica — tu wystarczą imiona.
+      </p>
       {([0, 1] as const).map((index) => (
         <article
           key={kids[index].id}
@@ -221,29 +206,6 @@ function KidsStep({
             className="mt-1 w-full rounded-xl bg-paper px-3 text-xl"
             style={{ minHeight: TOUCH.minTilePx }}
           />
-          <p className="mt-3 mb-2 text-sm text-muted">Wiek (preset listy)</p>
-          <div className="flex gap-2">
-            {([6, 8] as const).map((age) => (
-              <button
-                key={age}
-                type="button"
-                className={`flex-1 rounded-2xl text-lg ${
-                  ages[index] === age ? 'bg-dojo text-white' : 'bg-paper'
-                }`}
-                style={{ minHeight: TOUCH.minTilePx }}
-                onClick={() => onAge(index, age)}
-              >
-                {age} lat · 5+5 zadań
-              </button>
-            ))}
-          </div>
-          <p className="mt-2 text-sm text-muted">
-            Poranek:{' '}
-            {tasksForAgePreset(kidKeyFromId(kids[index].id), ages[index])
-              .filter((task) => task.routine === 'morning')
-              .map((task) => task.label)
-              .join(' · ')}
-          </p>
         </article>
       ))}
     </div>
@@ -381,7 +343,7 @@ function TimingStep({
       >
         {mission
           ? 'Tryb „następna misja” włączony'
-          : 'Włącz tryb „następna misja” (zalecany dla 6 lat)'}
+          : 'Włącz tryb „następna misja” (jedno zadanie na raz)'}
       </button>
     </div>
   );

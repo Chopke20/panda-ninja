@@ -35,8 +35,8 @@ import {
   settleYesterdayEarns,
   syncKidsDisplay,
   zeroKidWallet,
+  adjustKidWallet,
 } from '../lib/shop';
-import { kidKeyFromId, tasksForAgePreset, type AgePreset } from '../lib/onboarding';
 import { snapshotTasks, tasksForToday, moveTaskInRoutine } from '../lib/tasks';
 import { todayIso, weekdayFromIso } from '../lib/time';
 import { ownedFromAppearance } from '../lib/wallet';
@@ -68,6 +68,7 @@ type Store = AppState & {
   equipCosmetic: (kidId: string, itemId: string) => void;
   unequipCosmetic: (kidId: string, slot?: 'head' | 'back' | 'belt' | 'aura' | 'outfitPattern') => void;
   resetKidPoints: (kidId: string) => void;
+  adjustKidPoints: (kidId: string, amount: number) => void;
   addTask: (kidId: string, routineId?: RoutineId) => void;
   updateTask: (kidId: string, taskId: string, patch: Partial<Task>) => void;
   removeTask: (kidId: string, taskId: string) => void;
@@ -86,7 +87,6 @@ type Store = AppState & {
   refundPurchaseRequest: (requestId: string) => string | null;
   markWeeklyRedeemed: (kidId: string, weekStart: string) => void;
   setTodayException: (patch: Partial<Omit<DayException, 'date'>>) => void;
-  applyAgePreset: (kidId: string, age: AgePreset) => void;
   completeOnboarding: () => void;
   /** Kasuje tylko dane tej apki (localStorage pandaninja.v1) i wraca do onboardingu. */
   factoryReset: () => void;
@@ -275,6 +275,25 @@ export const useStore = create<Store>()(
       resetKidPoints: (kidId) => {
         const nowIso = new Date().toISOString();
         const transactions = zeroKidWallet(kidId, get().transactions, nowIso);
+        const today = todayIso();
+        set({
+          transactions,
+          kids: syncKidsDisplay(
+            mapKid(get().kids, kidId, (kid) => kid),
+            transactions,
+            get().logs,
+            today,
+          ),
+        });
+      },
+      adjustKidPoints: (kidId, amount) => {
+        const nowIso = new Date().toISOString();
+        const transactions = adjustKidWallet(
+          kidId,
+          get().transactions,
+          amount,
+          nowIso,
+        );
         const today = todayIso();
         set({
           transactions,
@@ -493,14 +512,6 @@ export const useStore = create<Store>()(
           };
         });
         set({ dayExceptions, logs });
-      },
-      applyAgePreset: (kidId, age) => {
-        set({
-          kids: mapKid(get().kids, kidId, (kid) => ({
-            ...kid,
-            tasks: tasksForAgePreset(kidKeyFromId(kidId), age),
-          })),
-        });
       },
       completeOnboarding: () => {
         const pin = get().settings.pin;

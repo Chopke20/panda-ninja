@@ -79,7 +79,8 @@ function normalizeTask(raw: unknown, index: number, kidId: string): Task | null 
   const id = asString(raw.id, `${kidId}-task-${index + 1}`);
   const label = asString(raw.label, 'Zadanie').trim().slice(0, 40) || 'Zadanie';
   const iconRaw = asString(raw.icon, 'bed');
-  const icon = (TASK_ICONS as readonly string[]).includes(iconRaw) ? iconRaw : 'bed';
+  const iconId = iconRaw === 'chopsticks' ? 'cereal' : iconRaw;
+  const icon = (TASK_ICONS as readonly string[]).includes(iconId) ? iconId : 'bed';
   return {
     id,
     label,

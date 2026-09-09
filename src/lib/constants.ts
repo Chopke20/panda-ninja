@@ -131,7 +131,7 @@ export const MOTION = {
 } as const;
 
 export const PANDA_STAGE = {
-  width: '70%',
+  width: '88%',
   startSizePx: 140,
 } as const;
 

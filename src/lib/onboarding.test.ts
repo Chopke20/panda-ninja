@@ -19,7 +19,7 @@ describe('onboarding presets', () => {
       expect(morning).toHaveLength(5);
       expect(evening).toHaveLength(5);
       expect(morning.map((task) => task.label)).toEqual(SHARED_LABELS);
-      expect(morning[1]?.icon).toBe('chopsticks');
+      expect(morning[1]?.icon).toBe('cereal');
       expect(morning[2]?.timerSec).toBe(TIME.morningToothTimerSec);
     }
   });

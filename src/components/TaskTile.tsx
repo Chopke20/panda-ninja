@@ -63,9 +63,9 @@ export function TaskTile({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl bg-white ${
+      className={`relative min-w-0 overflow-hidden rounded-2xl bg-white ${
         done ? 'opacity-50' : ''
-      } ${highlight && !done ? 'ring-2 ring-dojo/40' : ''}`}
+      } ${highlight && !done ? 'ring-2 ring-inset ring-dojo/40' : ''}`}
     >
       <button
         type="button"
@@ -77,7 +77,7 @@ export function TaskTile({
         onPointerUp={stopHold}
         onPointerCancel={stopHold}
         onPointerLeave={stopHold}
-        className={`relative flex w-full items-center gap-3 px-3 text-left ${
+        className={`relative flex w-full min-w-0 items-center gap-2 px-2 text-left sm:gap-3 sm:px-3 ${
           large ? 'flex-col py-6 text-center' : ''
         }`}
         style={{ minHeight: large ? 160 : TOUCH.minTilePx }}
@@ -96,15 +96,19 @@ export function TaskTile({
         <img
           src={taskIconSrc(icon)}
           alt=""
-          className={`object-contain ${large ? 'h-20 w-20' : 'h-10 w-10'}`}
+          className={`shrink-0 object-contain ${large ? 'h-20 w-20' : 'h-9 w-9 sm:h-10 sm:w-10'}`}
           onError={(event) => {
             event.currentTarget.style.visibility = 'hidden';
           }}
         />
-        <span className={`flex-1 font-medium text-ink ${large ? 'text-2xl' : 'text-lg'}`}>
+        <span
+          className={`min-w-0 flex-1 truncate font-medium text-ink ${large ? 'text-2xl' : 'text-base sm:text-lg'}`}
+        >
           {taskLabel}
         </span>
-        <span className={`text-muted ${large ? 'text-base' : 'text-sm'}`}>{points} ★</span>
+        <span className={`shrink-0 tabular-nums text-muted ${large ? 'text-base' : 'text-sm'}`}>
+          {points} ★
+        </span>
         {hold > 0 && (
           <span
             className="pointer-events-none absolute bottom-0 left-0 h-1 bg-belt"
@@ -113,7 +117,7 @@ export function TaskTile({
         )}
       </button>
       {showTimer && (
-        <div className="px-3 pb-3">
+        <div className="px-2 pb-3 sm:px-3">
           <MissionTimer durationSec={timerSec} muted={muted} />
         </div>
       )}

@@ -282,6 +282,41 @@ export function zeroKidWallet(
   ];
 }
 
+/**
+ * Ręczna korekta sakiewki przez rodzica.
+ * Ujemna kwota nie zejdzie poniżej zera.
+ */
+export function adjustKidWallet(
+  kidId: string,
+  transactions: PointTransaction[],
+  amount: number,
+  nowIso: string,
+  note?: string,
+): PointTransaction[] {
+  if (!Number.isFinite(amount)) return transactions;
+  const delta = Math.trunc(amount);
+  if (delta === 0) return transactions;
+  const balance = walletBalance(transactions, kidId);
+  const applied = delta < 0 ? Math.max(delta, -balance) : Math.min(delta, 99_999);
+  if (applied === 0) return transactions;
+  const suffix = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  return [
+    ...transactions,
+    {
+      id: `tx-adj-${kidId}-${suffix}`,
+      kidId,
+      kind: 'adjustment',
+      amount: applied,
+      itemId: null,
+      dayLogKey: null,
+      createdAt: nowIso,
+      note:
+        note ??
+        (applied > 0 ? 'Dodane przez rodzica' : 'Odjęte przez rodzica'),
+    },
+  ];
+}
+
 export function weekStartIso(now: Date): string {
   return weekRange(now).start;
 }

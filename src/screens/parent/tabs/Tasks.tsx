@@ -59,13 +59,20 @@ export function TasksTab() {
       {tasks.map((task, index) => (
         <article key={task.id} className="flex items-center gap-2 rounded-2xl bg-white p-3">
           <img src={taskIconSrc(task.icon)} alt="" className="h-12 w-12 shrink-0 object-contain" />
-          <button type="button" className="min-h-[72px] min-w-0 flex-1 text-left" onClick={() => setEditing(task)}>
+          <div className="min-w-0 flex-1">
             <p className="text-lg font-semibold">{task.label}</p>
             <p className="text-sm text-muted">
               {task.points} pkt
               {task.timerSec ? ` · timer ${Math.round(task.timerSec / 60)} min` : ''} ·{' '}
               {task.days.map((d) => WEEKDAYS.find((w) => w.id === d)?.short).join(' ')}
             </p>
+          </div>
+          <button
+            type="button"
+            className="min-h-[72px] shrink-0 rounded-xl bg-paper px-3 text-lg font-semibold"
+            onClick={() => setEditing(task)}
+          >
+            Edytuj
           </button>
           <div className="flex shrink-0 flex-col gap-1">
             <button
