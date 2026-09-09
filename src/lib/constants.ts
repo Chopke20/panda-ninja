@@ -23,11 +23,11 @@ export const TOUCH = {
   minTilePx: 72,
 } as const;
 
-/** Tła rutyn (bambus) — niska opacity na paper. */
+/** Tła rutyn (bambus) — widoczne na iPadzie, nadal pod UI. */
 export const BG = {
-  routineOpacity: 0.22,
+  routineOpacity: 0.34,
   /** Wieczór: mocniejsze tło przy ciemnym theme. */
-  routineOpacityEvening: 0.32,
+  routineOpacityEvening: 0.42,
   /** Od tej godziny ekran startowy pokazuje tło wieczorne. */
   eveningFromHour: 15,
 } as const;
