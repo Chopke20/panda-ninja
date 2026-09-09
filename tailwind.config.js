@@ -4,10 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: '#F3F1EC',
-        ink: '#2A2926',
-        muted: '#6B6860',
-        dojo: '#2C3A4A',
+        paper: 'var(--color-paper)',
+        ink: 'var(--color-ink)',
+        muted: 'var(--color-muted)',
+        panel: 'var(--color-panel)',
+        tile: 'var(--color-tile)',
+        dojo: 'var(--color-dojo)',
         belt: '#C44536',
         gold: '#E0B84D',
         check: '#3F8F62',

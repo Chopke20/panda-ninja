@@ -11,6 +11,7 @@ import {
   getRoutinePhase,
   getTimelineColor,
   parseHm,
+  routineFromHour,
   todayIso,
   warningMarkerPositions,
   weekdayFromDate,
@@ -154,5 +155,12 @@ describe('time', () => {
     const departure = getDepartureToday(settings, now);
     expect(getRoutinePhase(now, departure, 90)).toBe('before');
     expect(formatCountdown(getMinutesLeft(now, departure), 90)).toBe('Do wyjścia: 2 godz 40 min');
+  });
+
+  it('routineFromHour: przed 15 = poranek, potem wieczór', () => {
+    expect(routineFromHour(new Date(2026, 8, 2, 7, 0, 0))).toBe('morning');
+    expect(routineFromHour(new Date(2026, 8, 2, 14, 59, 0))).toBe('morning');
+    expect(routineFromHour(new Date(2026, 8, 2, 15, 0, 0))).toBe('evening');
+    expect(routineFromHour(new Date(2026, 8, 2, 3, 0, 0))).toBe('evening');
   });
 });

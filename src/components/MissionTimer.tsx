@@ -45,7 +45,7 @@ export function MissionTimer({ durationSec, muted = false }: Props) {
 
   return (
     <div
-      className="mt-2 flex items-center gap-2 rounded-2xl bg-paper/80 px-3 py-2"
+      className="mt-2 flex items-center gap-2 rounded-2xl border border-[color:var(--color-tile-border)] bg-tile/90 px-3 py-2 backdrop-blur-[4px]"
       onClick={(event) => event.stopPropagation()}
       onPointerDown={(event) => event.stopPropagation()}
     >
@@ -64,7 +64,7 @@ export function MissionTimer({ durationSec, muted = false }: Props) {
       ) : done ? (
         <button
           type="button"
-          className="flex-1 rounded-xl bg-white text-dojo"
+          className="flex-1 rounded-xl bg-paper text-dojo"
           style={{ minHeight: TOUCH.minTilePx - 16 }}
           onClick={stop}
         >
@@ -73,7 +73,7 @@ export function MissionTimer({ durationSec, muted = false }: Props) {
       ) : (
         <button
           type="button"
-          className="flex-1 rounded-xl bg-white text-muted"
+          className="flex-1 rounded-xl bg-paper text-muted"
           style={{ minHeight: TOUCH.minTilePx - 16 }}
           onClick={stop}
         >

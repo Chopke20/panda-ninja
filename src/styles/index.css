@@ -2,12 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-paper: #f3f1ec;
+  --color-ink: #2a2926;
+  --color-muted: #6b6860;
+  --color-panel: #fffcf7;
+  --color-dojo: #2c3a4a;
+  --color-track: rgba(42, 41, 38, 0.14);
+  --color-track-soft: rgba(42, 41, 38, 0.07);
+  --color-border: rgba(42, 41, 38, 0.1);
+  /* Półprzezroczyste kafle zadań — czytelne na bambusie (dzień + noc). */
+  --color-tile: rgba(255, 252, 247, 0.78);
+  --color-tile-border: rgba(42, 41, 38, 0.14);
+  --color-check-border: rgba(42, 41, 38, 0.32);
+}
+
+[data-theme='evening'] {
+  --color-paper: #121820;
+  --color-ink: #e8e4dc;
+  --color-muted: #9a958c;
+  --color-panel: #1c2533;
+  --color-dojo: #3d5a7a;
+  --color-track: rgba(232, 228, 220, 0.18);
+  --color-track-soft: rgba(232, 228, 220, 0.1);
+  --color-border: rgba(232, 228, 220, 0.12);
+  --color-tile: rgba(28, 37, 51, 0.72);
+  --color-tile-border: rgba(232, 228, 220, 0.16);
+  --color-check-border: rgba(232, 228, 220, 0.35);
+  color-scheme: dark;
+}
+
 html,
 body,
 #root {
   height: 100%;
   height: 100dvh;
-  background: #f3f1ec;
+  background: var(--color-paper);
+  color: var(--color-ink);
 }
 
 html {
@@ -20,7 +51,6 @@ html {
 
 body {
   margin: 0;
-  color: #2a2926;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   user-select: none;
   -webkit-user-select: none;

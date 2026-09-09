@@ -32,7 +32,8 @@ export function DepartureTimeline() {
   const minutes = getMinutesLeft(now, target);
   const lit = phase === 'active' || phase === 'past';
   const ratioLeft = getRatioLeft(now, target, settings.routineWindowMin);
-  const barColor = lit && phase === 'active' ? COLOR_MAP[getTimelineColor(ratioLeft)] : COLORS.muted;
+  const barColor =
+    lit && phase === 'active' ? COLOR_MAP[getTimelineColor(ratioLeft)] : 'var(--color-muted)';
   const marks =
     routineId === 'morning'
       ? warningMarkerPositions(settings.routineWindowMin, settings.warningsMin)
@@ -48,7 +49,7 @@ export function DepartureTimeline() {
       <div className="mb-2 flex items-center gap-3">
         <div
           className="relative h-3 min-w-0 flex-1 rounded-full"
-          style={{ background: lit ? 'rgba(42,41,38,0.14)' : 'rgba(42,41,38,0.07)' }}
+          style={{ background: lit ? 'var(--color-track)' : 'var(--color-track-soft)' }}
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
@@ -59,7 +60,7 @@ export function DepartureTimeline() {
             className="h-full rounded-full transition-[width,background-color,opacity] duration-500"
             style={{
               width: `${Math.round(progress * 100)}%`,
-              background: phase === 'active' ? barColor : COLORS.muted,
+              background: phase === 'active' ? barColor : 'var(--color-muted)',
               opacity: lit ? (phase === 'past' ? 0.45 : 1) : 0.28,
             }}
           />

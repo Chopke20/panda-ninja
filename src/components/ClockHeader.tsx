@@ -35,7 +35,7 @@ export function ClockHeader() {
           type="button"
           onClick={toggleMuteToday}
           className={`flex items-center justify-center rounded-2xl ${
-            muted ? 'bg-white text-muted' : 'bg-white text-ink'
+            muted ? 'bg-panel text-muted' : 'bg-panel text-ink'
           }`}
           style={{ minHeight: TOUCH.minTilePx, minWidth: TOUCH.minTilePx }}
           aria-label={muted ? 'Włącz dźwięk' : 'Wycisz na dziś'}
@@ -49,8 +49,8 @@ export function ClockHeader() {
 
 /** Płaski dzwonek w stylu ikon poranek/wieczór (nie emoji). */
 function BellIcon({ muted }: { muted: boolean }) {
-  const stroke = muted ? 'rgba(42,41,38,0.45)' : COLORS.ink;
-  const accent = muted ? 'rgba(42,41,38,0.45)' : COLORS.gold;
+  const stroke = muted ? 'currentColor' : 'currentColor';
+  const accent = muted ? 'currentColor' : COLORS.gold;
   return (
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden>
       <path
@@ -58,14 +58,16 @@ function BellIcon({ muted }: { muted: boolean }) {
         stroke={stroke}
         strokeWidth="2.1"
         strokeLinejoin="round"
+        opacity={muted ? 0.55 : 1}
       />
       <path
         d="M12.2 22.2a2.9 2.9 0 0 0 5.6 0"
         stroke={accent}
         strokeWidth="2.1"
         strokeLinecap="round"
+        opacity={muted ? 0.55 : 1}
       />
-      <circle cx="15" cy="4.8" r="1.4" fill={accent} />
+      <circle cx="15" cy="4.8" r="1.4" fill={accent} opacity={muted ? 0.55 : 1} />
       {muted && (
         <line
           x1="6"

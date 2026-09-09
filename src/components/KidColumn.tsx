@@ -78,7 +78,7 @@ export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
         <div className="px-1 pb-1">
           <button
             type="button"
-            className="w-full rounded-xl bg-white text-sm text-muted"
+            className="w-full rounded-xl border border-[color:var(--color-tile-border)] bg-tile text-sm text-muted backdrop-blur-[4px]"
             style={{ minHeight: TOUCH.minTilePx }}
             onClick={() => setShowAll((value) => !value)}
           >
@@ -115,7 +115,7 @@ export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
               {done.length > 0 && (
                 <button
                   type="button"
-                  className="mt-2 rounded-xl bg-white px-4 text-sm text-muted"
+                  className="mt-2 rounded-xl border border-[color:var(--color-tile-border)] bg-tile px-4 text-sm text-muted backdrop-blur-[4px]"
                   style={{ minHeight: TOUCH.minTilePx }}
                   onClick={() => setShowAll(true)}
                 >

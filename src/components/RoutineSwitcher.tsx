@@ -1,4 +1,4 @@
-import { COLORS, TOUCH } from '../lib/constants';
+import { TOUCH } from '../lib/constants';
 import { ROUTINE_LABELS } from '../lib/onboarding';
 import type { RoutineId } from '../types';
 import { useStore } from '../store/useStore';
@@ -25,7 +25,7 @@ export function RoutineSwitcher() {
             aria-label={ROUTINE_LABELS[id]}
             aria-pressed={on}
             className={`flex items-center justify-center rounded-2xl ${
-              on ? 'bg-dojo text-white' : 'bg-white/80 text-muted'
+              on ? 'bg-dojo text-white' : 'bg-panel/80 text-muted'
             }`}
             style={{ minHeight: TOUCH.minTilePx, minWidth: TOUCH.minTilePx }}
             onClick={() => patchSettings({ activeRoutine: id })}
@@ -39,7 +39,7 @@ export function RoutineSwitcher() {
 }
 
 function SunIcon({ active }: { active: boolean }) {
-  const stroke = active ? '#FFFFFF' : COLORS.ink;
+  const stroke = active ? '#FFFFFF' : 'currentColor';
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden>
       <circle cx="14" cy="14" r="5" stroke={stroke} strokeWidth="2.2" />
@@ -67,7 +67,7 @@ function SunIcon({ active }: { active: boolean }) {
 }
 
 function MoonIcon({ active }: { active: boolean }) {
-  const stroke = active ? '#FFFFFF' : COLORS.ink;
+  const stroke = active ? '#FFFFFF' : 'currentColor';
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden>
       <path

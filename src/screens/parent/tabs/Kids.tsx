@@ -114,46 +114,35 @@ function KidCard({
       </p>
 
       <p className="mt-4 mb-2 font-semibold">Punkty ręcznie</p>
-      <div className="mb-2 flex flex-wrap gap-2">
-        {[10, 50, 100, 200].map((n) => (
-          <button
-            key={n}
-            type="button"
-            className={`min-h-[52px] rounded-2xl px-4 text-lg ${
-              pointsDraft === String(n) ? 'bg-dojo text-white' : 'bg-paper'
-            }`}
-            onClick={() => setPointsDraft(String(n))}
-          >
-            {n} ★
-          </button>
-        ))}
-      </div>
-      <label className="text-sm text-muted">Liczba gwiazdek</label>
-      <input
-        type="number"
-        min={1}
-        max={99999}
-        inputMode="numeric"
-        value={pointsDraft}
-        onChange={(e) => setPointsDraft(e.target.value)}
-        onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
-        className="mt-1 w-full min-h-[52px] rounded-xl bg-paper px-3 text-xl"
-      />
-      <div className="mt-2 flex gap-2">
+      <div className="flex items-center gap-2">
         <button
           type="button"
-          className="min-h-[56px] flex-1 rounded-2xl bg-dojo text-lg text-white"
-          onClick={() => applyPoints(1)}
-        >
-          Dodaj
-        </button>
-        <button
-          type="button"
-          className="min-h-[56px] flex-1 rounded-2xl bg-paper text-lg"
+          aria-label="Odejmij punkty"
+          className="min-h-[56px] min-w-[56px] rounded-2xl bg-paper text-2xl"
           onClick={() => applyPoints(-1)}
         >
-          Odejmij
+          −
         </button>
+        <input
+          type="number"
+          min={1}
+          max={99999}
+          inputMode="numeric"
+          aria-label="Liczba gwiazdek"
+          value={pointsDraft}
+          onChange={(e) => setPointsDraft(e.target.value)}
+          onFocus={(e) => scrollFieldIntoView(e.currentTarget)}
+          className="min-h-[56px] w-[5.5rem] rounded-xl bg-paper px-2 text-center text-xl tabular-nums"
+        />
+        <button
+          type="button"
+          aria-label="Dodaj punkty"
+          className="min-h-[56px] min-w-[56px] rounded-2xl bg-dojo text-2xl text-white"
+          onClick={() => applyPoints(1)}
+        >
+          +
+        </button>
+        <span className="text-muted">★</span>
       </div>
 
       <p className="mt-4 mb-2 font-semibold">Panda (charakter)</p>

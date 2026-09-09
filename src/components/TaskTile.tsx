@@ -63,9 +63,9 @@ export function TaskTile({
 
   return (
     <div
-      className={`relative min-w-0 overflow-hidden rounded-2xl bg-white ${
-        done ? 'opacity-50' : ''
-      } ${highlight && !done ? 'ring-2 ring-inset ring-dojo/40' : ''}`}
+      className={`relative min-w-0 overflow-hidden rounded-2xl border border-[color:var(--color-tile-border)] bg-tile shadow-sm backdrop-blur-[6px] ${
+        done ? 'opacity-55' : ''
+      } ${highlight && !done ? 'ring-2 ring-inset ring-dojo/45' : ''}`}
     >
       <button
         type="button"
@@ -87,7 +87,7 @@ export function TaskTile({
             large ? 'h-12 w-12 text-xl' : 'h-8 w-8'
           }`}
           style={{
-            borderColor: done ? COLORS.green : 'rgba(42,41,38,0.28)',
+            borderColor: done ? COLORS.green : 'var(--color-check-border)',
             background: done ? COLORS.green : 'transparent',
           }}
         >

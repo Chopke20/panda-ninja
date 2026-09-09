@@ -23,6 +23,15 @@ export const TOUCH = {
   minTilePx: 72,
 } as const;
 
+/** Tła rutyn (bambus) — niska opacity na paper. */
+export const BG = {
+  routineOpacity: 0.22,
+  /** Wieczór: mocniejsze tło przy ciemnym theme. */
+  routineOpacityEvening: 0.32,
+  /** Od tej godziny ekran startowy pokazuje tło wieczorne. */
+  eveningFromHour: 15,
+} as const;
+
 export const TYPE = {
   basePx: 18,
   clockPx: 96,

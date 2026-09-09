@@ -1,4 +1,4 @@
-import { COLORS, TOUCH } from '../lib/constants';
+import { TOUCH } from '../lib/constants';
 import { useStore } from '../store/useStore';
 
 type Props = {
@@ -22,25 +22,24 @@ export function FooterBar({ bothReady, showShop }: Props) {
   return (
     <footer className="flex flex-col gap-2 px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
       {special.trim() && (
-        <div className="rounded-2xl bg-white/80 px-3 py-2 text-sm text-muted">
+        <div className="rounded-2xl border border-[color:var(--color-tile-border)] bg-tile/90 px-3 py-2 text-sm text-muted backdrop-blur-[4px]">
           <p>Niespodzianka: {special.trim()}</p>
         </div>
       )}
       <div className="flex items-center justify-between gap-3">
         <p
-          className="flex-1 rounded-2xl px-3 py-2 text-base"
-          style={
+          className={`flex-1 rounded-2xl border border-[color:var(--color-tile-border)] px-3 py-2 text-base backdrop-blur-[4px] ${
             bothReady
-              ? { background: 'rgba(224,184,77,0.28)', color: COLORS.ink, fontWeight: 650 }
-              : { color: COLORS.muted }
-          }
+              ? 'border-transparent bg-gold/30 font-semibold text-ink'
+              : 'bg-tile/90 text-muted'
+          }`}
         >
           {readyLabel}
         </p>
         {showShop && (
           <button
             type="button"
-            className="relative flex items-center justify-center rounded-2xl bg-white text-xl"
+            className="relative flex items-center justify-center rounded-2xl border border-[color:var(--color-tile-border)] bg-tile text-xl text-ink backdrop-blur-[4px]"
             style={{ minHeight: TOUCH.minTilePx, minWidth: TOUCH.minTilePx }}
             onClick={() => setUiScreen('shop')}
             aria-label="Awans pandy"

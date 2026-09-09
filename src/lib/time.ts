@@ -6,13 +6,19 @@ import type {
   TimelineColor,
   Weekday,
 } from '../types';
-import { TIME } from './constants';
+import { BG, TIME } from './constants';
 import { getDayException } from './dayExceptions';
 
 const WEEKDAY_INDEX: Weekday[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 export function weekdayFromDate(now: Date): Weekday {
   return WEEKDAY_INDEX[now.getDay()] ?? 'mon';
+}
+
+/** Poranek vs wieczór wg godziny (ekran startowy / atmosfera). */
+export function routineFromHour(now: Date): RoutineId {
+  const hour = now.getHours();
+  return hour >= BG.eveningFromHour || hour < 5 ? 'evening' : 'morning';
 }
 
 export function weekdayFromIso(iso: string): Weekday {
