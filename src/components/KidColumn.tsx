@@ -18,9 +18,10 @@ type Props = {
   weekday: Weekday;
   completedIds: string[];
   nowMs: number;
+  onBothReady?: () => void;
 };
 
-export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
+export function KidColumn({ kid, weekday, completedIds, nowMs, onBothReady }: Props) {
   const toggleTask = useStore((s) => s.toggleTask);
   const settings = useStore((s) => s.settings);
   const mutedToday = useStore((s) => s.mutedToday);
@@ -45,8 +46,10 @@ export function KidColumn({ kid, weekday, completedIds, nowMs }: Props) {
     tapHaptic();
     if (quiet) return;
     setVolume(settings.volume);
-    if (flags.bothJustCompleted) victory();
-    else if (flags.ownJustCompleted) fanfare();
+    if (flags.bothJustCompleted) {
+      victory();
+      onBothReady?.();
+    } else if (flags.ownJustCompleted) fanfare();
     else chime();
     if (flags.ownJustCompleted && settings.ttsEnabled) {
       const line = fillVoiceLine(settings.voiceLines.complete ?? '', kid.name);

@@ -2,22 +2,15 @@ import { TOUCH } from '../lib/constants';
 import { useStore } from '../store/useStore';
 
 type Props = {
-  bothReady: boolean;
   showShop: boolean;
 };
 
-export function FooterBar({ bothReady, showShop }: Props) {
-  const bonus = useStore((s) => s.settings.bonuses.bothComplete);
+export function FooterBar({ showShop }: Props) {
   const special = useStore((s) => s.settings.specialReward);
-  const routineId = useStore((s) => s.settings.activeRoutine ?? 'morning');
   const setUiScreen = useStore((s) => s.setUiScreen);
   const pending = useStore(
     (s) => s.purchaseRequests.filter((req) => req.status === 'pending').length,
   );
-  const readyLabel =
-    routineId === 'evening'
-      ? `Obie pandy gotowe do snu = +${bonus} pkt`
-      : `Obie pandy gotowe = +${bonus} pkt bonusu`;
 
   return (
     <footer className="flex flex-col gap-2 px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
@@ -26,16 +19,7 @@ export function FooterBar({ bothReady, showShop }: Props) {
           <p>Niespodzianka: {special.trim()}</p>
         </div>
       )}
-      <div className="flex items-center justify-between gap-3">
-        <p
-          className={`flex-1 rounded-2xl border border-[color:var(--color-tile-border)] px-3 py-2 text-base backdrop-blur-[4px] ${
-            bothReady
-              ? 'border-transparent bg-gold/30 font-semibold text-ink'
-              : 'bg-tile/90 text-muted'
-          }`}
-        >
-          {readyLabel}
-        </p>
+      <div className="flex items-center justify-end gap-3">
         {showShop && (
           <button
             type="button"

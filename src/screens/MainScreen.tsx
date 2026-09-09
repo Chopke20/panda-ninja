@@ -1,8 +1,10 @@
 import { AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { ClockHeader } from '../components/ClockHeader';
 import { DepartureTimeline } from '../components/DepartureTimeline';
 import { FooterBar } from '../components/FooterBar';
 import { KidColumn } from '../components/KidColumn';
+import { NoticeDialog } from '../components/NoticeDialog';
 import { PandaStage } from '../components/PandaStage';
 import { PointsFly } from '../components/PointsFly';
 import { availableBalance } from '../lib/shop';
@@ -30,9 +32,11 @@ export function MainScreen() {
   const transactions = useStore((s) => s.transactions);
   const purchaseRequests = useStore((s) => s.purchaseRequests);
   const dayExceptions = useStore((s) => s.dayExceptions);
+  const [bothReadyOpen, setBothReadyOpen] = useState(false);
   const date = todayIso(now);
   const weekday = weekdayFromDate(now);
   const routineId = settings.activeRoutine ?? 'morning';
+  const bothBonus = settings.bonuses.bothComplete;
   const target = getTargetToday(settings, now, routineId, dayExceptions);
   const phase = getRoutinePhase(now, target, settings.routineWindowMin);
   const minutes = getMinutesLeft(now, target);
@@ -56,10 +60,6 @@ export function MainScreen() {
       .reduce((sum, item) => sum + item.pointsEarned, 0);
     return { kid, completedIds, pose, due, ratio, wallet, todayPts };
   });
-
-  const bothReady = columns.every(
-    (col) => col.due.length > 0 && col.completedIds.length >= col.due.length,
-  );
 
   return (
     <div className="relative flex h-[100dvh] min-h-0 flex-col overflow-hidden pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
@@ -125,13 +125,25 @@ export function MainScreen() {
                 weekday={weekday}
                 completedIds={col.completedIds}
                 nowMs={nowMs}
+                onBothReady={() => setBothReadyOpen(true)}
               />
             ))}
           </section>
         </div>
 
-        <FooterBar bothReady={bothReady} showShop={phase !== 'active'} />
+        <FooterBar showShop={phase !== 'active'} />
       </div>
+
+      <NoticeDialog
+        open={bothReadyOpen}
+        title="Obie pandy gotowe!"
+        body={
+          routineId === 'evening'
+            ? `Obie listy do snu skończone. Każdy dostaje +${bothBonus} pkt bonusu.`
+            : `Obie listy skończone. Każdy dostaje +${bothBonus} pkt bonusu.`
+        }
+        onClose={() => setBothReadyOpen(false)}
+      />
     </div>
   );
 }
